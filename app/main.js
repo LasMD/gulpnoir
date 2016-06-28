@@ -22,10 +22,10 @@ var feedURL = "";
 // Don't use auto-updater if we are in development
 if (!isDevelopment) {
     if (os.platform() === 'darwin') {
-        updateFeed = 'http://ea-todo.herokuapp.com/updates/latest';
+        updateFeed = 'http://gulpnoir.herokuapp.com/updates/latest';
     }
     else if (os.platform() === 'win32') {
-        updateFeed = 'http://eatodo.s3.amazonaws.com/updates/latest/win' + (os.arch() === 'x64' ? '64' : '32');
+        updateFeed = 'http://gulpnoir.s3.amazonaws.com/updates/latest/win' + (os.arch() === 'x64' ? '64' : '32');
     }
 
     autoUpdater.addListener("update-available", function(event) {
@@ -78,10 +78,10 @@ app.on('ready', function() {
     // Other options available at:
     // http://electron.atom.io/docs/latest/api/browser-window/#new-browserwindow-options
     mainWindow = new BrowserWindow({
-        name: "ea-todo",
-        width: 400,
-        height: 600,
-        toolbar: false
+        name: "gulpnoir",
+        width: 640,
+        height: 480,
+        toolbar: true
     });
 
     // Target HTML file which will be opened in window
