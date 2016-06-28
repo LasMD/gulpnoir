@@ -1,18 +1,6 @@
 {
-  "name": "gulpnoir",
-  "version": "0.1.0",
-  "description": "Visual UI for building gulpfiles",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "gulp",
-    "noir",
-    "gui",
-    "ui",
-    "graphic"
-  ],
-  "author": "Wyatt Arent",
-  "license": "ISC"
+  "devDependencies": {
+    "electron-builder": "^5.10.1",
+    "electron-prebuilt": "^1.2.5"
+  }
 }

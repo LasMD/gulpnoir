@@ -1,0 +1,21 @@
+{
+  "name": "gulpnoir",
+  "version": "0.1.0",
+  "description": "Visual UI for building gulpfiles",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gulp",
+    "noir",
+    "gui",
+    "ui",
+    "graphic"
+  ],
+  "author": "Wyatt Arent",
+  "license": "ISC",
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  }
+}
