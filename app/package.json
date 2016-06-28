@@ -17,5 +17,8 @@
   "license": "ISC",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^2.0.0"
   }
 }

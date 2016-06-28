@@ -1,6 +1,8 @@
 // Handle Squirrel events for Windows immediately on start
 if(require('electron-squirrel-startup')) return;
 
+require('dotenv').config();
+
 const electron = require('electron');
 const {app} = electron;
 const {BrowserWindow} = electron;
@@ -21,6 +23,7 @@ var feedURL = "";
 
 // Don't use auto-updater if we are in development
 if (!isDevelopment) {
+  logger.debug("Not dev");
     if (os.platform() === 'darwin') {
         updateFeed = 'http://gulpnoir.herokuapp.com/updates/latest';
     }
