@@ -10,9 +10,19 @@ let app = () => {
   }
 };
 
+@Inject('$http')
 class AppCtrl {
-  constructor() {
-    this.url = 'https://github.com/preboot/angular-webpack';
+  constructor($http) {
+    $http.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=2756&sort=rating:desc')
+    .then((success) => {
+      this.results = success.data.results.map((result) => {
+        return {
+          name: result.name[0]
+        };
+      });
+    }, (error) => {
+      console.log(success);
+    });
   }
 }
 

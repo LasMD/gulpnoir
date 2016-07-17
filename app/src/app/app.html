@@ -1,9 +1,6 @@
 <main>
-  <h1 class="title">Hello from Angular !</h1>
-
-  <!-- Images (and assets) are parsed and loaded from within the public directory -->
-  <img src="assets/img/logo.png">
+  <input type="text" data-ng-model="app.flt.name">
+  <div data-ng-repeat="result in app.results | filter: app.flt">
+    {{result.name}}
+  </div>
 </main>
-<footer>
-  <a ng-href="{{app.url}}">Webpack Angular Starter</a>
-</footer>
