@@ -8,6 +8,7 @@ const {app} = electron;
 const {BrowserWindow} = electron;
 const {autoUpdater} = electron;
 const {ipcMain} = electron;
+const {Menu} = electron;
 const os = require('os');
 
 const logger = require('winston');
@@ -86,6 +87,70 @@ app.on('ready', function() {
         height: 480,
         toolbar: true
     });
+
+    const template = [
+      {
+        label: 'File',
+        submenu: [
+          {
+            label: 'New Project',
+            accelerator: 'CmdOrCtrl+N',
+            click(item, focusedWindow) {
+              console.log("Newing");
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Save Project',
+            accelerator: 'CmdOrCtrl+S',
+            click(item, focusedWindow) {
+              console.log("Saving");
+            }
+          },
+          {
+            label: 'Export Gulpfile',
+            accelerator: 'CmdOrCtrl+E',
+            click(item, focusedWindow) {
+              console.log("Exporting");
+            }
+          },
+        ]
+      },
+      {
+        label: 'View',
+        submenu: [
+          {
+            label: 'Reload',
+            accelerator: 'CmdOrCtrl+R',
+            click(item, focusedWindow) {
+              if (focusedWindow) focusedWindow.reload();
+            }
+          },
+          {
+            label: 'Toggle Developer Tools',
+            accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+            click(item, focusedWindow) {
+              if (focusedWindow)
+                focusedWindow.webContents.toggleDevTools();
+            }
+          },
+        ]
+      },
+      {
+        label: 'Help',
+        submenu: [
+          {
+            label: 'Learn More',
+            click() { require('electron').shell.openExternal('http://electron.atom.io'); }
+          },
+        ]
+      }
+    ];
+
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
 
     // Target HTML file which will be opened in window
     mainWindow.loadURL('file://' + __dirname + "/dist/index.html");
