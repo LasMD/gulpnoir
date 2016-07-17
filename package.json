@@ -2,5 +2,9 @@
   "devDependencies": {
     "electron-builder": "^5.10.1",
     "electron-prebuilt": "^1.2.5"
+  },
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "electron-squirrel-startup": "^1.0.0"
   }
 }
