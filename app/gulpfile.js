@@ -5,22 +5,15 @@ var minifyCss = require('gulp-minify-css');
 var sass = require('gulp-sass');
 var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
-var cache = require('gulp-angular-templatecache');
-var add = require('add-stream');
 var htmlmin = require('gulp-htmlmin');
 var ngAnnotate = require('gulp-ng-annotate');
 var autoprefixer = require('gulp-autoprefixer');
-
-function buildTemplates() {
-	return gulp.src('src/app/**/*.html')
-	.pipe(plumber())
-	.pipe(htmlmin({collapseWhitespace: true}))
-	.pipe(cache());
-}
+var babel = require("gulp-babel");
 
 var fonts = {};
 fonts.vendor = [
-	'bower_components/font-awesome/fonts/**/*'
+	'node_modules/font-awesome/fonts/**/*',
+	'app/node_modules/roboto-fontface/fonts/roboto-condensed'
 ];
 
 var scripts = {};
@@ -59,11 +52,10 @@ gulp.task('compile:scripts/vendor', function() {
 });
 
 gulp.task('compile:scripts/app', function() {
-  return gulp.src(scripts.app)
+  return gulp.src('src/app/index.js')
   .pipe(plumber())
-  .pipe(add.obj(buildTemplates()))
   .pipe(sourcemaps.init())
-	.pipe(concat('app.js'))
+	.pipe(babel())
 	.pipe(ngAnnotate({add: true}))
   .pipe(uglify({mangle: true}))
   .pipe(sourcemaps.write('./'))
@@ -73,7 +65,7 @@ gulp.task('compile:scripts/app', function() {
 gulp.task('compile:styles/vendor', function() {
   return gulp.src(styles.vendor)
   .pipe(plumber())
-  .pipe(sass({includePaths:['./bower_components']})).on('error', sass.logError)
+  .pipe(sass({includePaths:['./node_modules']})).on('error', sass.logError)
   .pipe(minifyCss({keepSpecialComments:0, aggressiveMerging: false}))
   .pipe(concat('vendor.css'))
   .pipe(gulp.dest('build/css'));
@@ -82,7 +74,7 @@ gulp.task('compile:styles/vendor', function() {
 gulp.task('compile:styles/app', function() {
   return gulp.src("src/styles/app.scss")
   .pipe(plumber())
-  .pipe(sass({includePaths:['./bower_components']})).on('error', sass.logError)
+  .pipe(sass({includePaths:['./node_modules']})).on('error', sass.logError)
 	.pipe(autoprefixer())
   .pipe(minifyCss({keepSpecialComments:0, aggressiveMerging: false}))
   .pipe(gulp.dest('build/css'));
