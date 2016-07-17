@@ -1,10 +1,10 @@
 <div class="plugins-list-wrapper">
-  <label>
-    Search Name
-    <input type="text" data-ng-model="ctrl.pluginfilter.name">
-  </label>
+  <md-input-container>
+    <label>Search Name</label>
+    <input type="text" ng-model="ctrl.pluginFilter.name">
+  </md-input-container>
   <div class="plugins-list">
-    <div class="plugin" data-ng-repeat="result in ctrl.results | filter: ctrl.pluginfilter">
+    <div class="plugin" data-ng-repeat="result in ctrl.results | filter: ctrl.pluginFilter">
       <div class="title">{{result.name}} <i>v{{result.version}}</i></div>
       <div class="description">{{result.description}}</div>
       <div class="keywords">
