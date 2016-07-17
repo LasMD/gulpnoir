@@ -1,6 +1,12 @@
 <main>
   <input type="text" data-ng-model="app.flt.name">
-  <div data-ng-repeat="result in app.results | filter: app.flt">
-    {{result.name}}
+  <div class="plugins-list">
+    <div class="plugin" data-ng-repeat="result in app.results track by result.name | filter: app.flt">
+      <div class="plugin-title">{{result.name}} <i>{{result.version}}</i></div>
+      <div class="plugin-description">{{result.description}}</div>
+      <div class="plugin-keywords">
+        <i data-ng-repeat="keyword in result.keyword track by $index">{{keyword}}</i>
+      </div>
+    </div>
   </div>
 </main>

@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import '../style/app.css';
+require('../style/app.scss');
 
 let app = () => {
   return {
@@ -17,7 +17,10 @@ class AppCtrl {
     .then((success) => {
       this.results = success.data.results.map((result) => {
         return {
-          name: result.name[0]
+          name: result.name[0],
+          description: result.description[0],
+          keywords: result.keywords,
+          version: result.version[0]
         };
       });
     }, (error) => {
