@@ -1,17 +1,3 @@
 <main>
-  <div class="plugins-list-wrapper">
-    <label>
-      Search Name
-      <input type="text" data-ng-model="app.pluginfilter.name">
-    </label>
-    <div class="plugins-list">
-      <div class="plugin" data-ng-repeat="result in app.results | filter: app.pluginfilter">
-        <div class="title">{{result.name}} <i>v{{result.version}}</i></div>
-        <div class="description">{{result.description}}</div>
-        <div class="keywords">
-          <i data-ng-repeat="keyword in result.keyword track by $index">{{keyword}}</i>
-        </div>
-      </div>
-    </div>
-  </div>
+  <plugins-list></plugins-list>
 </main>
