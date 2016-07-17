@@ -1,6 +1,26 @@
 .plugins-list {
   position: absolute;
   bottom: 0;
-  top: 0;
+  top: 30px;
   left: 0;
+  width: 25%;
+  min-width: 100px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 10px;
+
+  .plugin {
+    padding: 10px 0;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #888;
+    }
+
+    .title {
+      font-weight: bold;
+    }
+
+  }
+
 }
