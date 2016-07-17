@@ -2,5 +2,20 @@
   "devDependencies": {
     "electron-builder": "^5.10.1",
     "electron-prebuilt": "^1.2.5"
+  },
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "build": {
+    "appId": "your.id",
+    "app-category-type": "your.app.category.type",
+    "win": {
+      "iconUrl": ""
+    },
+    "linux": {
+      "iconUrl": ""
+    }
   }
 }

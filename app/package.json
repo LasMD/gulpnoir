@@ -13,7 +13,7 @@
     "ui",
     "graphic"
   ],
-  "author": "Wyatt Arent",
+  "author": "Wyatt Arent <hello@wyatt.ninja> (http://wyatt.ninja/)",
   "license": "ISC",
   "dependencies": {
     "angular": "^1.5.7",
