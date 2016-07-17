@@ -8,19 +8,17 @@
   overflow-y: scroll;
   overflow-x: hidden;
   padding: 10px;
+}
 
-  .plugin {
-    padding: 10px 0;
+.plugin-keyword {
+  padding: 2pt;
+  background-color: #ddd;
+  border-radius: 2.4pt;
+  margin: 2.1pt;
+}
 
-    &:hover {
-      cursor: pointer;
-      background-color: #888;
-    }
-
-    .title {
-      font-weight: bold;
-    }
-
-  }
-
+.plugin-keywords {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
