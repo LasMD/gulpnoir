@@ -12,10 +12,12 @@ class pluginsListCtrl {
     $http.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=2756&sort=rating:desc')
     .then((success) => {
       this.results = success.data.results.map((result) => {
+        let keywords = result.keywords;
+        keywords.shift();
         return {
           name: result.name[0],
           description: result.description[0],
-          keywords: result.keywords,
+          keywords: keywords,
           version: result.version[0]
         };
       });
