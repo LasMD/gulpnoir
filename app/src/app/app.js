@@ -3,7 +3,7 @@ import './app.scss';
 
 import angular from 'angular';
 import angularMaterial from 'angular-material';
-import { pluginsList, taskManager } from './components';
+import { pluginsList, taskManager, taskBuilder } from './components';
 
 let app = () => {
   return {
@@ -24,7 +24,8 @@ const MODULE_NAME = 'app';
 angular.module(MODULE_NAME, [
   angularMaterial,
   pluginsList,
-  taskManager
+  taskManager,
+  taskBuilder
 ])
   .directive('app', app)
   .controller('AppCtrl', AppCtrl);
