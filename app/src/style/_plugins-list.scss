@@ -1,13 +1,18 @@
+.plugins-list-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  max-height: 100vh;
+  max-width: 300px;
+  width: 40vw;
+  md-input-container {
+    flex: 1;
+  }
+}
+
 .plugins-list {
-  position: absolute;
-  bottom: 0;
-  top: 30px;
-  left: 0;
-  width: 25%;
-  min-width: 100px;
-  overflow-y: scroll;
+  flex: 1;
   overflow-x: hidden;
-  padding: 10px;
+  overflow-y: auto;
 }
 
 .plugin-keyword {
