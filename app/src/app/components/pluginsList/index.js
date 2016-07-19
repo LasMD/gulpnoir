@@ -1,8 +1,10 @@
+import './_style.scss';
+
 let pluginsList = () => {
   return {
     template: require('./template.html'),
     controller: 'pluginsListCtrl',
-    controllerAs: 'ctrl'
+    controllerAs: 'pluginsListCtrl'
   }
 };
 

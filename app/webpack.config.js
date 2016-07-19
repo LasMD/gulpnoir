@@ -104,6 +104,20 @@ module.exports = function makeWebpackConfig () {
       // Use style-loader in development.
       loaders: ['style', 'css', 'sass']
     }, {
+      // CSS LOADER
+      // Reference: https://github.com/webpack/css-loader
+      // Allow loading css through js
+      //
+      // Reference: https://github.com/postcss/postcss-loader
+      // Postprocess your css with PostCSS plugins
+      test: /\.css$/,
+      // Reference: https://github.com/webpack/extract-text-webpack-plugin
+      // Extract css files in production builds
+      //
+      // Reference: https://github.com/webpack/style-loader
+      // Use style-loader in development.
+      loaders: ['style', 'css']
+    }, {
       // ASSET LOADER
       // Reference: https://github.com/webpack/file-loader
       // Copy png, jpg, jpeg, gif, svg, woff, woff2, ttf, eot files to output

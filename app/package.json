@@ -26,6 +26,7 @@
     "angularjs-filters": "0.0.2",
     "electron-squirrel-startup": "^1.0.0",
     "font-awesome": "^4.6.3",
+    "jointjs": "^0.9.10",
     "ng-lodash": "^0.2.3",
     "roboto-fontface": "^0.5.0",
     "ui-router-extras": "^0.1.2"
