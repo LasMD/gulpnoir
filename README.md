@@ -1,3 +1,3 @@
-# Pyxis
+# GulpNoir
 
-## Pandora Desktop App
+## Visual Development UI for Gulp and Gulpfiles

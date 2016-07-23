@@ -89,7 +89,8 @@ export default class HomePage extends Component {
       <main>
         <div style={{
             opacity: '0',
-            position: 'absolute'
+            position: 'absolute',
+            width: '200px'
           }} id={'shadow'}>
         </div>
         <h1>Testing</h1>
@@ -108,7 +109,7 @@ export default class HomePage extends Component {
                     height={300}
                     rowCount={this.getGulpPluginsResultsCount()}
                     rowRenderer={
-                      ({ index }) => this.getGulpPluginListItem(index) // Could also be a DOM element
+                      ({ index }) => this.getGulpPluginListItem(index)
                     }
                     rowHeight={this.getGulpPluginListItemHeight.bind(this)}
                     overscanRowCount={0}
