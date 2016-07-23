@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import NavButton from '../../components/NavButton';
 import FlatButton from 'material-ui/FlatButton';
-import '!style!css!sass!./_style.scss';
+import './_style.scss';
 import $ from 'jquery';
 
 export default class HomePage extends Component {
