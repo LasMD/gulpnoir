@@ -14,7 +14,7 @@ export default class HomePage extends Component {
     this.setState({gulpTasks: []});
     this.pluginsRefs = {};
 
-    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=2756&sort=rating:desc',
+    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=255&sort=rating:desc',
     (result) => {
       let jsonResult = JSON.parse(result);
       this.setState({gulpPlugins: jsonResult});
@@ -69,15 +69,16 @@ export default class HomePage extends Component {
 
   getGulpPluginListItem(index) {
     if (this.state && this.state.gulpPlugins) {
-      return <div>{this.state.gulpPlugins.results[index].name[0]}</div>;
+      return <div id={'shadow-plugin-' + index}>{this.state.gulpPlugins.results[index].name[0]}</div>;
     } else {
-      return <div></div>;
+      return <div id={'shadow-plugin-' + index}></div>;
     }
   }
 
   getGulpPluginListItemHeight({index}) {
     let component = render(this.getGulpPluginListItem(index), document.getElementById('shadow'));
-    let height = component.clientHeight;
+    let height = component.offsetHeight;
+    console.log(height);
     unmountComponentAtNode(component);
     component = null;
     return height;
@@ -110,6 +111,7 @@ export default class HomePage extends Component {
                       ({ index }) => this.getGulpPluginListItem(index) // Could also be a DOM element
                     }
                     rowHeight={this.getGulpPluginListItemHeight.bind(this)}
+                    overscanRowCount={0}
                   />
                 )
               }
