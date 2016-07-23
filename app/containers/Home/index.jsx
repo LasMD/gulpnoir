@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { render, unmountComponentAtNode } from 'react-dom';
 import NavButton from '../../components/NavButton';
 import FlatButton from 'material-ui/FlatButton';
 import './_style.scss';
 import $ from 'jquery';
+import { VirtualScroll, AutoSizer } from 'react-virtualized';
 
 export default class HomePage extends Component {
 
@@ -10,6 +12,7 @@ export default class HomePage extends Component {
 
     this.setState({addedPlugins: []});
     this.setState({gulpTasks: []});
+    this.pluginsRefs = {};
 
     $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=2756&sort=rating:desc',
     (result) => {
@@ -50,37 +53,83 @@ export default class HomePage extends Component {
 
   getGulpPlugins() {
     if (this.state && this.state.gulpPlugins) {
-      return (this.state.gulpPlugins.results.map(
-        (result, index) => {
-          return <option value={index}>{result.name[0]}</option>;
-        }
-      ));
+      return this.state.gulpPlugin;
     } else {
-      return <option>{'Loading...'}</option>;
+      return {};
     }
+  }
+
+  getGulpPluginsResultsCount() {
+    if (this.state && this.state.gulpPlugins) {
+      return this.state.gulpPlugins.results.length;
+    } else {
+      return 0;
+    }
+  }
+
+  getGulpPluginListItem(index) {
+    if (this.state && this.state.gulpPlugins) {
+      return <div>{this.state.gulpPlugins.results[index].name[0]}</div>;
+    } else {
+      return <div></div>;
+    }
+  }
+
+  getGulpPluginListItemHeight({index}) {
+    let component = render(this.getGulpPluginListItem(index), document.getElementById('shadow'));
+    let height = component.clientHeight;
+    unmountComponentAtNode(component);
+    component = null;
+    return height;
   }
 
   render() {
     return (
       <main>
+        <div style={{
+            opacity: '0',
+            position: 'absolute'
+          }} id={'shadow'}>
+        </div>
         <h1>Testing</h1>
         <br />
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
+          <div style={{ display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'space-around' }}>
             <h2>Plugins</h2>
-            <select ref={ (ref) => this.gulpPluginsList = ref } multiple>
-              {this.getGulpPlugins()}
-            </select>
+            <AutoSizer disableHeight>
+              {
+                ({ width }) => (
+                  <VirtualScroll
+                    width={300}
+                    height={300}
+                    rowCount={this.getGulpPluginsResultsCount()}
+                    rowRenderer={
+                      ({ index }) => this.getGulpPluginListItem(index) // Could also be a DOM element
+                    }
+                    rowHeight={this.getGulpPluginListItemHeight.bind(this)}
+                  />
+                )
+              }
+            </AutoSizer>
             <FlatButton onClick={this.setAddedPlugins.bind(this)}>Add Plugin</FlatButton>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
+          <div style={{ display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'space-around' }}>
             <h2>Tasks</h2>
             <select ref={ (ref) => this.gulpTasks = ref }>
               {this.getGulpTasks()}
             </select>
             <FlatButton>Create Task</FlatButton>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
+          <div style={{ display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'space-around' }}>
             <h2>Added Plugins</h2>
             <select multiple>
               {this.getAddedPlugins()}
