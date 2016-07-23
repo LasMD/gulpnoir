@@ -8,12 +8,17 @@ export default {
       exclude: /node_modules/
     },
     {
-      test: /(\.scss|\.css)$/,
-      include: /(node_modules)\/react-toolbox/,
+      test: /\.scss$/,
       loaders: [
-        require.resolve('style-loader'),
-        require.resolve('css-loader') + '?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
-        require.resolve('sass-loader') + '?sourceMap', 'toolbox'
+        'style-loader',
+        'css-loader',
+        'sass-loader'
+      ]
+    },
+    {
+      test: /\.css$/,
+      loaders: [
+        'css-loader'
       ]
     },
     {
@@ -46,9 +51,6 @@ export default {
     extensions: ['', '.js', '.jsx', '.json', 'scss'],
     packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
     modulesDirectories: ['node_modules']
-  },
-  toolbox: {
-    theme: path.join(__dirname, 'app/styles.scss')
   },
   plugins: [
 

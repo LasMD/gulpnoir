@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'react-toolbox/lib/button';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class NavButton extends Component {
 
@@ -13,9 +13,9 @@ export default class NavButton extends Component {
 
   render() {
     return (
-      <Button onClick={this.doNav.bind(this, { href: this.props.to })}>
+      <FlatButton onClick={this.doNav.bind(this, { href: this.props.to })}>
         {this.props.children}
-      </Button>
+      </FlatButton>
     );
   }
 }
