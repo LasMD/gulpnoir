@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { app, BrowserWindow, Menu, shell, dialog } from 'electron';
 
 let menu;
@@ -81,14 +82,28 @@ app.on('ready', async () => {
       label: '&Open Project',
       accelerator: 'Ctrl+O',
       click() {
-        console.log(dialog.showOpenDialog(
+        let noirFile = dialog.showOpenDialog(
           {
             properties: ['openFile'],
             filters: [
               { name: 'GulpNoir Project', extensions: ['noir'] }
             ]
           }
-        ));
+        );
+
+        if (noirFile) {
+          noirFile = noirFile[0];
+        }
+
+        try {
+          const noirFileJSON = JSON.parse(fs.readFileSync(noirFile));
+        } catch (err) {
+          dialog.showErrorBox("Open Project Error",`${err}`);
+          return;
+        }
+
+        console.log(noirFileJSON);
+
       }
     }, {
       label: '&Export',
