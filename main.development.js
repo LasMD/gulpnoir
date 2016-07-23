@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, shell, dialog } from 'electron';
 
 let menu;
 let template;
@@ -81,7 +81,14 @@ app.on('ready', async () => {
       label: '&Open Project',
       accelerator: 'Ctrl+O',
       click() {
-        mainWindow.close();
+        console.log(dialog.showOpenDialog(
+          {
+            properties: ['openFile'],
+            filters: [
+              { name: 'GulpNoir Project', extensions: ['noir'] }
+            ]
+          }
+        ));
       }
     }, {
       label: '&Export',
