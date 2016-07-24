@@ -5,7 +5,6 @@ import WelcomePage from './containers/Welcome';
 
 export default (
   <Route path="/">
-    <IndexRoute component={WelcomePage} />
-    <Route path="/home" component={HomePage} />
+    <IndexRoute component={HomePage} />
   </Route>
 );
