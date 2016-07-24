@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
+import FlatButton from 'material-ui/FlatButton';
+
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
-import FlatButton from 'material-ui/FlatButton';
+import FlowGraph from '../../components/FlowGraph';
 
 import vstyles from './_style.scss';
 
@@ -59,6 +61,7 @@ export default class HomePage extends Component {
         <PluginsList
         onPluginSelect={(plugin) => {console.log(plugin)}}
          />
+         <FlowGraph />
       </main>
     );
   }
