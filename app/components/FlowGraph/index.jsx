@@ -4,77 +4,58 @@ import joint from 'jointjs';
 
 import './_style.scss';
 
-export default class Graph extends Component {
+export default class FlowGraph extends Component {
 
-    constructor(props) {
-        super(props);
-        this.graph = new joint.dia.Graph();
-    }
+  constructor(props) {
+    super(props);
+    this.graph = new joint.dia.Graph();
+  }
 
-    addTask({props, shape}) {
-      return new joint.shapes.basic[shape](props);
-    }
+  createTask({x, y, text}) {
+    const props = {
+      position: { x: x, y: y },
+      size: { width: 60, height: 60 },
+      attrs: {
+        rect: { fill: 'blue' },
+        text: { text: text, fill: 'white' }
+      }
+    };
+    return new joint.shapes.basic.Rect(props);
+  }
 
-    componentDidMount() {
-        this.paper = new joint.dia.Paper({
-            el: findDOMNode(this.refs.placeholder),
-            model: this.graph,
-            gridSize: 15
-        });
+  createParallel({x, y, text}) {
+    const props = {
+      position: { x: x, y: y },
+      size: { width: 150, height: 150 },
+      attrs: {
+        circle: { fill: 'blue' },
+        text: { text: text, fill: 'white' }
+      }
+    };
+    return new joint.shapes.basic.Circle(props);
+  }
 
-        const task1 = this.addTask({
-          shape: 'Rect',
-          props: {
-              position: { x: 100, y: 30 },
-              size: { width: 100, height: 30 },
-              attrs: {
-                  rect: { fill: 'green' },
-                  text: { text: 'Some Task', fill: 'white' }
-              }
-          }
-        });
+  componentDidMount() {
+      this.paper = new joint.dia.Paper({
+          el: findDOMNode(this.refs.placeholder),
+          model: this.graph,
+          gridSize: 15
+      });
 
-        const task2 = this.addTask({
-          shape: 'Rect',
-          props: {
-              position: { x: 100, y: 30 },
-              size: { width: 100, height: 30 },
-              attrs: {
-                  rect: { fill: 'green' },
-                  text: { text: 'Other Task', fill: 'white' }
-              }
-          }
-        });
 
-        const parallel = this.addTask({
-          shape: 'Circle',
-          props: {
-              position: { x: 100, y: 30 },
-              size: { width: 120, height: 120 },
-              attrs: {
-                  circle: { fill: 'blue' },
-                  text: { text: 'Some Parallel', fill: 'white' }
-              }
-          }
-        });
+      const task = this.createTask({x: 100, y: 100, text: 'yolo'});
 
-        parallel.translate(100);
-        task2.translate(200);
+      const parallel = this.createParallel({x: 50, y: 50, text: 'parllel'});
 
-        const link1 = new joint.dia.Link({
-            source: { id: task1.id },
-            target: { id: parallel.id }
-        });
+      const link = new joint.dia.Link({
+          source: { id: task.id },
+          target: { id: parallel.id }
+      });
 
-        const link2 = new joint.dia.Link({
-            source: { id: task2.id },
-            target: { id: parallel.id }
-        });
+      this.graph.addCells([task, parallel, link]);
+  }
 
-        this.graph.addCells([task1, task2, parallel, link1, link2]);
-    }
-
-    render() {
-        return <div ref="placeholder" ></div>;
-    }
+  render() {
+      return <div ref="placeholder" ></div>;
+  }
 }

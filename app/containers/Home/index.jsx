@@ -6,6 +6,7 @@ import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import TasksList from '../../components/TasksList';
 import FlowGraph from '../../components/FlowGraph';
+import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
 import FlexRow from '../../components/FlexRow';
 import Divider from 'material-ui/Divider';
@@ -49,7 +50,7 @@ export default class HomePage extends Component {
             <Divider />
             <TasksList />
           </FlexColumn>
-          <FlowGraph />
+          <FlowGraphWindow />
         </FlexRow>
       </main>
     );
