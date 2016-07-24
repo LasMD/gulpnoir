@@ -56,7 +56,9 @@ export default class HomePage extends Component {
           </div>
         <br />
         <NavButton to={''}>Back</NavButton>
-        <PluginsList />
+        <PluginsList
+        onPluginSelect={(plugin) => {console.log(plugin)}}
+         />
       </main>
     );
   }

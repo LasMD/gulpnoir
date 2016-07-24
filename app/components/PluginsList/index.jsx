@@ -48,6 +48,10 @@ export default class PluginsList extends Component {
     }, 100);
   }
 
+  onPluginSelect(index) {
+    this.props.onPluginSelect(this.state.gulpPlugins.results[index]);
+  }
+
   getGulpPluginListItem(index) {
     let plugin = this.state.gulpPlugins.results[index];
     return (
@@ -58,6 +62,7 @@ export default class PluginsList extends Component {
         description={plugin.description[0]}
         ref={(elem) => {this.pluginsRefs[`plugin-${index}`] = elem;}}
         reportHeight={this.updatePluginHeight.bind(this)}
+        onPluginSelect={this.onPluginSelect.bind(this)}
       />
     );
   }
