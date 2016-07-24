@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import Paper from 'material-ui/Paper';
+import vstyles from './_style.scss';
+
 
 export default class GulpPlugin extends Component {
 
@@ -12,7 +14,7 @@ export default class GulpPlugin extends Component {
     if (this.props.reportHeight) {
       this.props.reportHeight({
           index: this.props.index,
-          height: findDOMNode(this).offsetHeight + 20
+          height: findDOMNode(this).offsetHeight
         });
     }
   }

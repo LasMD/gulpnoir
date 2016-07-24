@@ -1,30 +1,15 @@
 import React, { Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import NavButton from '../../components/NavButton';
-import GulpPlugin from '../../components/GulpPlugin';
+import PluginsList from '../../components/PluginsList';
 import FlatButton from 'material-ui/FlatButton';
-import $ from 'jquery';
-import { VirtualScroll, AutoSizer } from 'react-virtualized';
-import vstyles from 'react-virtualized/styles.css';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import './_style.scss';
+import vstyles from './_style.scss';
 
 export default class HomePage extends Component {
 
   componentDidMount() {
-
-    this.setState({addedPlugins: []});
     this.setState({gulpTasks: []});
-    this.pluginsHeights = {};
-    this.pluginsRefs = {};
-
-    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=9001&sort=rating:desc',
-    (result) => {
-      let jsonResult = JSON.parse(result);
-      this.setState({gulpPlugins: jsonResult});
-      console.log(this.state.gulpPlugins);
-    });
   }
 
   getGulpTasks() {
@@ -37,15 +22,6 @@ export default class HomePage extends Component {
     }
   }
 
-  setAddedPlugins() {
-    [].filter.call(this.gulpPluginsList, function (o) {
-      return o.selected;
-    }).map((o) => {
-      this.setState({addedPlugins: this.state.addedPlugins.concat(this.state.gulpPlugins.results.splice(o.value, 1))});
-      return true;
-    });
-  }
-
   getAddedPlugins() {
     if (this.state && this.state.addedPlugins && this.state.addedPlugins.length > 0) {
       return (this.state.addedPlugins.map(
@@ -56,76 +32,9 @@ export default class HomePage extends Component {
     }
   }
 
-  getGulpPlugins() {
-    if (this.state && this.state.gulpPlugins) {
-      return this.state.gulpPlugin;
-    } else {
-      return {};
-    }
-  }
-
-  getGulpPluginsResultsCount() {
-    if (this.state && this.state.gulpPlugins) {
-      return this.state.gulpPlugins.results.length;
-    } else {
-      return 0;
-    }
-  }
-
-  updatePluginHeight({index, height}) {
-    console.log("updating", index, height);
-    this.pluginsHeights[`plugin-${index}`] = height;
-    console.log(this.refs.autosizer.refs.vscroll);
-    setTimeout(() => {
-      this.refs.autosizer.refs.vscroll.recomputeRowHeights(index);
-    }, 100);
-  }
-
-  getGulpPluginListItem(index) {
-    let plugin = this.state.gulpPlugins.results[index];
-    return (
-      <GulpPlugin
-        index={index}
-        name={plugin.name[0]}
-        version={plugin.version[0]}
-        description={plugin.description[0]}
-        ref={(elem) => {this.pluginsRefs[`plugin-${index}`] = elem;}}
-        reportHeight={this.updatePluginHeight.bind(this)}
-      />
-    );
-  }
-
   render() {
     return (
-      <main>
-        <h1>Testing</h1>
-        <br />
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-          <div style={{ display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'space-around' }}>
-            <h2>Plugins</h2>
-                <AutoSizer ref='autosizer' disableHeight>
-                {
-                  ({width}) => (
-                    <VirtualScroll
-                      ref={'vscroll'}
-                      width={300}
-                      height={300}
-                      className={vstyles.VirtualScroll}
-                      rowCount={this.getGulpPluginsResultsCount()}
-                      rowRenderer={
-                        ({ index }) => this.getGulpPluginListItem(index)
-                      }
-                      rowHeight={({index}) => this.pluginsHeights[`plugin-${index}`] || 100 }
-                      overscanRowCount={3}
-                    />
-                  )
-                }
-                </AutoSizer>
-            <FlatButton onClick={this.setAddedPlugins.bind(this)}>Add Plugin</FlatButton>
-          </div>
+      <main className={'page-home'}>
           <div style={{ display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -145,9 +54,9 @@ export default class HomePage extends Component {
               {this.getAddedPlugins()}
             </select>
           </div>
-        </div>
         <br />
         <NavButton to={''}>Back</NavButton>
+        <PluginsList />
       </main>
     );
   }
