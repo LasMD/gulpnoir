@@ -12,6 +12,10 @@ export default class GulpPlugin extends Component {
   }
 
   componentDidMount() {
+    // gulpplugin is implied 
+    if (this.props.keywords.indexOf('gulpplugin') > -1) {
+      this.props.keywords.splice(this.props.keywords.indexOf('gulpplugin'), 1);
+    }
     if (this.props.reportHeight) {
       this.props.reportHeight({
           index: this.props.index,
@@ -27,20 +31,22 @@ export default class GulpPlugin extends Component {
   render() {
     return (
       <div>
-      <Paper zDepth={2}
-            className={`pluginPaper`}
-        >
-        <h3>{this.props.name} <i>v{this.props.version}</i></h3>
-        <h4>Author: {this.props.author}</h4>
-        <p>{this.props.description}</p>
-        <p><FlatButton label="Select" onClick={this.onPluginSelect.bind(this)} /></p>
-        {
-          this.props.keywords.map((keyword) => {
-            return <i className={'keyword'}>{keyword}</i>;
-          })
-        }
-      </Paper>
-      <Divider />
+        <Paper zDepth={2}
+              className={`pluginPaper`}
+          >
+          <h3>{this.props.name} <i>v{this.props.version}</i></h3>
+          <h4>Author: {this.props.author}</h4>
+          <p>{this.props.description}</p>
+          <p><FlatButton label="Select" onClick={this.onPluginSelect.bind(this)} /></p>
+          <p className={'keywords-wrapper'}>
+          {
+            this.props.keywords.map((keyword) => {
+              return <i className={'keyword'}>{keyword}</i>;
+            })
+          }
+          </p>
+        </Paper>
+        <Divider />
       </div>
     );
   }

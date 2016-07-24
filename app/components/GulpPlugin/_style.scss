@@ -2,8 +2,16 @@
 	padding: 10px;
 	margin: 5px;
 
+	.keywords-wrapper {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
 	.keyword {
 		padding: 5px;
+		background-color: lightgrey;
+		margin: 2px;
+		border-radius: 5px;
 	}
 
 }

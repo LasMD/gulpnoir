@@ -5,6 +5,8 @@ import FlatButton from 'material-ui/FlatButton';
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import FlowGraph from '../../components/FlowGraph';
+import FlexColumn from '../../components/FlexColumn';
+import FlexRow from '../../components/FlexRow';
 
 import vstyles from './_style.scss';
 
@@ -37,31 +39,17 @@ export default class HomePage extends Component {
   render() {
     return (
       <main className={'page-home'}>
-          <div style={{ display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'space-around' }}>
-            <h2>Tasks</h2>
-            <select ref={ (ref) => this.gulpTasks = ref }>
-              {this.getGulpTasks()}
-            </select>
-            <FlatButton>Create Task</FlatButton>
-          </div>
-          <div style={{ display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'space-around' }}>
-            <h2>Added Plugins</h2>
-            <select multiple>
-              {this.getAddedPlugins()}
-            </select>
-          </div>
-        <br />
-        <NavButton to={''}>Back</NavButton>
-        <PluginsList
-        onPluginSelect={(plugin) => {console.log(plugin)}}
-         />
-         <FlowGraph />
+        <FlexRow>
+          <FlexColumn>
+            <h1>Plugins</h1>
+            <PluginsList
+            onPluginSelect={(plugin) => { console.log(plugin) }}
+            />
+            <h1>Tasks</h1>
+            Blah blah blah blah
+          </FlexColumn>
+          <FlowGraph />
+        </FlexRow>
       </main>
     );
   }

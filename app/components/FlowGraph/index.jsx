@@ -18,10 +18,8 @@ export default class Graph extends Component {
     componentDidMount() {
         this.paper = new joint.dia.Paper({
             el: findDOMNode(this.refs.placeholder),
-            width: 600,
-            height: '100vh',
             model: this.graph,
-            gridSize: 4
+            gridSize: 15
         });
 
         const task1 = this.addTask({

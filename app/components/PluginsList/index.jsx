@@ -72,7 +72,6 @@ export default class PluginsList extends Component {
 
   render() {
     return (
-    <Drawer open={true} containerStyle={{overflow: 'hidden'}}>
       <AutoSizer ref='autosizer' disableHeight>
         {
           ({width}) => (
@@ -91,7 +90,6 @@ export default class PluginsList extends Component {
           )
         }
         </AutoSizer>
-    </Drawer>
     );
   }
 
