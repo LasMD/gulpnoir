@@ -11,7 +11,9 @@ export default class FlowGraphWindow extends Component {
 
       this.state = {
       tabs:[
-        (<Tab key={'tab0'} title={'New Task'} >
+        (<Tab key={'tab0'} title={'New Task'}
+        containerStyle={{height: '100%'}}
+        hiddenContainerStyle={{height: '100%'}}>
           <FlowGraph />
         </Tab>),
       ],
@@ -61,8 +63,11 @@ export default class FlowGraphWindow extends Component {
           onTabAddButtonClick={this.handleTabAddButtonClick.bind(this)}
           onTabPositionChange={this.handleTabPositionChange.bind(this)}
           tabs={this.state.tabs}
-          containerStyle={{height: '100%'}}
-          hiddenContainerStyle={{height: '100%'}}
+          tabsStyles={{
+            tabBar: {
+              backgroundColor: 'darkslategray'
+            }
+          }}
           shortCutKeys={
             {
               'close': ['alt+command+w', 'alt+ctrl+w'],
