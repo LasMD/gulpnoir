@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import NavButton from '../../components/NavButton';
+import GulpPlugin from '../../components/GulpPlugin';
 import FlatButton from 'material-ui/FlatButton';
-import './_style.scss';
 import $ from 'jquery';
 import { VirtualScroll, AutoSizer } from 'react-virtualized';
+import vstyles from 'react-virtualized/styles.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+import './_style.scss';
 
 export default class HomePage extends Component {
 
@@ -12,9 +16,10 @@ export default class HomePage extends Component {
 
     this.setState({addedPlugins: []});
     this.setState({gulpTasks: []});
+    this.pluginsHeights = {};
     this.pluginsRefs = {};
 
-    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=255&sort=rating:desc',
+    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=2&sort=rating:desc',
     (result) => {
       let jsonResult = JSON.parse(result);
       this.setState({gulpPlugins: jsonResult});
@@ -67,32 +72,29 @@ export default class HomePage extends Component {
     }
   }
 
-  getGulpPluginListItem(index) {
-    if (this.state && this.state.gulpPlugins) {
-      return <div id={'shadow-plugin-' + index}>{this.state.gulpPlugins.results[index].name[0]}</div>;
-    } else {
-      return <div id={'shadow-plugin-' + index}></div>;
-    }
+  updatePluginHeight({index, height}) {
+    console.log("updating", index, height);
+    this.pluginsHeights[`plugin-${index}`] = height;
+    this['plugin-vscroll'].recomputeRowHeights();
   }
 
-  getGulpPluginListItemHeight({index}) {
-    let component = render(this.getGulpPluginListItem(index), document.getElementById('shadow'));
-    let height = component.offsetHeight;
-    console.log(height);
-    unmountComponentAtNode(component);
-    component = null;
-    return height;
+  getGulpPluginListItem(index) {
+    let plugin = this.state.gulpPlugins.results[index];
+    return (
+      <GulpPlugin
+        index={index}
+        name={plugin.name[0]}
+        version={plugin.version[0]}
+        description={plugin.description[0]}
+        ref={(elem) => {this.pluginsRefs[`plugin-${index}`] = elem;}}
+        reportHeight={this.updatePluginHeight.bind(this)}
+      />
+    );
   }
 
   render() {
     return (
       <main>
-        <div style={{
-            opacity: '0',
-            position: 'absolute',
-            width: '200px'
-          }} id={'shadow'}>
-        </div>
         <h1>Testing</h1>
         <br />
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -101,22 +103,28 @@ export default class HomePage extends Component {
                         alignItems: 'center',
                         justifyContent: 'space-around' }}>
             <h2>Plugins</h2>
-            <AutoSizer disableHeight>
-              {
-                ({ width }) => (
-                  <VirtualScroll
-                    width={300}
-                    height={300}
-                    rowCount={this.getGulpPluginsResultsCount()}
-                    rowRenderer={
-                      ({ index }) => this.getGulpPluginListItem(index)
-                    }
-                    rowHeight={this.getGulpPluginListItemHeight.bind(this)}
-                    overscanRowCount={0}
-                  />
-                )
-              }
-            </AutoSizer>
+                <AutoSizer disableHeight>
+                {
+                  ({width}) => (
+                    <VirtualScroll
+                      ref={(elem) => {
+                        if (!this['plugin-vscroll']) {
+                          this['plugin-vscroll'] = elem;
+                        }
+                      }}
+                      width={300}
+                      height={300}
+                      className={vstyles.VirtualScroll}
+                      rowCount={this.getGulpPluginsResultsCount()}
+                      rowRenderer={
+                        ({ index }) => this.getGulpPluginListItem(index)
+                      }
+                      rowHeight={({index}) => this.pluginsHeights[`plugin-${index}`] || 100 }
+                      overscanRowCount={3}
+                    />
+                  )
+                }
+                </AutoSizer>
             <FlatButton onClick={this.setAddedPlugins.bind(this)}>Add Plugin</FlatButton>
           </div>
           <div style={{ display: 'flex',

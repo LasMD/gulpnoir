@@ -16,6 +16,7 @@ const config = merge(baseConfig, {
     loaders: [
       {
         test: /\.global\.css$/,
+        include: /(node_modules)\/react-virtualized/,
         loader: ExtractTextPlugin.extract(
           'style-loader',
           'css-loader'

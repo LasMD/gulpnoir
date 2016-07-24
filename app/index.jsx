@@ -7,7 +7,6 @@ import routes from './routes';
 import configureStore from './store/configureStore';
 
 import './styles.scss';
-import 'react-virtualized/styles.css';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 

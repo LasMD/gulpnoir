@@ -21,6 +21,7 @@ export default merge(baseConfig, {
     loaders: [
       {
         test: /\.global\.css$/,
+        include: /(node_modules)\/react-virtualized/,
         loaders: [
           'style-loader',
           'css-loader?sourceMap'

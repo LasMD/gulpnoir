@@ -1,6 +1,13 @@
+@import './reactVirtualized';
+
 .page-home {
 	& > main {
 		display: flex;
 		flex-direction: row;
 	}
+}
+
+.pluginPaper {
+	padding: 10px;
+	margin: 5px;
 }
