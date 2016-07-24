@@ -3,6 +3,7 @@ import { VirtualScroll, AutoSizer } from 'react-virtualized';
 import GulpPlugin from '../../components/GulpPlugin';
 import $ from 'jquery';
 import Drawer from 'material-ui/Drawer';
+import {Tabs, Tab} from 'material-ui/Tabs';
 
 import vstyles from './_style.scss';
 
@@ -72,24 +73,30 @@ export default class PluginsList extends Component {
 
   render() {
     return (
-      <AutoSizer ref='autosizer' disableHeight>
-        {
-          ({width}) => (
-            <VirtualScroll
-              ref={'vscroll'}
-              width={width}
-              height={300}
-              className={vstyles.VirtualScroll}
-              rowCount={this.getGulpPluginsResultsCount()}
-              rowRenderer={
-                ({ index }) => this.getGulpPluginListItem(index)
-              }
-              rowHeight={({index}) => this.pluginsHeights[`plugin-${index}`] || 100 }
-              overscanRowCount={3}
-            />
-          )
-        }
-        </AutoSizer>
+      <Tabs className={'plugins-list'}>
+        <Tab label="Browse Plugins">
+          <AutoSizer ref='autosizer' disableHeight>
+            {
+              ({width}) => (
+                <VirtualScroll
+                  ref={'vscroll'}
+                  width={width}
+                  height={300}
+                  className={vstyles.VirtualScroll}
+                  rowCount={this.getGulpPluginsResultsCount()}
+                  rowRenderer={
+                    ({ index }) => this.getGulpPluginListItem(index)
+                  }
+                  rowHeight={({index}) => this.pluginsHeights[`plugin-${index}`] || 100 }
+                  overscanRowCount={3}
+                />
+              )
+            }
+            </AutoSizer>
+          </Tab>
+          <Tab label="Installed Plugins">
+          </Tab>
+        </Tabs>
     );
   }
 
