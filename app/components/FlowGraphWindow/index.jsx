@@ -15,8 +15,13 @@ export default class FlowGraphWindow extends Component {
 
       this.state = {
       tabs:[
-        (<Tab key={'tab0'} title={'New Task'}
-        containerStyle={{height: '100%'}}>
+        (<Tab
+          key={'tab0'}
+          title={'New Task'}
+          containerStyle={{
+            height: '100%',
+          }}
+        >
           <FlowGraph />
         </Tab>),
       ],
@@ -47,11 +52,16 @@ export default class FlowGraphWindow extends Component {
     // key must be unique
     const key = 'newTab_' + Date.now();
     let newTab = (
-            <Tab key={key} title='New Task'
-              containerStyle={{height: '100%'}}>
-              <FlowGraph />
-            </Tab>
-          );
+      <Tab
+        key={key}
+        title={'New Task'}
+        containerStyle={{
+          height: '100%'
+        }}
+      >
+        <FlowGraph />
+      </Tab>
+    );
     let newTabs = currentTabs.concat([newTab]);
 
     this.setState({
