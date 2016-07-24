@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { Tab, Tabs } from 'react-draggable-tab';
 import FlowGraph from '../FlowGraph';
 
+import {
+  blueGrey600, blueGrey700, blueGrey800, blueGrey900
+} from 'material-ui/styles/colors';
+
 import './_style.scss';
 
 export default class FlowGraphWindow extends Component {
@@ -68,7 +72,46 @@ export default class FlowGraphWindow extends Component {
           tabsStyles={{
             tabBar: {
               backgroundColor: 'darkslategray'
-            }
+            },
+            tab: {
+              backgroundImage: `linear-gradient(${blueGrey800}, ${blueGrey900})`,
+              cursor: 'pointer'
+            },
+            tabBefore: {
+              backgroundImage: `linear-gradient(${blueGrey800}, ${blueGrey900})`,
+              cursor: 'pointer'
+            },
+            tabAfter: {
+              backgroundImage: `linear-gradient(${blueGrey800}, ${blueGrey900})`,
+              cursor: 'pointer'
+            },
+            tabOnHover: {
+              backgroundImage: `linear-gradient(${blueGrey700}, ${blueGrey800})`
+            },
+            tabBeforeOnHover: {
+              backgroundImage: `linear-gradient(${blueGrey700}, ${blueGrey800})`
+            },
+            tabAfterOnHover: {
+              backgroundImage: `linear-gradient(${blueGrey700}, ${blueGrey800})`
+            },
+            tabTitle: {
+              cursor: 'pointer'
+            },
+            tabTitleActive: {
+              cursor: 'default'
+            },
+            tabActive: {
+              backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+              cursor: 'default'
+            },
+            tabBeforeActive: {
+              backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+              cursor: 'default'
+            },
+            tabAfterActive: {
+              backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+              cursor: 'default'
+            },
           }}
           shortCutKeys={
             {
