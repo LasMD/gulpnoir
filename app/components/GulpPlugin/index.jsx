@@ -12,7 +12,7 @@ export default class GulpPlugin extends Component {
     if (this.props.reportHeight) {
       this.props.reportHeight({
           index: this.props.index,
-          height: findDOMNode(this.refs['main-cont']).offsetHeight
+          height: findDOMNode(this).offsetHeight + 20
         });
     }
   }
@@ -21,7 +21,6 @@ export default class GulpPlugin extends Component {
     return (
       <Paper zDepth={2}
             className={`pluginPaper`}
-            ref={'main-cont'}
         >
         <h3>{this.props.name} <i>{this.props.version}</i></h3>
         <p>{this.props.description}</p>

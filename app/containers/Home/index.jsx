@@ -19,7 +19,7 @@ export default class HomePage extends Component {
     this.pluginsHeights = {};
     this.pluginsRefs = {};
 
-    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=2&sort=rating:desc',
+    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=9001&sort=rating:desc',
     (result) => {
       let jsonResult = JSON.parse(result);
       this.setState({gulpPlugins: jsonResult});
@@ -75,7 +75,10 @@ export default class HomePage extends Component {
   updatePluginHeight({index, height}) {
     console.log("updating", index, height);
     this.pluginsHeights[`plugin-${index}`] = height;
-    this['plugin-vscroll'].recomputeRowHeights();
+    console.log(this.refs.autosizer.refs.vscroll);
+    setTimeout(() => {
+      this.refs.autosizer.refs.vscroll.recomputeRowHeights(index);
+    }, 100);
   }
 
   getGulpPluginListItem(index) {
@@ -103,15 +106,11 @@ export default class HomePage extends Component {
                         alignItems: 'center',
                         justifyContent: 'space-around' }}>
             <h2>Plugins</h2>
-                <AutoSizer disableHeight>
+                <AutoSizer ref='autosizer' disableHeight>
                 {
                   ({width}) => (
                     <VirtualScroll
-                      ref={(elem) => {
-                        if (!this['plugin-vscroll']) {
-                          this['plugin-vscroll'] = elem;
-                        }
-                      }}
+                      ref={'vscroll'}
                       width={300}
                       height={300}
                       className={vstyles.VirtualScroll}
