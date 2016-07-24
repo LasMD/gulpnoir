@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { VirtualScroll, AutoSizer } from 'react-virtualized';
 import GulpPlugin from '../../components/GulpPlugin';
 import $ from 'jquery';
+import Drawer from 'material-ui/Drawer';
 
 import vstyles from './_style.scss';
 
@@ -12,7 +13,7 @@ export default class PluginsList extends Component {
     this.pluginsHeights = {};
     this.pluginsRefs = {};
 
-    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=9001&sort=rating:desc',
+    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=3&sort=rating:desc',
     (result) => {
       let jsonResult = JSON.parse(result);
       this.setState({gulpPlugins: jsonResult});
@@ -58,8 +59,10 @@ export default class PluginsList extends Component {
       <GulpPlugin
         index={index}
         name={plugin.name[0]}
+        author={plugin.author[0]}
         version={plugin.version[0]}
         description={plugin.description[0]}
+        keywords={plugin.keywords}
         ref={(elem) => {this.pluginsRefs[`plugin-${index}`] = elem;}}
         reportHeight={this.updatePluginHeight.bind(this)}
         onPluginSelect={this.onPluginSelect.bind(this)}
@@ -69,8 +72,8 @@ export default class PluginsList extends Component {
 
   render() {
     return (
-      <div className={'pluginsWrapper'}>
-        <AutoSizer ref='autosizer' disableHeight>
+    <Drawer open={true} containerStyle={{overflow: 'hidden'}}>
+      <AutoSizer ref='autosizer' disableHeight>
         {
           ({width}) => (
             <VirtualScroll
@@ -88,7 +91,7 @@ export default class PluginsList extends Component {
           )
         }
         </AutoSizer>
-      </div>
+    </Drawer>
     );
   }
 
