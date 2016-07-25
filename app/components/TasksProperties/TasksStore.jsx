@@ -18,6 +18,9 @@ class TasksStore extends ReduceStore {
       case 'tasks/setSelectedTaskID': {
         return state.set('selectedTaskID', action.task.id);
       }
+      case 'tasks/update': {
+        return state.setIn(['tasks', action.task.id], action.task);
+      }
       default:
         return state;
     }
