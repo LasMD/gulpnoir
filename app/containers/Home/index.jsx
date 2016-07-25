@@ -4,7 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
-import TasksList from '../../components/TasksList';
+import TasksProperties from '../../components/TasksProperties';
 import FlowGraph from '../../components/FlowGraph';
 import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
@@ -48,7 +48,7 @@ export default class HomePage extends Component {
             onPluginSelect={(plugin) => { console.log(plugin) }}
             />
             <Divider />
-            <TasksList />
+            <TasksProperties />
           </FlexColumn>
           <FlowGraphWindow />
         </FlexRow>

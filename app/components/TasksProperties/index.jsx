@@ -8,45 +8,40 @@ import {Container} from 'flux/utils';
 
 import './_style.scss';
 
-class TasksList extends Component {
+class TasksProperties extends Component {
 
 
   static getStores() {
-    return [TasksStore]
+    return [TasksStore];
   }
 
   static calculateState(prevState) {
     return {
-      tasks: TasksStore.getState()
+      tasks: TasksStore.getTasks(),
+      selectedTaskID: TasksStore.getSelectedTaskID()
     };
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      tasks: TasksStore.getState()
+      tasks: TasksStore.getTasks(),
+      selectedTaskID: TasksStore.getSelectedTaskID()
     };
-  }
-
-  addTask() {
-    TasksDispatch({
-      type: 'tasks/new'
-    });
   }
 
   render() {
 
-    const taskItems = [];
+    const taskItems = {};
     for (let [id, task] of this.state.tasks) {
-      taskItems.push(<TaskItem task={task} />);
+      taskItems[id] = (<TaskItem task={task} />);
     }
 
     return (
       <div className={'tasks-list'}>
         <Tabs>
-          <Tab label="Tasks">
-          {taskItems}
-          <FlatButton label="Add Task" onClick={this.addTask} />
+          <Tab label="Properties">
+          {(taskItems[this.state.selectedTaskID] || 'Loading...')}
           </Tab>
         </Tabs>
       </div>
@@ -54,4 +49,4 @@ class TasksList extends Component {
   }
 }
 
-export default Container.create(TasksList);
+export default Container.create(TasksProperties);
