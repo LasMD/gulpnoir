@@ -16,7 +16,7 @@ export default class FlowGraph extends Component {
       position: { x: x, y: y },
       size: { width: 60, height: 60 },
       attrs: {
-        rect: { fill: 'blue' },
+        rect: { fill: 'orange' },
         text: { text: text, fill: 'white' }
       }
     };
@@ -43,9 +43,9 @@ export default class FlowGraph extends Component {
       });
 
 
-      const task = this.createTask({x: 100, y: 100, text: 'yolo'});
+      const task = this.createTask({x: 100, y: 100, text: 'task'});
 
-      const parallel = this.createParallel({x: 50, y: 50, text: 'parllel'});
+      const parallel = this.createParallel({x: 50, y: 50, text: 'parallel'});
 
       const link = new joint.dia.Link({
           source: { id: task.id },
