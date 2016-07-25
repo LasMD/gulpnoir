@@ -106,6 +106,7 @@
   "dependencies": {
     "css-modules-require-hook": "^4.0.0",
     "electron-debug": "^1.0.1",
+    "flux": "^2.1.1",
     "font-awesome": "^4.6.3",
     "jointjs": "^0.9.10",
     "jquery": "^3.1.0",
