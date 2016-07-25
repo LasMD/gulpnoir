@@ -15,6 +15,7 @@ import {
   pinkA200,
   grey100, grey300, grey400, grey500,
   blueGrey50, darkBlack, fullBlack,
+  teal500, teal100, teal800
 } from 'material-ui/styles/colors';
 import {fade} from 'material-ui/utils/colorManipulator';
 
@@ -29,9 +30,9 @@ const muiTheme = getMuiTheme({
   primary1Color:  blueGrey500,
   primary2Color:  blueGrey700,
   primary3Color: grey400,
-  accent1Color: pinkA200,
-  accent2Color: grey100,
-  accent3Color: grey500,
+  accent1Color: teal500,
+  accent2Color: teal100,
+  accent3Color: teal800,
   textColor: darkBlack,
   alternateTextColor: blueGrey50,
   canvasColor: blueGrey50,
