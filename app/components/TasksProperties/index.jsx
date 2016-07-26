@@ -40,8 +40,10 @@ class TasksProperties extends Component {
     return (
       <div className={'tasks-list'}>
         <Tabs>
-          <Tab label="Properties">
+          <Tab label="Task Details">
           {(taskItems[this.state.selectedTaskID] || 'Loading...')}
+          </Tab>
+          <Tab label="Item Properties" disabled={'disabled'}>
           </Tab>
         </Tabs>
       </div>

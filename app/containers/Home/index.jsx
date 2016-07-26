@@ -11,6 +11,8 @@ import FlexColumn from '../../components/FlexColumn';
 import FlexRow from '../../components/FlexRow';
 import Divider from 'material-ui/Divider';
 
+import SplitPane from 'react-split-pane';
+
 import vstyles from './_style.scss';
 
 export default class HomePage extends Component {
@@ -43,14 +45,16 @@ export default class HomePage extends Component {
     return (
       <main className={'page-home'}>
         <FlexRow>
-          <FlexColumn size={'40%'}>
-            <PluginsList
-            onPluginSelect={(plugin) => { console.log(plugin) }}
-            />
-            <Divider />
-            <TasksProperties />
-          </FlexColumn>
-          <FlowGraphWindow />
+          <SplitPane split="vertical" minSize={50} defaultSize={100}>
+            <FlexColumn>
+              <PluginsList
+              onPluginSelect={(plugin) => { console.log(plugin) }}
+              />
+              <Divider />
+              <TasksProperties />
+            </FlexColumn>
+            <FlowGraphWindow />
+          </SplitPane>
         </FlexRow>
       </main>
     );
