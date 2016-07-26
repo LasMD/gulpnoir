@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import TextField from 'material-ui/TextField';
+import TextField from '../MutableTextField';
 import FlatButton from 'material-ui/FlatButton';
 import { Container } from 'flux/utils';
 
@@ -14,19 +14,26 @@ class TaskItem extends Component {
   }
 
   static calculateState() {
-    return {};
+    return {
+      tasks: TasksStore.getTasks()
+    };
   }
 
   render() {
-    const { task } = this.props;
+    const task = this.state.tasks.get(this.props.task.id);
+    if (this.refs[`taskName${task.id}`]) {
+      this.refs[`taskName${task.id}`].forceUpdate();
+    }
+    console.log("SetTask", task);
     return (
       <div>
         <TextField
-          ref={'taskName'}
-          hintText={'Internal Task Name'}
-          defaultValue={task.name}
+          name={`taskName${task.id}`}
+          ref={`taskName${task.id}`}
+          value={task.name}
+          onSave={this._saveName.bind(this)}
         />
-        <RadioButtonGroup ref={'taskType'} name="taskType" defaultSelected={task.type}>
+        <RadioButtonGroup ref={`taskType${task.id}`} name={`taskType${task.id}`} selected={task.type}>
           <RadioButton
             value="Functional"
             label="Functional"
@@ -41,14 +48,18 @@ class TaskItem extends Component {
     );
   }
 
-  _doSaveChanges() {
-    let tempTask = this.props.task;
-    tempTask.set('name', this.refs.taskName.value);
-    tempTask.set('type', this.refs.taskType.value);
+  _saveName(name) {
     TasksDispatch({
       type: 'tasks/update',
-      task: tempTask
+      task: {
+        id: this.props.task.id,
+        name: name
+      }
     });
+  }
+
+  _doSaveChanges() {
+
   }
 
 }
