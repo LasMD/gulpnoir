@@ -4,7 +4,7 @@ import { Container } from 'flux/utils';
 
 const ENTER_KEY_CODE = 13;
 
-export default class TodoTextInput extends Component {
+export default class MutableTextField extends Component {
 
   state = {
     value: this.props.value || '',

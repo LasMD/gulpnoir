@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import { RadioButton } from 'material-ui/RadioButton';
 import TextField from '../MutableTextField';
+import RadioButtonGroup from '../MutableRadioButtonGroup';
 import FlatButton from 'material-ui/FlatButton';
 import { Container } from 'flux/utils';
 
@@ -33,7 +34,10 @@ class TaskItem extends Component {
           value={task.name}
           onSave={this._saveName.bind(this)}
         />
-        <RadioButtonGroup ref={`taskType${task.id}`} name={`taskType${task.id}`} selected={task.type}>
+        <RadioButtonGroup
+          ref={`taskType${task.id}`}
+          name={`taskType${task.id}`}
+          selected={task.type}>
           <RadioButton
             value="Functional"
             label="Functional"
