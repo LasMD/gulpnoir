@@ -45,7 +45,7 @@ export default class HomePage extends Component {
     return (
       <main className={'page-home'}>
         <FlexRow>
-          <SplitPane split="vertical" minSize={50} defaultSize={100}>
+          <SplitPane split="vertical" minSize={50} defaultSize={300}>
             <FlexColumn>
               <PluginsList
               onPluginSelect={(plugin) => { console.log(plugin) }}
