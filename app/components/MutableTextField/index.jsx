@@ -34,18 +34,12 @@ export default class MutableTextField extends Component {
     );
   }
 
-  _save = () => {
-    this.props.onSave(this.state.value);
-    // this.setState({value: ''});
+  getValue() {
+    return this.state.value;
   }
 
   _onChange = (event: any) => {
     this.setState({value: event.target.value});
   }
 
-  _onKeyDown = (event: any) => {
-    if (event.keyCode === ENTER_KEY_CODE) {
-      this._save();
-    }
-  }
 }

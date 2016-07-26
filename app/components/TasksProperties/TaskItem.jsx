@@ -32,7 +32,6 @@ class TaskItem extends Component {
           name={`taskName${task.id}`}
           ref={`taskName${task.id}`}
           value={task.name}
-          onSave={this._saveName.bind(this)}
         />
         <RadioButtonGroup
           ref={`taskType${task.id}`}
@@ -47,17 +46,19 @@ class TaskItem extends Component {
             label="Parallel"
           />
         </RadioButtonGroup>
-        <FlatButton label="Save Changes" onClick={this._doSaveChanges.bind(this)} />
+        <FlatButton label="Save Changes" onClick={this._saveChanges.bind(this)} />
       </div>
     );
   }
 
-  _saveName(name) {
+  _saveChanges() {
+    const task = this.props.task;
     TasksDispatch({
       type: 'tasks/update',
       task: {
-        id: this.props.task.id,
-        name: name
+        id: task.id,
+        name: this.refs[`taskName${task.id}`].getValue(),
+        type: this.refs[`taskType${task.id}`].getValue(),
       }
     });
   }

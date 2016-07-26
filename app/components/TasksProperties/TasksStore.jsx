@@ -19,7 +19,12 @@ class TasksStore extends ReduceStore {
         return state.set('selectedTaskID', action.task.id);
       }
       case 'tasks/update': {
-        return state.setIn(['tasks', action.task.id, 'name'], action.task.name);
+        let newState = state;
+        for (let prop in action.task) {
+          if (prop == 'id') continue;
+          newState = newState.setIn(['tasks', action.task.id, prop], action.task[prop]);
+        }
+        return newState;
       }
       default:
         return state;

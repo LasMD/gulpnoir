@@ -31,9 +31,8 @@ export default class MutableRadioButtonGroup extends Component {
     );
   }
 
-  _save = () => {
-    this.props.onSave(this.state.valueSelected);
-    // this.setState({value: ''});
+  getValue() {
+    return this.state.selected;
   }
 
   _onChange = (event: any) => {
