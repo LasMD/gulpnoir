@@ -47,15 +47,20 @@ export default class FlowGraph extends Component {
     return cell;
   }
 
+  removeBoundCell() {
+    let boundCell = this.graph.getCell(this.state.boundCellID);
+    let embeds = boundCell.get('embeds');
+    for (let index in embeds) {
+      boundCell.unembed(this.graph.getCell(embeds[index]));
+    }
+    boundCell.remove();
+    this.state.boundCellID = null;
+  }
+
   createSelectedBound(cell) {
 
     if (this.state.boundCellID) {
-      let boundCell = cell.paper.model.getCell(this.state.boundCellID);
-      let embeds = boundCell.get('embeds');
-      for (let index in embeds) {
-        boundCell.unembed(cell.paper.model.getCell(embeds[index]));
-      }
-      boundCell.remove();
+      this.removeBoundCell(this.graph);
     }
 
     const width = cell.model.attributes.size.width;
@@ -82,7 +87,7 @@ export default class FlowGraph extends Component {
     boundCell.attr(shapeLower + '/stroke-width', '4');
     boundCell.attr(shapeLower + '/stroke-dasharray', '5,5');
     this.state.boundCellID = boundCell.id;
-    cell.paper.model.addCell(boundCell);
+    this.graph.addCell(boundCell);
     boundCell.embed(cell.model);
     return boundCell;
   }
@@ -102,7 +107,6 @@ export default class FlowGraph extends Component {
           gridSize: 15
       });
 
-
       const task = this.createTask({x: 100, y: 100, text: 'task'});
 
       const parallel = this.createParallel({x: 50, y: 50, text: 'parallel'});
@@ -115,6 +119,12 @@ export default class FlowGraph extends Component {
       this.graph.addCells([task, parallel, link]);
       this.paper.on('cell:pointerclick', (cell, e, x, y) => {
         this.setSelectedCell(cell);
+      });
+
+      this.paper.on('blank:pointerclick', (e, x, y) => {
+        if (this.state.boundCellID) {
+          this.removeBoundCell();
+        }
       });
   }
 
