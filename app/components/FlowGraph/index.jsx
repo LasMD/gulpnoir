@@ -55,6 +55,7 @@ export default class FlowGraph extends Component {
     }
     boundCell.remove();
     this.state.boundCellID = null;
+    this.state.selectedCell = null;
   }
 
   createSelectedBound(cell) {
