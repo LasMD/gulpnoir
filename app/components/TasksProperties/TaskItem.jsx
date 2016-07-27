@@ -5,8 +5,8 @@ import RadioButtonGroup from '../MutableRadioButtonGroup';
 import FlatButton from 'material-ui/FlatButton';
 import { Container } from 'flux/utils';
 
-import { TasksDispatch } from './TasksDispatcher.jsx';
-import TasksStore from './TasksStore.jsx';
+import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
+import TasksStore from '../../store/Tasks/TasksStore.jsx';
 
 class TaskItem extends Component {
 

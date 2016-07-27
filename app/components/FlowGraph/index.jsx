@@ -46,13 +46,16 @@ export default class FlowGraph extends Component {
       const task = this.createTask({x: 100, y: 100, text: 'task'});
 
       const parallel = this.createParallel({x: 50, y: 50, text: 'parallel'});
-
+      
       const link = new joint.dia.Link({
           source: { id: task.id },
           target: { id: parallel.id }
       });
 
       this.graph.addCells([task, parallel, link]);
+      this.paper.on('cell:pointerclick', (cell, e, x, y) => {
+        console.log(cell, e, x, y);
+      });
   }
 
   render() {

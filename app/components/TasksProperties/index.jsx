@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import TasksStore from './TasksStore.jsx';
-import TaskItem from './TaskItem.jsx';
-import { TasksDispatch } from './TasksDispatcher.jsx';
+import TasksStore from '../../store/Tasks/TasksStore';
+import TaskItem from './TaskItem';
+import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import FlatButton from 'material-ui/FlatButton';
 import {Container} from 'flux/utils';
 

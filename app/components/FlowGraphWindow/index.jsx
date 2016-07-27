@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Tab, Tabs } from 'react-draggable-tab';
 import FlowGraph from '../FlowGraph';
-import { TasksDispatch } from '../TasksProperties/TasksDispatcher.jsx';
-import TasksStore from '../TasksProperties/TasksStore.jsx';
+import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
+import TasksStore from '../../store/Tasks/TasksStore';
 import { Container } from 'flux/utils';
 
 import {
