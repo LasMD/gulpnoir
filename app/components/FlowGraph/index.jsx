@@ -147,7 +147,7 @@ export default class FlowGraph extends Component {
       });
 
       this.paper.on('cell:pointerup', (cell, e, x, y) => {
-        if (cell.model.attributes.type == 'link' && !cell.model.attributes.target.id) {
+        if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
           cell.remove();
         }
       });
