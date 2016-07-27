@@ -2,16 +2,39 @@ import Immutable from 'immutable';
 
 const GulpPluginRecord = Immutable.Record({
   id: null,
+  author: null,
+  description: null,
+  homepage: null,
+  keywords: null,
+  modified: null,
   name: null,
-  version: null
+  rating: null,
+  version: null,
+  installed: null
 });
 
 export default class GulpPlugin extends GulpPluginRecord {
-  constructor({name, version}) {
+  constructor({
+    author,
+    description,
+    homepage,
+    keywords,
+    modified,
+    name,
+    rating,
+    version
+  }) {
     super({
       id: Date.now(),
-      name,
-      version
+      author: author,
+      description: null,
+      homepage: null,
+      keywords: null,
+      modified: null,
+      name: null,
+      rating: null,
+      version: null,
+      installed: false
     });
   }
 }

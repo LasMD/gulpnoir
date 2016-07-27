@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { VirtualScroll, AutoSizer } from 'react-virtualized';
 import GulpPlugin from '../../components/GulpPlugin';
-import $ from 'jquery';
 import Drawer from 'material-ui/Drawer';
 import {Tabs, Tab} from 'material-ui/Tabs';
 
@@ -13,12 +12,6 @@ export default class PluginsList extends Component {
     this.setState({addedPlugins: []});
     this.pluginsHeights = {};
     this.pluginsRefs = {};
-
-    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=20&sort=rating:desc',
-    (result) => {
-      let jsonResult = JSON.parse(result);
-      this.setState({gulpPlugins: jsonResult});
-    });
   }
 
 
