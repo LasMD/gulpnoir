@@ -17,16 +17,20 @@ export default class FlowGraph extends Component {
     }
   }
 
-  createTask({x, y, text}) {
+  createPlugin({x, y, text}) {
     const props = {
       position: { x: x, y: y },
       size: { width: 60, height: 60 },
       attrs: {
         rect: { fill: 'orange' },
-        text: { text: text, fill: 'white' }
-      }
+        '.label': { text: text },
+        '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
+        '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+      },
+      inPorts: ['In'],
+      outPorts: ['Out'],
     };
-    let cell = new joint.shapes.basic.Rect(props);
+    let cell = new joint.shapes.devs.Model(props);
     this.state.graphCells.set(cell.id, cell);
     this.state.graphCellsAttrs.set(cell.id, props.attrs);
     return cell;
@@ -42,6 +46,24 @@ export default class FlowGraph extends Component {
       }
     };
     let cell = new joint.shapes.basic.Circle(props);
+    this.state.graphCells.set(cell.id, cell);
+    this.state.graphCellsAttrs.set(cell.id, props.attrs);
+    return cell;
+  }
+
+  createPipeSource({x, y, text}) {
+    const props = {
+      position: { x: x, y: y },
+      size: { width: 150, height: 150 },
+      attrs: {
+        rect: { fill: 'yellow' },
+        '.label': { text: text },
+        '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
+        '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+      },
+      outPorts: ['Out'],
+    };
+    let cell = new joint.shapes.devs.Model(props);
     this.state.graphCells.set(cell.id, cell);
     this.state.graphCellsAttrs.set(cell.id, props.attrs);
     return cell;
@@ -105,21 +127,29 @@ export default class FlowGraph extends Component {
       this.paper = new joint.dia.Paper({
           el: findDOMNode(this.refs.placeholder),
           model: this.graph,
-          gridSize: 15
+          gridSize: 15,
+          validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+              // Prevent linking from input ports.
+              if (magnetS && magnetS.getAttribute('type') === 'input') return false;
+              // Prevent linking from output ports to input ports within one element.
+              if (cellViewS === cellViewT) return false;
+              // Prevent linking to input ports.
+              return magnetT && magnetT.getAttribute('type') === 'input';
+          },
       });
 
-      const task = this.createTask({x: 100, y: 100, text: 'task'});
+      const task = this.createPlugin({x: 300, y: 300, text: 'Plugin'});
+      const parallel = this.createPipeSource({x: 100, y: 100, text: 'Pipe Source'});
 
-      const parallel = this.createParallel({x: 50, y: 50, text: 'parallel'});
-
-      const link = new joint.dia.Link({
-          source: { id: task.id },
-          target: { id: parallel.id }
-      });
-
-      this.graph.addCells([task, parallel, link]);
+      this.graph.addCells([task, parallel]);
       this.paper.on('cell:pointerclick', (cell, e, x, y) => {
         this.setSelectedCell(cell);
+      });
+
+      this.paper.on('cell:pointerup', (cell, e, x, y) => {
+        if (cell.model.attributes.type == 'link' && !cell.model.attributes.target.id) {
+          cell.remove();
+        }
       });
 
       this.paper.on('blank:pointerclick', (e, x, y) => {
