@@ -40,8 +40,6 @@ class TasksProperties extends Component {
 
     let propertiesDisabled = true;
 
-    console.log(this.state.selectedItem);
-
     if (this.state.selectedItem) {
       propertiesDisabled = false;
     }
