@@ -26,6 +26,9 @@ class TasksStore extends ReduceStore {
         }
         return newState;
       }
+      case 'tasks/items/select': {
+        return state.set('selectedItem', action.item);
+      }
       default:
         return state;
     }
@@ -37,6 +40,10 @@ class TasksStore extends ReduceStore {
 
   getTasks() {
     return this.getState().getIn(['tasks']) || [];
+  }
+
+  getSelectedItem() {
+    return this.getState().get('selectedItem');
   }
 
   _newTask({state, name, type}) {

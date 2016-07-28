@@ -2,14 +2,28 @@ import React, { Component } from 'react';
 import {findDOMNode } from 'react-dom';
 import joint from 'jointjs';
 
+import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
+import TasksStore from '../../store/Tasks/TasksStore';
+import { Container } from 'flux/utils';
+
 import './_style.scss';
 
-export default class FlowGraph extends Component {
+class FlowGraph extends Component {
+
+  static getStores() {
+    return [TasksStore];
+  }
+
+  static calculateState(prevState) {
+    return {
+      selectedCell: TasksStore.getSelectedItem()
+    }
+  }
 
   constructor(props) {
     super(props);
     this.graph = new joint.dia.Graph();
-    this.state = {
+    this.graphState = {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
       selectedCell: null,
@@ -31,9 +45,9 @@ export default class FlowGraph extends Component {
       outPorts: ['Out'],
     };
     let cell = new joint.shapes.devs.Model(props);
-    this.state.graphCells.set(cell.id, cell);
-    this.state.graphCellsAttrs.set(cell.id, props.attrs);
-    return cell;
+    this.graphState.graphCells.set(cell.id, cell);
+    this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graph.addCell(cell);
   }
 
   createParallel({x, y, text}) {
@@ -46,9 +60,9 @@ export default class FlowGraph extends Component {
       }
     };
     let cell = new joint.shapes.basic.Circle(props);
-    this.state.graphCells.set(cell.id, cell);
-    this.state.graphCellsAttrs.set(cell.id, props.attrs);
-    return cell;
+    this.graphState.graphCells.set(cell.id, cell);
+    this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graph.addCell(cell);
   }
 
   createPipeSource({x, y, text}) {
@@ -64,25 +78,29 @@ export default class FlowGraph extends Component {
       outPorts: ['Out'],
     };
     let cell = new joint.shapes.devs.Model(props);
-    this.state.graphCells.set(cell.id, cell);
-    this.state.graphCellsAttrs.set(cell.id, props.attrs);
-    return cell;
+    this.graphState.graphCells.set(cell.id, cell);
+    this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graph.addCell(cell);
   }
 
   removeBoundCell() {
-    let boundCell = this.graph.getCell(this.state.boundCellID);
+    let boundCell = this.graph.getCell(this.graphState.boundCellID);
     let embeds = boundCell.get('embeds');
     for (let index in embeds) {
       boundCell.unembed(this.graph.getCell(embeds[index]));
     }
     boundCell.remove();
-    this.state.boundCellID = null;
-    this.state.selectedCell = null;
+    this.graphState.boundCellID = null;
+    this.graphState.selectedCell = null;
+    TasksDispatch({
+      type: 'tasks/items/select',
+      item: null
+    });
   }
 
   createSelectedBound(cell) {
 
-    if (this.state.boundCellID) {
+    if (this.graphState.boundCellID) {
       this.removeBoundCell(this.graph);
     }
 
@@ -109,16 +127,20 @@ export default class FlowGraph extends Component {
     boundCell.attr(shapeLower + '/fill-opacity', '0');
     boundCell.attr(shapeLower + '/stroke-width', '4');
     boundCell.attr(shapeLower + '/stroke-dasharray', '5,5');
-    this.state.boundCellID = boundCell.id;
+    this.graphState.boundCellID = boundCell.id;
     this.graph.addCell(boundCell);
     boundCell.embed(cell.model);
     return boundCell;
   }
 
   setSelectedCell(cell) {
-    if (this.state.selectedCell && (cell.model.id == this.state.selectedCell || this.state.boundCellID == cell.model.id)) return;
+    if (this.graphState.selectedCell && (cell.model.id == this.graphState.selectedCell || this.graphState.boundCellID == cell.model.id)) return;
     else {
-      this.state.selectedCell = cell.model.id;
+      this.graphState.selectedCell = cell.model.id;
+      TasksDispatch({
+        type: 'tasks/items/select',
+        item: cell.model
+      });
       this.createSelectedBound(cell);
     }
   }
@@ -141,7 +163,6 @@ export default class FlowGraph extends Component {
       const task = this.createPlugin({x: 300, y: 300, text: 'Plugin'});
       const parallel = this.createPipeSource({x: 100, y: 100, text: 'Pipe Source'});
 
-      this.graph.addCells([task, parallel]);
       this.paper.on('cell:pointerclick', (cell, e, x, y) => {
         this.setSelectedCell(cell);
       });
@@ -153,7 +174,7 @@ export default class FlowGraph extends Component {
       });
 
       this.paper.on('blank:pointerclick', (e, x, y) => {
-        if (this.state.boundCellID) {
+        if (this.graphState.boundCellID) {
           this.removeBoundCell();
         }
       });
@@ -163,3 +184,5 @@ export default class FlowGraph extends Component {
       return <div ref="placeholder" ></div>;
   }
 }
+
+export default Container.create(FlowGraph);

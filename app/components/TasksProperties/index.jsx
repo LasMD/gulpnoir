@@ -18,7 +18,8 @@ class TasksProperties extends Component {
   static calculateState(prevState) {
     return {
       tasks: TasksStore.getTasks(),
-      selectedTaskID: TasksStore.getSelectedTaskID()
+      selectedTaskID: TasksStore.getSelectedTaskID(),
+      selectedItem: TasksStore.getSelectedItem(),
     };
   }
 
@@ -37,13 +38,21 @@ class TasksProperties extends Component {
       taskItems[id] = (<TaskItem task={task} />);
     }
 
+    let propertiesDisabled = true;
+
+    console.log(this.state.selectedItem);
+
+    if (this.state.selectedItem) {
+      propertiesDisabled = false;
+    }
+
     return (
       <div className={'tasks-list'}>
         <Tabs>
           <Tab label="Task Details">
           {(taskItems[this.state.selectedTaskID] || 'Loading...')}
           </Tab>
-          <Tab label="Item Properties" disabled={'disabled'}>
+          <Tab label="Item Properties" disabled={propertiesDisabled}>
           </Tab>
         </Tabs>
       </div>
