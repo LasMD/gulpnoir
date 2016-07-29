@@ -36,12 +36,6 @@ class TasksProperties extends Component {
 
   render() {
 
-    let propertiesDisabled = true;
-
-    if (this.state.selectedItem) {
-      propertiesDisabled = false;
-    }
-
     let taskItem;
     if (this.state.selectedTask) {
       taskItem = (<TaskComponent task={this.state.selectedTask}></TaskComponent>);
@@ -56,15 +50,28 @@ class TasksProperties extends Component {
 
     this.state.tasks.map((task) => {
       availableTasks.push((
-        <ListItem primaryText={task.get('name')} onClick={this.openTask.bind(this, task.get('id'))} />
+        <ListItem primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
       ));
     });
 
     return (
       <div className={'task-list'}>
         <Tabs ref='tabs'>
-          <Tab label='Available Tasks'>
-            <List>{ availableTasks ? availableTasks : null }</List>
+          <Tab label='Available Items'>
+            <List>
+              <ListItem
+                key={1}
+                primaryText="Tasks"
+                primaryTogglesNestedList={true}
+                nestedItems={availableTasks ? availableTasks : []}
+                />
+              <ListItem
+                key={2}
+                primaryText="Plugins"
+                primaryTogglesNestedList={true}
+                nestedItems={[]}
+                />
+            </List>
           </Tab>
           {anyTasksOpen ? (
             <Tab label="Task Details">
@@ -72,7 +79,6 @@ class TasksProperties extends Component {
             </Tab>)
             : null
           }
-          {propertiesDisabled ? null : <Tab label="Item Properties"></Tab>}
         </Tabs>
       </div>
     );

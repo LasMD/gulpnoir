@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import FlatButton from 'material-ui/FlatButton';
-
+import { Tabs, Tab } from 'material-ui/Tabs';
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import TasksProperties from '../../components/TasksProperties';
@@ -10,38 +10,34 @@ import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
 import FlexRow from '../../components/FlexRow';
 import Divider from 'material-ui/Divider';
+import TasksStore from '../../store/Tasks/TasksStore';
+import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
+import { Container } from 'flux/utils';
 
 import SplitPane from 'react-split-pane';
 
 import vstyles from './_style.scss';
 
-export default class HomePage extends Component {
+class HomePage extends Component {
 
-  componentDidMount() {
-    this.setState({gulpTasks: []});
+  static getStores() {
+    return [TasksStore];
   }
 
-  getGulpTasks() {
-    if (this.state && this.state.gulpTasks && this.state.gulpTasks.length > 0) {
-      return (this.state.gulpTasks.map(
-        (result) => <option>{result.name[0]}</option>
-      ));
-    } else {
-      return <option>{'None'}</option>;
-    }
-  }
-
-  getAddedPlugins() {
-    if (this.state && this.state.addedPlugins && this.state.addedPlugins.length > 0) {
-      return (this.state.addedPlugins.map(
-        (result) => <option>{result.name[0]}</option>
-      ));
-    } else {
-      return <option>{'None'}</option>;
-    }
+  static calculateState(prevState) {
+    return {
+      selectedItem: TasksStore.getSelectedItem(),
+    };
   }
 
   render() {
+
+    let propertiesDisabled = true;
+
+    if (this.state.selectedItem) {
+      propertiesDisabled = false;
+    }
+
     return (
       <main className={'page-home'}>
         <FlexRow>
@@ -54,7 +50,15 @@ export default class HomePage extends Component {
                 onPluginSelect={(plugin) => { console.log(plugin) }}
                 ref='plugin-list'
                 />
-                <TasksProperties />
+                {
+                  propertiesDisabled ? (
+                    <TasksProperties />
+                  ) : (
+                    <SplitPane split="horizontal" minSize={50} defaultSize={300}>
+                      <TasksProperties />
+                      <Tabs><Tab label="Item Properties"></Tab></Tabs>
+                    </SplitPane>)
+                }
               </SplitPane>
             </FlexColumn>
             <FlowGraphWindow />
@@ -64,3 +68,5 @@ export default class HomePage extends Component {
     );
   }
 }
+
+export default Container.create(HomePage);

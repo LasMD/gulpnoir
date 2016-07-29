@@ -99,8 +99,6 @@ class PluginsList extends Component {
             }
             </AutoSizer>
           </Tab>
-          <Tab label="Installed Plugins">
-          </Tab>
         </Tabs>
     );
   }
