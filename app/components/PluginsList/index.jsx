@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 import { VirtualScroll, AutoSizer } from 'react-virtualized';
-import GulpPlugin from '../../components/GulpPlugin';
+import GulpPlugin from '../GulpPlugin';
 import Drawer from 'material-ui/Drawer';
 import {Tabs, Tab} from 'material-ui/Tabs';
 
+import GulpPluginsStore from '../../store/GulpPlugins/GulpPluginsStore';
+import { GulpPluginsDispatch } from '../../store/GulpPlugins/GulpPluginsDispatcher';
+import {Container} from 'flux/utils';
+
 import vstyles from './_style.scss';
 
-export default class PluginsList extends Component {
+class PluginsList extends Component {
+
+
+  static getStores() {
+    return [ GulpPluginsStore ];
+  }
+
+  static calculateState() {
+    return {};
+  }
 
   componentDidMount() {
     this.setState({addedPlugins: []});
@@ -94,3 +107,5 @@ export default class PluginsList extends Component {
   }
 
 }
+
+export default Container.create(PluginsList);

@@ -53,7 +53,6 @@ class TasksStore extends ReduceStore {
     return this.getState().get('selectedItem');
   }
 
-  _newTaskItems({state, })
 
   _newTask({state, name, type}) {
     let tasks = state.getIn(['tasks']);
