@@ -18,7 +18,9 @@ class PluginsList extends Component {
   }
 
   static calculateState() {
-    return {};
+    return {
+      gulpPlugins: GulpPluginsStore.getGulpPlugins()
+    };
   }
 
   componentDidMount() {
@@ -27,18 +29,9 @@ class PluginsList extends Component {
     this.pluginsRefs = {};
   }
 
-
-  getGulpPlugins() {
-    if (this.state && this.state.gulpPlugins) {
-      return this.state.gulpPlugin;
-    } else {
-      return {};
-    }
-  }
-
   getGulpPluginsResultsCount() {
     if (this.state && this.state.gulpPlugins) {
-      return this.state.gulpPlugins.results.length;
+      return this.state.gulpPlugins.length;
     } else {
       return 0;
     }
@@ -57,11 +50,11 @@ class PluginsList extends Component {
   }
 
   onPluginSelect(index) {
-    this.props.onPluginSelect(this.state.gulpPlugins.results[index]);
+    this.props.onPluginSelect(this.state.gulpPlugins[index]);
   }
 
   getGulpPluginListItem(index) {
-    let plugin = this.state.gulpPlugins.results[index];
+    let plugin = this.state.gulpPlugins[index];
     return (
       <GulpPlugin
         index={index}
