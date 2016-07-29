@@ -33,6 +33,11 @@ class TasksStore extends ReduceStore {
         return state.set('selectedItem', action.item);
       }
       case 'tasks/open': {
+        let isTaskOpen = state.get('openTasks').find((obj) => {
+          return obj.get('id') == action.task.id;
+        });
+        if (isTaskOpen) return state;
+
         let task = state.get('tasks').find((obj) => {
           return obj.get('id') == action.task.id;
         });

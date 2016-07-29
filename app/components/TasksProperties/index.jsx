@@ -56,7 +56,7 @@ class TasksProperties extends Component {
 
     this.state.tasks.map((task) => {
       availableTasks.push((
-        <ListItem primaryText={task.get('name')} />
+        <ListItem primaryText={task.get('name')} onClick={this.openTask.bind(this, task.get('id'))} />
       ));
     });
 
@@ -77,6 +77,16 @@ class TasksProperties extends Component {
       </div>
     );
   }
+
+  openTask(id) {
+    TasksDispatch({
+      type: 'tasks/open',
+      task: {
+        id: id
+      }
+    });
+  }
+
 }
 
 export default Container.create(TasksProperties);
