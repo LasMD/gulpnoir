@@ -19,4 +19,9 @@ export default class StateSync {
     fs.writeFile(location, saveState);
   }
 
+  static load(location) {
+    let fileContents = fs.readFileSync(location).toString();
+    return transit.fromJSON(JSON.parse(lz.decompress(fileContents)));
+  }
+
 }

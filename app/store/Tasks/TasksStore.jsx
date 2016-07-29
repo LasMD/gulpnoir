@@ -11,6 +11,9 @@ class TasksStore extends ReduceStore {
     ipcRenderer.on('save_state', (e, msg) => {
       StateSync.save(this.getState(), msg);
     });
+    ipcRenderer.on('load_state', (e, msg) => {
+      console.log(StateSync.load(msg));
+    });
     return Immutable.Map()
     .set('tasks', Immutable.List())
     .set('openTasks', Immutable.List())

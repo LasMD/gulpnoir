@@ -83,6 +83,7 @@ app.on('ready', async () => {
             ]
           }
         );
+        if (!newSaveFile) return;
         mainWindow.webContents.send('save_state', newSaveFile);
       }
     }, {
@@ -100,16 +101,11 @@ app.on('ready', async () => {
 
         if (noirFile) {
           noirFile = noirFile[0];
-        }
-
-        try {
-          const noirFileJSON = JSON.parse(fs.readFileSync(noirFile));
-        } catch (err) {
-          dialog.showErrorBox("Open Project Error",`${err}`);
+        } else {
           return;
         }
 
-        console.log(noirFileJSON);
+        mainWindow.webContents.send('load_state', noirFile);
 
       }
     }, {
