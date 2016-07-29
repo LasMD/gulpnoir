@@ -101,7 +101,7 @@ class FlowGraph extends Component {
   createSelectedBound(cell) {
 
     if (this.graphState.boundCellID) {
-      this.removeBoundCell(this.graph);
+      this.removeBoundCell();
     }
 
     const width = cell.model.attributes.size.width;
@@ -130,6 +130,10 @@ class FlowGraph extends Component {
     this.graphState.boundCellID = boundCell.id;
     this.graph.addCell(boundCell);
     boundCell.embed(cell.model);
+    TasksDispatch({
+      type: 'tasks/items/select',
+      item: cell.model
+    });
     return boundCell;
   }
 
@@ -137,10 +141,6 @@ class FlowGraph extends Component {
     if (this.graphState.selectedCell && (cell.model.id == this.graphState.selectedCell || this.graphState.boundCellID == cell.model.id)) return;
     else {
       this.graphState.selectedCell = cell.model.id;
-      TasksDispatch({
-        type: 'tasks/items/select',
-        item: cell.model
-      });
       this.createSelectedBound(cell);
     }
   }

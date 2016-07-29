@@ -63,6 +63,12 @@ class FlowGraphWindow extends Component {
   }
 
   handleTabClose(e, key, currentTabs) {
+    if (key == this.state.selectedTab) {
+      TasksDispatch({
+        type: 'tasks/items/select',
+        item: null
+      });
+    }
     TasksDispatch({
       type: 'tasks/close',
       task: {

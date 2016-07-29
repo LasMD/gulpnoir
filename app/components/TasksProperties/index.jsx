@@ -5,6 +5,7 @@ import TaskComponent from './TaskComponent';
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import FlatButton from 'material-ui/FlatButton';
 import {Container} from 'flux/utils';
+import {List, ListItem} from 'material-ui/List';
 
 import './_style.scss';
 
@@ -17,6 +18,7 @@ class TasksProperties extends Component {
 
   static calculateState(prevState) {
     return {
+      openTasks: TasksStore.getOpenTasks(),
       tasks: TasksStore.getTasks(),
       selectedTask: TasksStore.getSelectedTask(),
       selectedItem: TasksStore.getSelectedItem(),
@@ -26,6 +28,7 @@ class TasksProperties extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      openTasks: TasksStore.getOpenTasks(),
       tasks: TasksStore.getTasks(),
       selectedTask: TasksStore.getSelectedTask()
     };
@@ -44,13 +47,32 @@ class TasksProperties extends Component {
       taskItem = (<TaskComponent task={this.state.selectedTask}></TaskComponent>);
     }
 
+    let anyTasksOpen = this.state.openTasks.size > 0;
+    let availableTasks = 0;
+
+    if (this.state.tasks.size > 0) {
+      availableTasks = [];
+    }
+
+    this.state.tasks.map((task) => {
+      availableTasks.push((
+        <ListItem primaryText={task.get('name')} />
+      ));
+    });
+
     return (
-      <div className={'tasks-list'}>
-        <Tabs>
-          <Tab label="Task Details">
-          {(taskItem || 'Loading...')}
+      <div className={'task-list'}>
+        <Tabs ref='tabs'>
+          <Tab label='Available Tasks'>
+            <List>{ availableTasks ? availableTasks : null }</List>
           </Tab>
-          <Tab label="Item Properties" disabled={propertiesDisabled}></Tab>
+          {anyTasksOpen ? (
+            <Tab label="Task Details">
+              {(taskItem || 'Loading...')}
+            </Tab>)
+            : null
+          }
+          {propertiesDisabled ? null : <Tab label="Item Properties"></Tab>}
         </Tabs>
       </div>
     );
