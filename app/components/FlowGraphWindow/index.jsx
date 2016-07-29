@@ -4,6 +4,8 @@ import FlowGraph from '../FlowGraph';
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import TasksStore from '../../store/Tasks/TasksStore';
 import { Container } from 'flux/utils';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 import {
   blueGrey600, blueGrey700, blueGrey800, blueGrey900
@@ -17,11 +19,13 @@ class FlowGraphWindow extends Component {
     return [TasksStore];
   }
 
-  static calculateState() {
-    return {
+  static calculateState(prevState) {
+    let toReturn = {
       tasks: TasksStore.getTasks(),
-      selectedTab: TasksStore.getSelectedTaskID().toString()
+      selectedTab: TasksStore.getSelectedTaskID().toString(),
     };
+
+    return toReturn;
   }
 
   constructor(props) {
@@ -30,7 +34,6 @@ class FlowGraphWindow extends Component {
     this.state = {
       tasks: TasksStore.getTasks(),
       selectedTab: TasksStore.getSelectedTaskID(),
-      badgeCount: 0
     };
 
     setTimeout(() => {
@@ -61,9 +64,23 @@ class FlowGraphWindow extends Component {
   }
 
   handleTabAddButtonClick(e, currentTabs) {
-    TasksDispatch({
-      'type': 'tasks/new'
-    });
+    this.setState({newTaskTypeDialogOpen: true});
+  }
+
+  handleClose(type) {
+    if (type == "Functional" || type == "Parallel") {
+      TasksDispatch({
+        'type': 'tasks/new',
+        'task': {
+          'type': type
+        }
+      });
+    }
+    this.setState({newTaskTypeDialogOpen: false});
+  }
+
+  isDialogOpen() {
+    return true;
   }
 
   render() {
@@ -81,8 +98,39 @@ class FlowGraphWindow extends Component {
         </Tab>
       );
     }
+
+    const newTaskTypeDialogActions = [
+      <FlatButton
+        label="Functional"
+        onTouchTap={this.handleClose.bind(this, 'Functional')}
+        />,
+      <FlatButton
+        label="Parallel"
+        onTouchTap={this.handleClose.bind(this, 'Parallel')}
+        />,
+      <FlatButton
+        label="Cancel"
+        onTouchTap={this.handleClose.bind(this)}
+      />,
+    ];
+
     return (
-      <Tabs
+      <div style={{
+          height: '100%',
+          width: '100%'
+        }}>
+        <Dialog
+          title="Create New Task"
+          actions={newTaskTypeDialogActions}
+          modal={true}
+          open={this.state.newTaskTypeDialogOpen || false}
+        >
+          What type of Gulp task would you like to create?
+          <p>
+            <i>Tip: Functional contains Gulp plugins. Parallel contains other Gulp tasks.</i>
+          </p>
+        </Dialog>
+        <Tabs
         selectedTab={this.state.selectedTab ? this.state.selectedTab : "tab2"}
         onTabSelect={this.handleTabSelect.bind(this)}
         onTabClose={this.handleTabClose.bind(this)}
@@ -142,6 +190,7 @@ class FlowGraphWindow extends Component {
           }
         }
       />
+    </div>
     );
   }
 }
