@@ -16,15 +16,16 @@ class PropertiesItem extends Component {
 
   static calculateState() {
     return {
-      t: TasksStore.getTasks().getItems()
+      taskitems: TasksStore.getTaskItems()
     };
   }
 
   render() {
-    const task = this.state.tasks.get(this.props.task.id);
+    const TaskItem = this.state.taskitems.getIn([this.props.taskID], this.props.taskitem.id);
     return (
       <div>
-
+        {{ TaskItem.name }}
+        {{ TaskItem.type }}
       </div>
     );
   }

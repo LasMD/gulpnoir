@@ -116,6 +116,8 @@
     "react": "^15.1.0",
     "react-addons-css-transition-group": "^15.2.1",
     "react-addons-shallow-compare": "^15.2.1",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.1.0",
     "react-draggable-tab": "^0.7.0",
     "react-redux": "^4.4.5",

@@ -26,6 +26,9 @@ class TasksStore extends ReduceStore {
         }
         return newState;
       }
+      case 'tasks/items/new': {
+        newState = newState.setIn(['taskItems', action.task.id, prop], action.task[prop]);
+      }
       case 'tasks/items/select': {
         return state.set('selectedItem', action.item);
       }
@@ -42,9 +45,15 @@ class TasksStore extends ReduceStore {
     return this.getState().getIn(['tasks']) || [];
   }
 
+  getTaskItems() {
+    return this.getState().getIn(['taskItems']) || [];
+  }
+
   getSelectedItem() {
     return this.getState().get('selectedItem');
   }
+
+  _newTaskItems({state, })
 
   _newTask({state, name, type}) {
     let tasks = state.getIn(['tasks']);
