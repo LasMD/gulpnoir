@@ -1,15 +1,19 @@
 import { ReduceStore } from 'flux/utils';
-import TasksDispatcher from './TasksDispatcher.jsx';
+import TasksDispatcher from './TasksDispatcher';
 import Immutable from 'immutable';
 import Task from './Task.jsx';
+import StateSync from '../StateSync';
 
 class TasksStore extends ReduceStore {
 
   getInitialState() {
-    return Immutable.Map().set('tasks', Immutable.List()).set('openTasks', Immutable.List());
+    return Immutable.Map()
+    .set('tasks', Immutable.List())
+    .set('openTasks', Immutable.List())
+    .set('_stateID', Date.now());
   }
 
-  reduce(state, action) {
+  reduceProcess(state, action) {
     switch (action.type) {
       case 'tasks/new': {
         action.task = action.task || {};
@@ -54,6 +58,12 @@ class TasksStore extends ReduceStore {
       default:
         return state;
     }
+  }
+
+  reduce(state, action) {
+    let newState = this.reduceProcess(state, action);
+    StateSync.save(newState);
+    return newState;
   }
 
   getSelectedTask() {
