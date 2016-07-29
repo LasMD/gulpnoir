@@ -47,11 +47,15 @@ export default class HomePage extends Component {
         <FlexRow>
           <SplitPane split="vertical" minSize={50} defaultSize={300}>
             <FlexColumn>
-              <PluginsList
-              onPluginSelect={(plugin) => { console.log(plugin) }}
-              />
-              <Divider />
-              <TasksProperties />
+              <SplitPane split="horizontal" minSize={50} defaultSize={300}
+                onChange={ size => this.refs['plugin-list'].updateHeight(size) }
+                >
+                <PluginsList
+                onPluginSelect={(plugin) => { console.log(plugin) }}
+                ref='plugin-list'
+                />
+                <TasksProperties />
+              </SplitPane>
             </FlexColumn>
             <FlowGraphWindow />
           </SplitPane>

@@ -12,7 +12,6 @@ import vstyles from './_style.scss';
 
 class PluginsList extends Component {
 
-
   static getStores() {
     return [ GulpPluginsStore ];
   }
@@ -70,17 +69,24 @@ class PluginsList extends Component {
     );
   }
 
+  updateHeight(size) {
+    // We're setting the height of the VirtualScroller to the height of the Tab
+    // Minus 48 pixels for the height of the Tab Label Button
+    this.refs['autosizer'].setHeight = size - 48;
+    this.forceUpdate();
+  }
+
   render() {
     return (
       <Tabs className={'plugins-list'}>
         <Tab label="Browse Plugins">
           <AutoSizer ref='autosizer' disableHeight>
-            {
+          {
               ({width}) => (
                 <VirtualScroll
                   ref={'vscroll'}
                   width={width}
-                  height={300}
+                  height={this.refs['autosizer'] ? (this.refs['autosizer'].setHeight || 300 - 48) : 300 - 48}
                   className={vstyles.VirtualScroll}
                   rowCount={this.getGulpPluginsResultsCount()}
                   rowRenderer={
