@@ -6,7 +6,7 @@ import Task from './Task.jsx';
 class TasksStore extends ReduceStore {
 
   getInitialState() {
-    return Immutable.Map();
+    return Immutable.Map().set('tasks', Immutable.List()).set('openTasks', Immutable.List());
   }
 
   reduce(state, action) {
@@ -32,21 +32,43 @@ class TasksStore extends ReduceStore {
       case 'tasks/items/select': {
         return state.set('selectedItem', action.item);
       }
+      case 'tasks/open': {
+        let task = state.get('tasks').find((obj) => {
+          return obj.get('id') == action.task.id;
+        });
+        let newOpenTasks = state.get('openTasks').push(task);
+        return state.set('openTasks', newOpenTasks);
+      }
+      case 'tasks/close': {
+        let idx = state.get('openTasks').findKey((obj) => {
+          return obj.get('id') == action.task.id;
+        });
+        let newOpenTasks = state.get('openTasks').splice(idx, 1);
+        return state.set('openTasks', newOpenTasks);
+      }
       default:
         return state;
     }
   }
 
-  getSelectedTaskID() {
-    return this.getState().getIn(['selectedTaskID']) || 0;
+  getSelectedTask() {
+    let selectedTaskID = this.getState().get('selectedTaskID');
+    return this.getState().get('tasks').find((obj) => {
+      return obj.get('id') == selectedTaskID;
+    }) || 0;
   }
 
   getTasks() {
-    return this.getState().getIn(['tasks']) || [];
+    return this.getState().get('tasks') || [];
+  }
+
+
+  getOpenTasks() {
+    return this.getState().get('openTasks') || [];
   }
 
   getTaskItems() {
-    return this.getState().getIn(['taskItems']) || [];
+    return this.getState().get('taskItems') || [];
   }
 
   getSelectedItem() {
@@ -55,7 +77,7 @@ class TasksStore extends ReduceStore {
 
 
   _newTask({state, name, type}) {
-    let tasks = state.getIn(['tasks']);
+    let tasks = state.get('tasks');
     let taskNo = 1;
     if (tasks) {
       taskNo = tasks.size + 1;
@@ -64,8 +86,10 @@ class TasksStore extends ReduceStore {
     type = type || "Functional";
     const newTask = new Task({name, type});
 
-    return state.set('selectedTaskID', newTask.id)
-      .setIn(['tasks', newTask.id], newTask);
+    let newState = state.set('selectedTaskID', newTask.id);
+    let newTasks = state.get('tasks').push(newTask);
+    let newOpenTasks = state.get('openTasks').push(newTask);
+    return newState.set('tasks', newTasks).set('openTasks', newOpenTasks);
   }
 }
 const instance = new TasksStore(TasksDispatcher);

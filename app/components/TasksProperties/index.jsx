@@ -18,7 +18,7 @@ class TasksProperties extends Component {
   static calculateState(prevState) {
     return {
       tasks: TasksStore.getTasks(),
-      selectedTaskID: TasksStore.getSelectedTaskID(),
+      selectedTask: TasksStore.getSelectedTask(),
       selectedItem: TasksStore.getSelectedItem(),
     };
   }
@@ -27,16 +27,11 @@ class TasksProperties extends Component {
     super(props);
     this.state = {
       tasks: TasksStore.getTasks(),
-      selectedTaskID: TasksStore.getSelectedTaskID()
+      selectedTask: TasksStore.getSelectedTask()
     };
   }
 
   render() {
-
-    const TaskComponents = {};
-    for (let [id, task] of this.state.tasks) {
-      TaskComponents[id] = (<TaskComponent task={task} />);
-    }
 
     let propertiesDisabled = true;
 
@@ -44,11 +39,16 @@ class TasksProperties extends Component {
       propertiesDisabled = false;
     }
 
+    let taskItem;
+    if (this.state.selectedTask) {
+      taskItem = (<TaskComponent task={this.state.selectedTask}></TaskComponent>);
+    }
+
     return (
       <div className={'tasks-list'}>
         <Tabs>
           <Tab label="Task Details">
-          {(TaskComponents[this.state.selectedTaskID] || 'Loading...')}
+          {(taskItem || 'Loading...')}
           </Tab>
           <Tab label="Item Properties" disabled={propertiesDisabled}></Tab>
         </Tabs>

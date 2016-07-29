@@ -21,30 +21,13 @@ class TaskComponent extends Component {
   }
 
   render() {
-    const task = this.state.tasks.get(this.props.task.id);
-    if (this.refs[`taskName${task.id}`]) {
-      this.refs[`taskName${task.id}`].forceUpdate();
+    const task = this.props.task;
+    if (this.refs[`taskName${task.get('id')}`]) {
+      this.refs[`taskName${task.get('id')}`].forceUpdate();
     }
     return (
       <div>
-        <TextField
-          name={`taskName${task.id}`}
-          ref={`taskName${task.id}`}
-          value={task.name}
-        />
-        <RadioButtonGroup
-          ref={`taskType${task.id}`}
-          name={`taskType${task.id}`}
-          selected={task.type}>
-          <RadioButton
-            value="Functional"
-            label="Functional"
-          />
-          <RadioButton
-            value="Parallel"
-            label="Parallel"
-          />
-        </RadioButtonGroup>
+        <h3><b>{task.get('name')}</b> <i>({task.get('type')})</i></h3>
         <FlatButton label="Save Changes" onClick={this._saveChanges.bind(this)} />
       </div>
     );
@@ -55,9 +38,9 @@ class TaskComponent extends Component {
     TasksDispatch({
       type: 'tasks/update',
       task: {
-        id: task.id,
-        name: this.refs[`taskName${task.id}`].getValue(),
-        type: this.refs[`taskType${task.id}`].getValue(),
+        id: task.get('id'),
+        name: this.refs[`taskName${task.get('id')}`].getValue(),
+        type: this.refs[`taskType${task.get('id')}`].getValue(),
       }
     });
   }

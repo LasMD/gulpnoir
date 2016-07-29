@@ -20,11 +20,18 @@ class FlowGraphWindow extends Component {
   }
 
   static calculateState(prevState) {
+
     let toReturn = {
-      tasks: TasksStore.getTasks(),
-      selectedTab: TasksStore.getSelectedTaskID().toString(),
+      tasks: TasksStore.getOpenTasks(),
     };
 
+    let selectedTask = TasksStore.getSelectedTask();
+
+    if (selectedTask) {
+      toReturn.selectedTab = selectedTask.get('id').toString();
+    } else {
+      toReturn.selectedTab = '0';
+    }
     return toReturn;
   }
 
@@ -32,8 +39,8 @@ class FlowGraphWindow extends Component {
     super(props);
 
     this.state = {
-      tasks: TasksStore.getTasks(),
-      selectedTab: TasksStore.getSelectedTaskID(),
+      tasks: TasksStore.getOpenTasks(),
+      selectedTab: TasksStore.getSelectedTask(),
     };
 
     setTimeout(() => {
@@ -56,7 +63,12 @@ class FlowGraphWindow extends Component {
   }
 
   handleTabClose(e, key, currentTabs) {
-    this.setState({tabs: currentTabs});
+    TasksDispatch({
+      type: 'tasks/close',
+      task: {
+        id: key
+      }
+    });
   }
 
   handleTabPositionChange(e, key, currentTabs) {
@@ -85,11 +97,13 @@ class FlowGraphWindow extends Component {
 
   render() {
     let tabs = [];
-    for (let [id, task] of this.state.tasks) {
+    for (let task of this.state.tasks) {
+      let id = task.get('id').toString();
+      let name = task.get('name').toString();
       tabs.push(
         <Tab
           key={id}
-          title={task.name}
+          title={name}
           containerStyle={{
             height: '100%',
           }}
@@ -117,7 +131,8 @@ class FlowGraphWindow extends Component {
     return (
       <div style={{
           height: '100%',
-          width: '100%'
+          width: '100%',
+          backgroundColor: 'darkslategrey'
         }}>
         <Dialog
           title="Create New Task"
