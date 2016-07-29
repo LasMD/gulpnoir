@@ -3,10 +3,14 @@ import TasksDispatcher from './TasksDispatcher';
 import Immutable from 'immutable';
 import Task from './Task.jsx';
 import StateSync from '../StateSync';
+import { ipcRenderer } from 'electron';
 
 class TasksStore extends ReduceStore {
 
   getInitialState() {
+    ipcRenderer.on('save_state', (e, msg) => {
+      StateSync.save(this.getState(), msg);
+    });
     return Immutable.Map()
     .set('tasks', Immutable.List())
     .set('openTasks', Immutable.List())
@@ -62,7 +66,6 @@ class TasksStore extends ReduceStore {
 
   reduce(state, action) {
     let newState = this.reduceProcess(state, action);
-    StateSync.save(newState);
     return newState;
   }
 

@@ -76,7 +76,14 @@ app.on('ready', async () => {
       label: '&Save Project',
       accelerator: 'Ctrl+S',
       click() {
-        mainWindow.close();
+        let newSaveFile = dialog.showSaveDialog(
+          {
+            filters: [
+              { name: 'GulpNoir Project', extensions: ['noir'] }
+            ]
+          }
+        );
+        mainWindow.webContents.send('save_state', newSaveFile);
       }
     }, {
       label: '&Open Project',
