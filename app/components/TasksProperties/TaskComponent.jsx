@@ -8,7 +8,7 @@ import { Container } from 'flux/utils';
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import TasksStore from '../../store/Tasks/TasksStore.jsx';
 
-class TaskItem extends Component {
+class TaskComponent extends Component {
 
   static getStores() {
     return [TasksStore];
@@ -25,7 +25,6 @@ class TaskItem extends Component {
     if (this.refs[`taskName${task.id}`]) {
       this.refs[`taskName${task.id}`].forceUpdate();
     }
-    console.log("SetTask", task);
     return (
       <div>
         <TextField
@@ -69,4 +68,4 @@ class TaskItem extends Component {
 
 }
 
-export default Container.create(TaskItem);
+export default Container.create(TaskComponent);

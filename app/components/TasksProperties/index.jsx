@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import TasksStore from '../../store/Tasks/TasksStore';
-import TaskItem from './TaskItem';
+import TaskComponent from './TaskComponent';
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import FlatButton from 'material-ui/FlatButton';
 import {Container} from 'flux/utils';
@@ -33,9 +33,9 @@ class TasksProperties extends Component {
 
   render() {
 
-    const taskItems = {};
+    const TaskComponents = {};
     for (let [id, task] of this.state.tasks) {
-      taskItems[id] = (<TaskItem task={task} />);
+      TaskComponents[id] = (<TaskComponent task={task} />);
     }
 
     let propertiesDisabled = true;
@@ -48,10 +48,9 @@ class TasksProperties extends Component {
       <div className={'tasks-list'}>
         <Tabs>
           <Tab label="Task Details">
-          {(taskItems[this.state.selectedTaskID] || 'Loading...')}
+          {(TaskComponents[this.state.selectedTaskID] || 'Loading...')}
           </Tab>
-          <Tab label="Item Properties" disabled={propertiesDisabled}>
-          </Tab>
+          <Tab label="Item Properties" disabled={propertiesDisabled}></Tab>
         </Tabs>
       </div>
     );
