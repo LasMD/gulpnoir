@@ -1,5 +1,5 @@
 import { ReduceStore } from 'flux/utils';
-import TasksDispatcher from './TasksDispatcher';
+import TasksDispatcher, { TasksDispatch } from './TasksDispatcher';
 import Immutable from 'immutable';
 import Task from './Task.jsx';
 import StateSync from '../StateSync';
@@ -10,13 +10,18 @@ class TasksStore extends ReduceStore {
 
   getInitialState() {
     ipcRenderer.on('save_state', (e, filename) => {
+
       StateSync.save(filename, {
         tasks: this.getState(),
         graphs: GraphsStore.getGraphs()
       });
     });
     ipcRenderer.on('load_state', (e, msg) => {
-      console.log(StateSync.load(msg));
+      let newstate = StateSync.load(msg);
+      TasksDispatch({
+        type: 'tasks/set',
+        newstate: newstate.tasks
+      });
     });
     return Immutable.Map()
     .set('tasks', Immutable.List())
@@ -26,6 +31,9 @@ class TasksStore extends ReduceStore {
 
   reduceProcess(state, action) {
     switch (action.type) {
+      case 'tasks/set': {
+        return action.newstate;
+      }
       case 'tasks/new': {
         action.task = action.task || {};
         return this._newTask({state, ...action.task});
