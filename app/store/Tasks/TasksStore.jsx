@@ -4,16 +4,13 @@ import Immutable from 'immutable';
 import Task from './Task.jsx';
 import StateSync from '../StateSync';
 import { ipcRenderer } from 'electron';
-import GraphsStore from '../Graphs/GraphsStore';
 
 class TasksStore extends ReduceStore {
 
   getInitialState() {
     ipcRenderer.on('save_state', (e, filename) => {
-
       StateSync.save(filename, {
         tasks: this.getState(),
-        graphs: GraphsStore.getGraphs()
       });
     });
     ipcRenderer.on('load_state', (e, msg) => {
@@ -24,7 +21,7 @@ class TasksStore extends ReduceStore {
       });
     });
     return Immutable.Map()
-    .set('tasks', Immutable.List())
+    .set('tasks', Immutable.Map())
     .set('openTasks', Immutable.List())
     .set('_stateID', Date.now());
   }
@@ -32,6 +29,7 @@ class TasksStore extends ReduceStore {
   reduceProcess(state, action) {
     switch (action.type) {
       case 'tasks/set': {
+        console.log('setting', action.newstate);
         return action.newstate;
       }
       case 'tasks/new': {
@@ -43,6 +41,7 @@ class TasksStore extends ReduceStore {
       }
       case 'tasks/update': {
         let newState = state;
+        console.log("Updating", action);
         for (let prop in action.task) {
           if (prop == 'id') continue;
           newState = newState.setIn(['tasks', action.task.id, prop], action.task[prop]);
@@ -85,10 +84,8 @@ class TasksStore extends ReduceStore {
   }
 
   getSelectedTask() {
-    let selectedTaskID = this.getState().get('selectedTaskID');
-    return this.getState().get('tasks').find((obj) => {
-      return obj.get('id') == selectedTaskID;
-    }) || 0;
+    const selectedTaskID = this.getState().get('selectedTaskID');
+    return this.getState().getIn(['tasks', selectedTaskID]) || 0;
   }
 
   getTasks() {
@@ -119,10 +116,10 @@ class TasksStore extends ReduceStore {
     type = type || "Functional";
     const newTask = new Task({name, type});
 
-    let newState = state.set('selectedTaskID', newTask.id);
-    let newTasks = state.get('tasks').push(newTask);
-    let newOpenTasks = state.get('openTasks').push(newTask);
-    return newState.set('tasks', newTasks).set('openTasks', newOpenTasks);
+    let newState = state.set('selectedTaskID', newTask.id)
+      .setIn(['tasks', newTask.id], newTask);
+    let newOpenTasks = newState.get('openTasks').push(newTask);
+    return newState.set('openTasks', newOpenTasks);
   }
 }
 const instance = new TasksStore(TasksDispatcher);

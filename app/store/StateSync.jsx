@@ -19,7 +19,6 @@ export default class StateSync {
 
     let JSONCollection = {};
     JSONCollection.tasks = transit.toJSON(tasks);
-    JSONCollection.graphs = graphs;
 
     const saveState = lz.compress(JSON.stringify(JSONCollection), {outputEncoding: 'BinaryString'});
     fs.writeFile(location, saveState);
@@ -29,8 +28,9 @@ export default class StateSync {
     let fileContents = fs.readFileSync(location).toString();
     let JSONCollection = {};
     const decodeL1 = JSON.parse(lz.decompress(fileContents, {inputEncoding: 'BinaryString'}));
+    console.log("decoded1", decodeL1.tasks);
     JSONCollection.tasks = transit.fromJSON(decodeL1.tasks);
-    JSONCollection.graphs = decodeL1.graphs;
+    console.log("decoded2", JSONCollection.tasks);
     return JSONCollection;
   }
 

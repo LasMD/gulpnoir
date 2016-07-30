@@ -32,7 +32,10 @@ class FlowGraphWindow extends Component {
     } else {
       toReturn.selectedTab = '0';
     }
+
+    console.log("Updating flowgraph", toReturn);
     return toReturn;
+
   }
 
   constructor(props) {
@@ -114,7 +117,9 @@ class FlowGraphWindow extends Component {
             height: '100%',
           }}
         >
-          <FlowGraph />
+          <FlowGraph
+            task={task}
+          />
         </Tab>
       );
     }

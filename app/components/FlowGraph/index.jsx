@@ -3,7 +3,6 @@ import {findDOMNode } from 'react-dom';
 import joint from 'jointjs';
 
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
-import { GraphsDispatch } from '../../store/Graphs/GraphsDispatcher';
 import TasksStore from '../../store/Tasks/TasksStore';
 import { Container } from 'flux/utils';
 
@@ -23,13 +22,6 @@ class FlowGraph extends Component {
 
   constructor(props) {
     super(props);
-    this.graph = new joint.dia.Graph();
-    this.graph.on('change', (a, b, c, d) => {
-      GraphsDispatch({
-        type: 'graphs/save',
-        graph: this.graph
-      });
-    });
     this.graphState = {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
@@ -153,42 +145,58 @@ class FlowGraph extends Component {
   }
 
   componentDidMount() {
-      this.paper = new joint.dia.Paper({
-          el: findDOMNode(this.refs.placeholder),
-          model: this.graph,
-          gridSize: 15,
-          validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
-              // Prevent linking from input ports.
-              if (magnetS && magnetS.getAttribute('type') === 'input') return false;
-              // Prevent linking from output ports to input ports within one element.
-              if (cellViewS === cellViewT) return false;
-              // Prevent linking to input ports.
-              return magnetT && magnetT.getAttribute('type') === 'input';
-          },
-      });
-
-      const task = this.createPlugin({x: 300, y: 300, text: 'Plugin'});
-      const parallel = this.createPipeSource({x: 100, y: 100, text: 'Pipe Source'});
-
-      this.paper.on('cell:pointerclick', (cell, e, x, y) => {
-        this.setSelectedCell(cell);
-      });
-
-      this.paper.on('cell:pointerup', (cell, e, x, y) => {
-        if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
-          cell.remove();
+    if (!this.props.task.get('graph')) {
+      this.graph = new joint.dia.Graph();
+      console.log("newGraph", this.graph);
+    } else {
+      this.graph = JSON.parse(this.props.task.get('graph'))
+      console.log("mountedGraph", this.graph);
+    }
+    this.graph.on('change', () => {
+      TasksDispatch({
+        type: 'tasks/update',
+        task: {
+          id: this.props.task.get('id'),
+          graph: JSON.stringify(this.graph)
         }
       });
+    });
+    this.paper = new joint.dia.Paper({
+        el: findDOMNode(this.refs.placeholder),
+        model: this.graph,
+        gridSize: 15,
+        validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+            // Prevent linking from input ports.
+            if (magnetS && magnetS.getAttribute('type') === 'input') return false;
+            // Prevent linking from output ports to input ports within one element.
+            if (cellViewS === cellViewT) return false;
+            // Prevent linking to input ports.
+            return magnetT && magnetT.getAttribute('type') === 'input';
+        },
+    });
 
-      this.paper.on('blank:pointerclick', (e, x, y) => {
-        if (this.graphState.boundCellID) {
-          this.removeBoundCell();
-        }
-      });
+    const task = this.createPlugin({x: 300, y: 300, text: 'Plugin'});
+    const parallel = this.createPipeSource({x: 100, y: 100, text: 'Pipe Source'});
+
+    this.paper.on('cell:pointerclick', (cell, e, x, y) => {
+      this.setSelectedCell(cell);
+    });
+
+    this.paper.on('cell:pointerup', (cell, e, x, y) => {
+      if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
+        cell.remove();
+      }
+    });
+
+    this.paper.on('blank:pointerclick', (e, x, y) => {
+      if (this.graphState.boundCellID) {
+        this.removeBoundCell();
+      }
+    });
   }
 
   render() {
-      return <div ref="placeholder" ></div>;
+    return <div ref="placeholder" ></div>;
   }
 }
 

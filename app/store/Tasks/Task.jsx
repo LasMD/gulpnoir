@@ -4,15 +4,17 @@ const TaskRecord = Immutable.Record({
   id: null,
   name: null,
   type: null,
+  graph: null,
   items: null
 });
 
 export default class Task extends TaskRecord {
-  constructor({ name, type }) {
+  constructor({ name, type, graph }) {
     super({
       id: Date.now(),
       name,
       type,
+      graph: graph || '',
       items: []
     });
   }
