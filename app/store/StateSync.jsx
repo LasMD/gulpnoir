@@ -1,27 +1,37 @@
 import transit from 'transit-immutable-js';
-import lz from 'lz-string';
+import lz from 'lzutf8';
 import fs from 'fs';
 
 export default class StateSync {
 
-  static save(state, location) {
+  static save(location, { tasks, graphs }) {
     if (!location) {
       if (!fs.statSync('/tmp/.gulpnoir')) {
         fs.mkdirSync('/tmp/.gulpnoir');
       }
       location = `/tmp/.gulpnoir/${_id}`;
     }
-    if (state.get('selectedItem')) {
-      let graph = JSON.stringify(state.get('selectedItem').graph);
-      state = state.delete('selectedItem').set('_graph', graph);
+
+    // We don't save the last item selected
+    if (tasks.get('selectedItem')) {
+      tasks = tasks.delete('selectedItem');
     }
-    let saveState = lz.compress(JSON.stringify(transit.toJSON(state)));
+
+    let JSONCollection = {};
+    JSONCollection.tasks = transit.toJSON(tasks);
+    JSONCollection.graphs = graphs;
+
+    const saveState = lz.compress(JSON.stringify(JSONCollection), {outputEncoding: 'BinaryString'});
     fs.writeFile(location, saveState);
   }
 
   static load(location) {
     let fileContents = fs.readFileSync(location).toString();
-    return transit.fromJSON(JSON.parse(lz.decompress(fileContents)));
+    let JSONCollection = {};
+    const decodeL1 = JSON.parse(lz.decompress(fileContents, {inputEncoding: 'BinaryString'}));
+    JSONCollection.tasks = transit.fromJSON(decodeL1.tasks);
+    JSONCollection.graphs = decodeL1.graphs;
+    return JSONCollection;
   }
 
 }

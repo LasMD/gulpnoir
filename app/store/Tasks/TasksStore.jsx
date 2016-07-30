@@ -4,12 +4,16 @@ import Immutable from 'immutable';
 import Task from './Task.jsx';
 import StateSync from '../StateSync';
 import { ipcRenderer } from 'electron';
+import GraphsStore from '../Graphs/GraphsStore';
 
 class TasksStore extends ReduceStore {
 
   getInitialState() {
-    ipcRenderer.on('save_state', (e, msg) => {
-      StateSync.save(this.getState(), msg);
+    ipcRenderer.on('save_state', (e, filename) => {
+      StateSync.save(filename, {
+        tasks: this.getState(),
+        graphs: GraphsStore.getGraphs()
+      });
     });
     ipcRenderer.on('load_state', (e, msg) => {
       console.log(StateSync.load(msg));

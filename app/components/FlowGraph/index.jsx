@@ -3,6 +3,7 @@ import {findDOMNode } from 'react-dom';
 import joint from 'jointjs';
 
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
+import { GraphsDispatch } from '../../store/Graphs/GraphsDispatcher';
 import TasksStore from '../../store/Tasks/TasksStore';
 import { Container } from 'flux/utils';
 
@@ -23,6 +24,12 @@ class FlowGraph extends Component {
   constructor(props) {
     super(props);
     this.graph = new joint.dia.Graph();
+    this.graph.on('change', (a, b, c, d) => {
+      GraphsDispatch({
+        type: 'graphs/save',
+        graph: this.graph
+      });
+    });
     this.graphState = {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
