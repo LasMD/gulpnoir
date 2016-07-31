@@ -55,17 +55,15 @@ class TasksStore extends ReduceStore {
         return state.set('selectedItem', action.item);
       }
       case 'tasks/open': {
-        let isTaskOpen = state.get('openTasks').find((obj) => {
-          return obj.get('id') == action.task.id;
-        });
-        if (isTaskOpen) return state;
-        let newOpenTasks = state.get('openTasks').push(action.task.id);
-        return state.set('openTasks', newOpenTasks).set('selectedTaskID', action.task.id);
+        let isTaskOpen = state.get('openTasks').indexOf(1*action.task.id);
+        if (isTaskOpen > -1) {
+          return state.set('selectedTaskID', 1*action.task.id);
+        }
+        let newOpenTasks = state.get('openTasks').push(1*action.task.id);
+        return state.set('openTasks', newOpenTasks).set('selectedTaskID', 1*action.task.id);
       }
       case 'tasks/close': {
-        let idx = state.get('openTasks').findKey((obj) => {
-          return obj.get('id') == action.task.id;
-        });
+        let idx = state.get('openTasks').indexOf(1*action.task.id);
         let newOpenTasks = state.get('openTasks').splice(idx, 1);
         return state.set('openTasks', newOpenTasks);
       }
