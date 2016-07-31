@@ -5,6 +5,7 @@ const TaskRecord = Immutable.Record({
   name: null,
   type: null,
   graph: null,
+  exportGraph: null,
   items: null
 });
 
@@ -15,6 +16,7 @@ export default class Task extends TaskRecord {
       name,
       type,
       graph: graph || '',
+      exportGraph: null,
       items: []
     });
   }

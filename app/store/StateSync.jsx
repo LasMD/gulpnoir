@@ -17,6 +17,13 @@ export default class StateSync {
       tasks = tasks.delete('selectedItem');
     }
 
+    let _tasks = tasks.get('tasks');
+
+    for (let [id, task] of _tasks) {
+
+      tasks = tasks.setIn(['tasks', (id * 1), 'graph'],  tasks.get('tasks').get(id).get('exportGraph')());
+    }
+
     let JSONCollection = {};
     JSONCollection.tasks = transit.toJSON(tasks);
 
@@ -28,9 +35,9 @@ export default class StateSync {
     let fileContents = fs.readFileSync(location).toString();
     let JSONCollection = {};
     const decodeL1 = JSON.parse(lz.decompress(fileContents, {inputEncoding: 'BinaryString'}));
-    console.log("decoded1", decodeL1.tasks);
+
     JSONCollection.tasks = transit.fromJSON(decodeL1.tasks);
-    console.log("decoded2", JSONCollection.tasks);
+
     return JSONCollection;
   }
 

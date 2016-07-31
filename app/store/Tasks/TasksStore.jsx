@@ -29,7 +29,7 @@ class TasksStore extends ReduceStore {
   reduceProcess(state, action) {
     switch (action.type) {
       case 'tasks/set': {
-        console.log('setting', action.newstate);
+
         return action.newstate;
       }
       case 'tasks/new': {
@@ -41,7 +41,7 @@ class TasksStore extends ReduceStore {
       }
       case 'tasks/update': {
         let newState = state;
-        console.log("Updating", action);
+
         for (let prop in action.task) {
           if (prop == 'id') continue;
           newState = newState.setIn(['tasks', action.task.id, prop], action.task[prop]);
@@ -59,11 +59,7 @@ class TasksStore extends ReduceStore {
           return obj.get('id') == action.task.id;
         });
         if (isTaskOpen) return state;
-
-        let task = state.get('tasks').find((obj) => {
-          return obj.get('id') == action.task.id;
-        });
-        let newOpenTasks = state.get('openTasks').push(task);
+        let newOpenTasks = state.get('openTasks').push(action.task.id);
         return state.set('openTasks', newOpenTasks).set('selectedTaskID', action.task.id);
       }
       case 'tasks/close': {
@@ -85,13 +81,12 @@ class TasksStore extends ReduceStore {
 
   getSelectedTask() {
     const selectedTaskID = this.getState().get('selectedTaskID');
-    return this.getState().getIn(['tasks', selectedTaskID]) || 0;
+    return this.getState().get('tasks').get(selectedTaskID) || 0;
   }
 
   getTasks() {
     return this.getState().get('tasks') || [];
   }
-
 
   getOpenTasks() {
     return this.getState().get('openTasks') || [];
@@ -118,7 +113,7 @@ class TasksStore extends ReduceStore {
 
     let newState = state.set('selectedTaskID', newTask.id)
       .setIn(['tasks', newTask.id], newTask);
-    let newOpenTasks = newState.get('openTasks').push(newTask);
+    let newOpenTasks = newState.get('openTasks').push(newTask.get('id'));
     return newState.set('openTasks', newOpenTasks);
   }
 }

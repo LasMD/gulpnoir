@@ -22,18 +22,24 @@ class FlowGraphWindow extends Component {
   static calculateState(prevState) {
 
     let toReturn = {
-      tasks: TasksStore.getOpenTasks(),
+      openTasks: TasksStore.getOpenTasks(),
+      tasks: TasksStore.getTasks()
     };
 
     let selectedTask = TasksStore.getSelectedTask();
 
     if (selectedTask) {
       toReturn.selectedTab = selectedTask.get('id').toString();
+
+
+
     } else {
       toReturn.selectedTab = '0';
     }
 
-    console.log("Updating flowgraph", toReturn);
+
+
+
     return toReturn;
 
   }
@@ -42,7 +48,8 @@ class FlowGraphWindow extends Component {
     super(props);
 
     this.state = {
-      tasks: TasksStore.getOpenTasks(),
+      openTasks: TasksStore.getOpenTasks(),
+      tasks: TasksStore.getTasks(),
       selectedTab: TasksStore.getSelectedTask(),
     };
 
@@ -57,10 +64,11 @@ class FlowGraphWindow extends Component {
   }
 
   handleTabSelect(e, key, currentTabs) {
+
     TasksDispatch({
       type: 'tasks/setSelectedTaskID',
       task: {
-        id: key
+        id: (key*1) // Cast key from string to integer
       }
     });
   }
@@ -106,7 +114,8 @@ class FlowGraphWindow extends Component {
 
   render() {
     let tabs = [];
-    for (let task of this.state.tasks) {
+    for (let openTask of this.state.openTasks) {
+      let task = this.state.tasks.get(openTask);
       let id = task.get('id').toString();
       let name = task.get('name').toString();
       tabs.push(
@@ -123,6 +132,8 @@ class FlowGraphWindow extends Component {
         </Tab>
       );
     }
+
+
 
     const newTaskTypeDialogActions = [
       <FlatButton

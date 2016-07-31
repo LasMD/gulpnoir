@@ -144,23 +144,13 @@ class FlowGraph extends Component {
     }
   }
 
+  exportGraph() {
+    return JSON.stringify(this.graph.toJSON());
+  }
+
   componentDidMount() {
-    if (!this.props.task.get('graph')) {
-      this.graph = new joint.dia.Graph();
-      console.log("newGraph", this.graph);
-    } else {
-      this.graph = JSON.parse(this.props.task.get('graph'))
-      console.log("mountedGraph", this.graph);
-    }
-    this.graph.on('change', () => {
-      TasksDispatch({
-        type: 'tasks/update',
-        task: {
-          id: this.props.task.get('id'),
-          graph: JSON.stringify(this.graph)
-        }
-      });
-    });
+
+    this.graph = new joint.dia.Graph();
     this.paper = new joint.dia.Paper({
         el: findDOMNode(this.refs.placeholder),
         model: this.graph,
@@ -175,8 +165,19 @@ class FlowGraph extends Component {
         },
     });
 
-    const task = this.createPlugin({x: 300, y: 300, text: 'Plugin'});
-    const parallel = this.createPipeSource({x: 100, y: 100, text: 'Pipe Source'});
+    if (this.props.task.get('graph')) {
+      this.graph = this.graph.fromJSON(JSON.parse(this.props.task.get('graph')));
+    }
+
+    setTimeout(() => {
+      TasksDispatch({
+        type: 'tasks/update',
+        task: {
+          id: this.props.task.get('id'),
+          exportGraph: this.exportGraph.bind(this)
+        }
+      });
+    }, 500);
 
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
       this.setSelectedCell(cell);
