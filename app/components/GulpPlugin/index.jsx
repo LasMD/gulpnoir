@@ -1,18 +1,35 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
 import vstyles from './_style.scss';
 import FlatButton from 'material-ui/FlatButton';
+import { DragSource } from 'react-dnd';
 
-export default class GulpPlugin extends Component {
+const cardSource = {
+  beginDrag(props) {
+    return {
+      text: props.text
+    };
+  }
+};
+
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+}
+
+
+class GulpPlugin extends Component {
 
   static contextTypes = {
     router: React.PropTypes.object.isRequired
   }
 
   componentDidMount() {
-    // gulpplugin is implied 
+    // gulpplugin is implied
     if (this.props.keywords.indexOf('gulpplugin') > -1) {
       this.props.keywords.splice(this.props.keywords.indexOf('gulpplugin'), 1);
     }
@@ -29,7 +46,8 @@ export default class GulpPlugin extends Component {
   }
 
   render() {
-    return (
+    const { connectDragSource, isDragging } = this.props;
+    return connectDragSource(
       <div>
         <Paper zDepth={2}
               className={`pluginPaper`}
@@ -46,8 +64,9 @@ export default class GulpPlugin extends Component {
           }
           </p>
         </Paper>
-        <Divider />
-      </div>
+    </div>
     );
   }
 }
+
+export default DragSource("PLUGIN", cardSource, collect)(GulpPlugin);

@@ -13,6 +13,8 @@ import Divider from 'material-ui/Divider';
 import TasksStore from '../../store/Tasks/TasksStore';
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import { Container } from 'flux/utils';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 
 import SplitPane from 'react-split-pane';
 
@@ -69,4 +71,4 @@ class HomePage extends Component {
   }
 }
 
-export default Container.create(HomePage);
+export default DragDropContext(HTML5Backend)(Container.create(HomePage));
