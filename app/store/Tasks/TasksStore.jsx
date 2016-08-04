@@ -68,7 +68,7 @@ class TasksStore extends ReduceStore {
         return state.set('openTasks', newOpenTasks);
       }
       case 'tasks/graph/add': {
-        console.log(action.task);
+        console.log(action.task, action.position);
         return state;
       }
       case 'tasks/graph/remove': {

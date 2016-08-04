@@ -9,11 +9,17 @@ import { DropTarget } from 'react-dnd';
 import './_style.scss';
 
 const gridTarget = {
-  drop(props) {
-    TasksDispatch({
-      type: 'tasks/graph/add',
-      task: props
-    });
+  drop(props, monitor, component) {
+    let offset = monitor.getClientOffset();
+    let componentRect = component.refs.placeholder.getClientRects()[0];
+    const position = {
+        x: offset.x - componentRect.left,
+        y: offset.y - componentRect.top
+      };
+    return {
+      grid: component,
+      position
+    };
   }
 };
 
@@ -46,10 +52,14 @@ class FlowGraph extends Component {
     }
   }
 
+  test() {
+    console.log('yolo');
+  }
+
   createPlugin({x, y, text}) {
     const props = {
       position: { x: x, y: y },
-      size: { width: 60, height: 60 },
+      size: { width: 120, height: 120 },
       attrs: {
         rect: { fill: 'orange' },
         '.label': { text: text },

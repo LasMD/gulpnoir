@@ -6,10 +6,16 @@ import FlatButton from 'material-ui/FlatButton';
 import { DragSource } from 'react-dnd';
 
 const cardSource = {
-  beginDrag(props) {
+  beginDrag() {
     return {
-      text: props.text
-    };
+
+    }
+  },
+
+  endDrag(props, monitor, component) {
+    let { grid, position } = monitor.getDropResult();
+    if (!grid) return;
+    grid.createPlugin({text: props.name, ...position});
   }
 };
 
