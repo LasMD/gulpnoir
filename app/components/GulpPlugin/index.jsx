@@ -69,4 +69,4 @@ class GulpPlugin extends Component {
   }
 }
 
-export default DragSource("PLUGIN", cardSource, collect)(GulpPlugin);
+export default DragSource("GraphItems", cardSource, collect)(GulpPlugin);

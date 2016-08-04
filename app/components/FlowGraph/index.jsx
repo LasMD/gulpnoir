@@ -1,12 +1,28 @@
 import React, { Component } from 'react';
 import {findDOMNode } from 'react-dom';
 import joint from 'jointjs';
-
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import TasksStore from '../../store/Tasks/TasksStore';
 import { Container } from 'flux/utils';
+import { DropTarget } from 'react-dnd';
 
 import './_style.scss';
+
+const gridTarget = {
+  drop(props) {
+    TasksDispatch({
+      type: 'tasks/graph/add',
+      task: props
+    });
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  };
+}
 
 class FlowGraph extends Component {
 
@@ -197,8 +213,13 @@ class FlowGraph extends Component {
   }
 
   render() {
-    return <div ref="placeholder" ></div>;
+    const { x, y, connectDropTarget, isOver } = this.props;
+    return connectDropTarget(
+      <div className={'paper'}>
+        <div ref="placeholder" ></div>
+      </div>
+    );
   }
 }
 
-export default Container.create(FlowGraph);
+export default DropTarget("GraphItems", gridTarget, collect)(Container.create(FlowGraph));

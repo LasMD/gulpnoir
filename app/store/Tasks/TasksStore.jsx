@@ -67,6 +67,14 @@ class TasksStore extends ReduceStore {
         let newOpenTasks = state.get('openTasks').splice(idx, 1);
         return state.set('openTasks', newOpenTasks);
       }
+      case 'tasks/graph/add': {
+        console.log(action.task);
+        return state;
+      }
+      case 'tasks/graph/remove': {
+        console.log(action.task);
+        return state;
+      }
       default:
         return state;
     }
