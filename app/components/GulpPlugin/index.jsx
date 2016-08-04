@@ -13,8 +13,9 @@ const cardSource = {
   },
 
   endDrag(props, monitor, component) {
+    let result = monitor.getDropResult();
+    if (!result) return;
     let { grid, position } = monitor.getDropResult();
-    if (!grid) return;
     grid.createPlugin({text: props.name, ...position});
   }
 };
