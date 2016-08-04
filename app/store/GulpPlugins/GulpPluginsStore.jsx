@@ -23,6 +23,9 @@ class GulpPluginsStore extends ReduceStore {
       case 'plugins/set': {
         return state.set('plugins', action.gulpPlugins.results);
       }
+      case 'plugins/installed/set': {
+        return state.set('installed', action.installed);
+      }
       case 'plugins/install': {
         return state.set('installed',
           state.get('installed').set(action.plugin.name, action.plugin)

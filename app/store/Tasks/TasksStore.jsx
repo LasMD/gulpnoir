@@ -1,5 +1,7 @@
 import { ReduceStore } from 'flux/utils';
 import TasksDispatcher, { TasksDispatch } from './TasksDispatcher';
+import { GulpPluginsDispatch } from '../GulpPlugins/GulpPluginsDispatcher';
+import GulpPluginsStore from '../GulpPlugins/GulpPluginsStore';
 import Immutable from 'immutable';
 import Task from './Task.jsx';
 import StateSync from '../StateSync';
@@ -11,6 +13,7 @@ class TasksStore extends ReduceStore {
     ipcRenderer.on('save_state', (e, filename) => {
       StateSync.save(filename, {
         tasks: this.getState(),
+        installedPlugins: GulpPluginsStore.getInstalledPlugins()
       });
     });
     ipcRenderer.on('load_state', (e, msg) => {
@@ -18,6 +21,10 @@ class TasksStore extends ReduceStore {
       TasksDispatch({
         type: 'tasks/set',
         newstate: newstate.tasks
+      });
+      GulpPluginsDispatch({
+        type: 'plugins/installed/set',
+        installed: newstate.installedPlugins
       });
     });
     return Immutable.Map()

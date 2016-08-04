@@ -21,7 +21,8 @@ const gridTarget = {
       grid: component,
       position
     };
-  }
+  },
+
 };
 
 function collect(connect, monitor) {
