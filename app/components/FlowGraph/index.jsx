@@ -5,6 +5,7 @@ import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import TasksStore from '../../store/Tasks/TasksStore';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
+import { GRID_CONST } from '../../constants';
 
 import './_style.scss';
 
@@ -59,16 +60,10 @@ class FlowGraph extends Component {
   createPlugin({x, y, text}) {
     const props = {
       position: { x: x, y: y },
-      size: { width: 120, height: 120 },
-      attrs: {
-        rect: { fill: 'orange' },
-        '.label': { text: text },
-        '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
-        '.outPorts circle': { fill: '#E74C3C', type: 'output' },
-      },
-      inPorts: ['In'],
-      outPorts: ['Out'],
+      ...GRID_CONST.ITEM.PLUGIN
     };
+    props.attrs['.label'] = { text };
+
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
@@ -180,7 +175,7 @@ class FlowGraph extends Component {
     this.paper = new joint.dia.Paper({
         el: findDOMNode(this.refs.placeholder),
         model: this.graph,
-        gridSize: 15,
+        gridSize: GRID_CONST.SNAP_SIZE,
         validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
             // Prevent linking from input ports.
             if (magnetS && magnetS.getAttribute('type') === 'input') return false;
