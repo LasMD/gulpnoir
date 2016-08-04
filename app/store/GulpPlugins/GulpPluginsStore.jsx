@@ -15,7 +15,7 @@ class GulpPluginsStore extends ReduceStore {
         gulpPlugins: jsonResult
       });
     });
-    return Immutable.Map();
+    return Immutable.Map().set('installed', Immutable.Map());
   }
 
   reduce(state, action) {
@@ -23,9 +23,18 @@ class GulpPluginsStore extends ReduceStore {
       case 'plugins/set': {
         return state.set('plugins', action.gulpPlugins.results);
       }
+      case 'plugins/install': {
+        return state.set('installed',
+          state.get('installed').set(action.plugin.name, action.plugin)
+        );
+      }
       default:
         return state;
     }
+  }
+
+  getInstalledPlugins() {
+    return this.getState().get('installed');
   }
 
   getGulpPlugins() {

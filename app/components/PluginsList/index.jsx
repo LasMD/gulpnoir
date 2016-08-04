@@ -54,6 +54,9 @@ class PluginsList extends Component {
 
   getGulpPluginListItem(index) {
     let plugin = this.state.gulpPlugins[index];
+    if (GulpPluginsStore.getInstalledPlugins().get(plugin.name[0])) {
+      plugin.installed = true;
+    }
     return (
       <div>
         <GulpPlugin
@@ -66,6 +69,7 @@ class PluginsList extends Component {
           ref={(elem) => {this.pluginsRefs[`plugin-${index}`] = elem;}}
           reportHeight={this.updatePluginHeight.bind(this)}
           onPluginSelect={this.onPluginSelect.bind(this)}
+          installed={plugin.installed}
         />
         <Divider />
       </div>

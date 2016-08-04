@@ -5,6 +5,7 @@ import vstyles from './_style.scss';
 import FlatButton from 'material-ui/FlatButton';
 import { DragSource } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
+import { GulpPluginsDispatch } from '../../store/GulpPlugins/GulpPluginsDispatcher';
 
 const cardSource = {
   beginDrag() {
@@ -22,6 +23,12 @@ const cardSource = {
     position.x = Math.floor(position.x / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     position.y = Math.floor(position.y / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     grid.createPlugin({text: props.name.replace(/gulp(_|\-)?/g, ""), ...position});
+    GulpPluginsDispatch({
+      type: 'plugins/install',
+      plugin: props
+    });
+    component.state.installed = true;
+    component.forceUpdate();
   }
 };
 
@@ -40,6 +47,11 @@ class GulpPlugin extends Component {
     router: React.PropTypes.object.isRequired
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentDidMount() {
     // gulpplugin is implied
     if (this.props.keywords.indexOf('gulpplugin') > -1) {
@@ -53,7 +65,10 @@ class GulpPlugin extends Component {
     }
   }
 
-  onPluginSelect() {
+  onPluginInstall() {
+    this.props.onPluginSelect(this.props.index);
+  }
+  onPluginUninstall() {
     this.props.onPluginSelect(this.props.index);
   }
 
@@ -63,11 +78,24 @@ class GulpPlugin extends Component {
       <div>
         <Paper zDepth={2}
               className={`pluginPaper`}
+              style={(this.props.installed || this.state.installed) ?
+                {
+                  backgroundColor: 'limegreen'
+                } :
+                {}
+              }
           >
           <h3>{this.props.name} <i>v{this.props.version}</i></h3>
           <h4>Author: {this.props.author}</h4>
           <p>{this.props.description}</p>
-          <p><FlatButton label="Select" onClick={this.onPluginSelect.bind(this)} /></p>
+          <p>
+            {(this.props.installed || this.state.installed) ?
+              <FlatButton label={'Uninstall'} onClick={this.onPluginUninstall.bind(this)}  />
+              :
+              <FlatButton label={'Select'} onClick={this.onPluginInstall.bind(this)} />
+            }
+
+            </p>
           <p className={'keywords-wrapper'}>
           {
             this.props.keywords.map((keyword) => {

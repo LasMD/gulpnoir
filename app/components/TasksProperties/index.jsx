@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import TasksStore from '../../store/Tasks/TasksStore';
 import TaskComponent from './TaskComponent';
+import InstalledPluginsComponent from './InstalledPluginsComponent';
 import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import FlatButton from 'material-ui/FlatButton';
 import {Container} from 'flux/utils';
@@ -54,6 +55,8 @@ class TasksProperties extends Component {
       ));
     });
 
+
+
     return (
       <div className={'task-list'}>
         <Tabs ref='tabs'>
@@ -65,12 +68,7 @@ class TasksProperties extends Component {
                 primaryTogglesNestedList={true}
                 nestedItems={availableTasks ? availableTasks : []}
                 />
-              <ListItem
-                key={2}
-                primaryText="Plugins"
-                primaryTogglesNestedList={true}
-                nestedItems={[]}
-                />
+              <InstalledPluginsComponent />
             </List>
           </Tab>
           {anyTasksOpen ? (
