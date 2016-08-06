@@ -5,6 +5,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import TasksProperties from '../../components/TasksProperties';
+import ItemProperties from '../../components/ItemProperties';
 import FlowGraph from '../../components/FlowGraph';
 import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
@@ -58,7 +59,11 @@ class HomePage extends Component {
                   ) : (
                     <SplitPane split="horizontal" minSize={50} defaultSize={300}>
                       <TasksProperties />
-                      <Tabs><Tab label="Item Properties"></Tab></Tabs>
+                      <Tabs>
+                        <Tab label="Item Properties">
+                          <ItemProperties item={this.state.selectedItem} />
+                        </Tab>
+                      </Tabs>
                     </SplitPane>)
                 }
               </SplitPane>

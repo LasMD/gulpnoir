@@ -57,7 +57,10 @@ class TasksProperties extends Component {
       ));
     });
 
-
+    // let specialItems = [
+    //   (<ListItem primaryText={'Code Pipe In'} />),
+    //   (<ListItem primaryText={'Parallel'} />)
+    // ];
 
     return (
       <div className={'task-list'}>
@@ -76,6 +79,7 @@ class TasksProperties extends Component {
                 key={3}
                 primaryText="Special"
                 primaryTogglesNestedList={true}
+                // nestedItems={specialItems ? specialItems : []}
                 leftIcon={<ActionDonutSmall />}
               />
             </List>

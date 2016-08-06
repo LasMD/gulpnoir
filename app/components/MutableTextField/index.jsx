@@ -24,9 +24,10 @@ export default class MutableTextField extends Component {
     return (
       <TextField
         name={this.props.name}
+        type={this.props.type}
         className={this.props.className}
         placeholder={this.props.placeholder}
-        onChange={this._onChange}
+        onChange={this.props.onChange ? this._userOnChange : this._onChange}
         onKeyDown={this._onKeyDown}
         value={this.state.value}
         autoFocus={true}
@@ -36,6 +37,10 @@ export default class MutableTextField extends Component {
 
   getValue() {
     return this.state.value;
+  }
+
+  _userOnChange = (event) => {
+    this.props.onChange(event, this._onChange.bind(this));
   }
 
   _onChange = (event: any) => {
