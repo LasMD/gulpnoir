@@ -6,7 +6,7 @@ import FlatButton from 'material-ui/FlatButton';
 import { Container } from 'flux/utils';
 
 import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
-import TasksStore from '../../stores/Tasks/TasksStore.jsx';
+import TasksStore from '../../stores/Tasks/TasksStore';
 
 class TaskComponent extends Component {
 
