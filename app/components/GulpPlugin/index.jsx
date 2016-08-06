@@ -66,7 +66,12 @@ class GulpPlugin extends Component {
   }
 
   onPluginInstall() {
-    this.props.onPluginSelect(this.props.index);
+    GulpPluginsDispatch({
+      type: 'plugins/install',
+      plugin: this.props
+    });
+    this.state.installed = true;
+    this.forceUpdate();
   }
   onPluginUninstall() {
     this.props.onPluginSelect(this.props.index);
@@ -92,7 +97,7 @@ class GulpPlugin extends Component {
             {(this.props.installed || this.state.installed) ?
               <FlatButton label={'Uninstall'} onClick={this.onPluginUninstall.bind(this)}  />
               :
-              <FlatButton label={'Select'} onClick={this.onPluginInstall.bind(this)} />
+              <FlatButton label={'Install'} onClick={this.onPluginInstall.bind(this)} />
             }
 
             </p>

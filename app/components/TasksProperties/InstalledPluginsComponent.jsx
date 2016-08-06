@@ -5,6 +5,7 @@ import { List, ListItem } from 'material-ui/List';
 import { Container } from 'flux/utils';
 import { DragSource } from 'react-dnd';
 import DraggablePlugin from './DraggablePlugin';
+import EditorLinearScale from 'material-ui/svg-icons/editor/linear-scale';
 import './_style.scss';
 
 class InstalledPluginsComponent extends Component {
@@ -49,6 +50,7 @@ class InstalledPluginsComponent extends Component {
         primaryText="Plugins"
         primaryTogglesNestedList={true}
         nestedItems={plugins}
+        leftIcon={<EditorLinearScale />}
         />
     );
   }

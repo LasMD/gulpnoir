@@ -7,6 +7,8 @@ import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
 import FlatButton from 'material-ui/FlatButton';
 import {Container} from 'flux/utils';
 import {List, ListItem} from 'material-ui/List';
+import EditorFormatListBulleted from 'material-ui/svg-icons/editor/format-list-bulleted'
+import ActionDonutSmall from 'material-ui/svg-icons/action/donut-small'
 
 import './_style.scss';
 
@@ -67,8 +69,15 @@ class TasksProperties extends Component {
                 primaryText="Tasks"
                 primaryTogglesNestedList={true}
                 nestedItems={availableTasks ? availableTasks : []}
+                leftIcon={<EditorFormatListBulleted />}
                 />
               <InstalledPluginsComponent />
+              <ListItem
+                key={3}
+                primaryText="Special"
+                primaryTogglesNestedList={true}
+                leftIcon={<ActionDonutSmall />}
+              />
             </List>
           </Tab>
           {anyTasksOpen ? (
