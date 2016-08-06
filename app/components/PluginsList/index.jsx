@@ -4,8 +4,8 @@ import GulpPlugin from '../GulpPlugin';
 import Drawer from 'material-ui/Drawer';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Divider from 'material-ui/Divider';
-import GulpPluginsStore from '../../store/GulpPlugins/GulpPluginsStore';
-import { GulpPluginsDispatch } from '../../store/GulpPlugins/GulpPluginsDispatcher';
+import GulpPluginsStore from '../../stores/GulpPlugins/GulpPluginsStore';
+import { GulpPluginsDispatch } from '../../stores/GulpPlugins/GulpPluginsDispatcher';
 import {Container} from 'flux/utils';
 
 import vstyles from './_style.scss';
