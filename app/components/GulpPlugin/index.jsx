@@ -5,7 +5,7 @@ import vstyles from './_style.scss';
 import FlatButton from 'material-ui/FlatButton';
 import { DragSource } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
-import { GulpPluginsDispatch } from '../../store/GulpPlugins/GulpPluginsDispatcher';
+import { GulpPluginsDispatch } from '../../stores/GulpPlugins/GulpPluginsDispatcher';
 
 const cardSource = {
   beginDrag() {
@@ -42,10 +42,6 @@ function collect(connect, monitor) {
 
 
 class GulpPlugin extends Component {
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
 
   constructor(props) {
     super(props);

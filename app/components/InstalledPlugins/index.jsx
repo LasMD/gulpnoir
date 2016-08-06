@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { GulpPluginsDispatch } from '../../store/GulpPlugins/GulpPluginsDispatcher';
-import GulpPluginsStore from '../../store/GulpPlugins/GulpPluginsStore';
+import { GulpPluginsDispatch } from '../../stores/GulpPlugins/GulpPluginsDispatcher';
+import GulpPluginsStore from '../../stores/GulpPlugins/GulpPluginsStore';
 import { List, ListItem } from 'material-ui/List';
 import { Container } from 'flux/utils';
 import { DragSource } from 'react-dnd';

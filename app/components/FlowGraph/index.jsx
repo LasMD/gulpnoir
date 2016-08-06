@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {findDOMNode } from 'react-dom';
 import joint from 'jointjs';
-import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
-import TasksStore from '../../store/Tasks/TasksStore';
+import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
+import TasksStore from '../../stores/Tasks/TasksStore';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';

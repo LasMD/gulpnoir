@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Tab, Tabs } from 'react-draggable-tab';
 import FlowGraph from '../FlowGraph';
-import { TasksDispatch } from '../../store/Tasks/TasksDispatcher';
-import TasksStore from '../../store/Tasks/TasksStore';
+import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
+import TasksStore from '../../stores/Tasks/TasksStore';
 import { Container } from 'flux/utils';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';

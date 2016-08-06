@@ -3,7 +3,7 @@ import TasksDispatcher, { TasksDispatch } from './TasksDispatcher';
 import { GulpPluginsDispatch } from '../GulpPlugins/GulpPluginsDispatcher';
 import GulpPluginsStore from '../GulpPlugins/GulpPluginsStore';
 import Immutable from 'immutable';
-import Task from './Task.jsx';
+import Task from './Task';
 import StateSync from '../StateSync';
 import { ipcRenderer } from 'electron';
 
