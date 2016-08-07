@@ -194,17 +194,15 @@ class FlowGraph extends Component {
       this.graph = this.graph.fromJSON(JSON.parse(this.props.task.get('graph')));
     }
 
-    setTimeout(() => {
-      TasksChannels.dispatch({
-        channel: 'tasks/update',
-        outgoing: {
-          task: {
-            id: this.props.task.get('id'),
-            exportGraph: this.exportGraph.bind(this)
-          }
+    TasksChannels.dispatch({
+      channel: 'tasks/update',
+      outgoing: {
+        task: {
+          id: this.props.task.get('id'),
+          exportGraph: this.exportGraph.bind(this)
         }
-      });
-    }, 500);
+      }
+    });
 
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
       this.setSelectedCell(cell);

@@ -52,11 +52,9 @@ class FlowGraphWindow extends Component {
       selectedTab: TasksChannels.getSelectedTask(),
     };
 
-    setTimeout(() => {
-      TasksChannels.dispatch({
-        channel: 'tasks/new'
-      });
-    }, 250);
+    TasksChannels.dispatch({
+      channel: 'tasks/new'
+    });
   }
 
   componentDidMount() {
