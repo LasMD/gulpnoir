@@ -54,16 +54,6 @@ class InstalledPluginsComponent extends Component {
         />
     );
   }
-
-  openTask(id) {
-    TasksDispatch({
-      type: 'tasks/open',
-      task: {
-        id: id
-      }
-    });
-  }
-
 }
 
 export default Container.create(InstalledPluginsComponent);

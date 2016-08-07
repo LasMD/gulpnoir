@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Tab, Tabs } from 'react-draggable-tab';
 import FlowGraph from '../FlowGraph';
-import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
-import TasksStore from '../../stores/Tasks/TasksStore';
+import TasksChannels from '../../stores/Tasks/TasksChannels';
 import { Container } from 'flux/utils';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -16,17 +15,17 @@ import './_style.scss';
 class FlowGraphWindow extends Component {
 
   static getStores() {
-    return [TasksStore];
+    return [TasksChannels];
   }
 
   static calculateState(prevState) {
 
     let toReturn = {
-      openTasks: TasksStore.getOpenTasks(),
-      tasks: TasksStore.getTasks()
+      openTasks: TasksChannels.getOpenTasks(),
+      tasks: TasksChannels.getTasks()
     };
 
-    let selectedTask = TasksStore.getSelectedTask();
+    let selectedTask = TasksChannels.getSelectedTask();
 
     if (selectedTask) {
       toReturn.selectedTab = selectedTask.get('id').toString();
@@ -48,14 +47,14 @@ class FlowGraphWindow extends Component {
     super(props);
 
     this.state = {
-      openTasks: TasksStore.getOpenTasks(),
-      tasks: TasksStore.getTasks(),
-      selectedTab: TasksStore.getSelectedTask(),
+      openTasks: TasksChannels.getOpenTasks(),
+      tasks: TasksChannels.getTasks(),
+      selectedTab: TasksChannels.getSelectedTask(),
     };
 
     setTimeout(() => {
-      TasksDispatch({
-        'type': 'tasks/new'
+      TasksChannels.dispatch({
+        channel: 'tasks/new'
       });
     }, 250);
   }
@@ -65,25 +64,31 @@ class FlowGraphWindow extends Component {
 
   handleTabSelect(e, key, currentTabs) {
 
-    TasksDispatch({
-      type: 'tasks/setSelectedTaskID',
-      task: {
-        id: (key*1) // Cast key from string to integer
+    TasksChannels.dispatch({
+      channel: 'tasks/setSelectedTaskID',
+      outgoing: {
+        task: {
+          id: (key*1) // Cast key from string to integer
+        }
       }
     });
   }
 
   handleTabClose(e, key, currentTabs) {
     if (key == this.state.selectedTab) {
-      TasksDispatch({
-        type: 'tasks/items/select',
-        item: null
+      TasksChannels.dispatch({
+        channel: 'tasks/items/select',
+        outgoing: {
+          item: null
+        }
       });
     }
-    TasksDispatch({
-      type: 'tasks/close',
-      task: {
-        id: key
+    TasksChannels.dispatch({
+      channel: 'tasks/close',
+      outgoing: {
+        task: {
+          id: key
+        }
       }
     });
   }
@@ -98,10 +103,12 @@ class FlowGraphWindow extends Component {
 
   handleClose(type) {
     if (type == "Functional" || type == "Parallel") {
-      TasksDispatch({
-        'type': 'tasks/new',
-        'task': {
-          'type': type
+      TasksChannels.dispatch({
+        channel: 'tasks/new',
+        outgoing: {
+          task: {
+            type: type
+          }
         }
       });
     }

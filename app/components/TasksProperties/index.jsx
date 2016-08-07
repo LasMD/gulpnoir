@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import TasksStore from '../../stores/Tasks/TasksStore';
 import TaskComponent from './TaskComponent';
 import InstalledPluginsComponent from '../InstalledPlugins';
-import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
+import TasksChannels from '../../stores/Tasks/TasksChannels';
 import FlatButton from 'material-ui/FlatButton';
 import {Container} from 'flux/utils';
 import {List, ListItem} from 'material-ui/List';
@@ -16,24 +15,24 @@ class TasksProperties extends Component {
 
 
   static getStores() {
-    return [TasksStore];
+    return [TasksChannels];
   }
 
   static calculateState(prevState) {
     return {
-      openTasks: TasksStore.getOpenTasks(),
-      tasks: TasksStore.getTasks(),
-      selectedTask: TasksStore.getSelectedTask(),
-      selectedItem: TasksStore.getSelectedItem(),
+      openTasks: TasksChannels.getOpenTasks(),
+      tasks: TasksChannels.getTasks(),
+      selectedTask: TasksChannels.getSelectedTask(),
+      selectedItem: TasksChannels.getSelectedItem(),
     };
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      openTasks: TasksStore.getOpenTasks(),
-      tasks: TasksStore.getTasks(),
-      selectedTask: TasksStore.getSelectedTask()
+      openTasks: TasksChannels.getOpenTasks(),
+      tasks: TasksChannels.getTasks(),
+      selectedTask: TasksChannels.getSelectedTask()
     };
   }
 
@@ -96,10 +95,12 @@ class TasksProperties extends Component {
   }
 
   openTask(id) {
-    TasksDispatch({
-      type: 'tasks/open',
-      task: {
-        id: id
+    TasksChannels.dispatch({
+      channel: 'tasks/open',
+      outgoing: {
+        task: {
+          id: id
+        }
       }
     });
   }

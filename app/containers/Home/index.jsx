@@ -5,14 +5,13 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import TasksProperties from '../../components/TasksProperties';
+import TasksChannels from '../../stores/Tasks/TasksChannels';
 import ItemProperties from '../../components/ItemProperties';
 import FlowGraph from '../../components/FlowGraph';
 import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
 import FlexRow from '../../components/FlexRow';
 import Divider from 'material-ui/Divider';
-import TasksStore from '../../stores/Tasks/TasksStore';
-import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
 import { Container } from 'flux/utils';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
@@ -24,12 +23,12 @@ import vstyles from './_style.scss';
 class HomePage extends Component {
 
   static getStores() {
-    return [TasksStore];
+    return [TasksChannels];
   }
 
   static calculateState(prevState) {
     return {
-      selectedItem: TasksStore.getSelectedItem(),
+      selectedItem: TasksChannels.getSelectedItem(),
     };
   }
 

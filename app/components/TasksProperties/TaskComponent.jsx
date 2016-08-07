@@ -5,18 +5,17 @@ import RadioButtonGroup from '../MutableRadioButtonGroup';
 import FlatButton from 'material-ui/FlatButton';
 import { Container } from 'flux/utils';
 
-import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
-import TasksStore from '../../stores/Tasks/TasksStore';
+import TasksChannels from '../../stores/Tasks/TasksChannels';
 
 class TaskComponent extends Component {
 
   static getStores() {
-    return [TasksStore];
+    return [TasksChannels];
   }
 
   static calculateState() {
     return {
-      tasks: TasksStore.getTasks()
+      tasks: TasksChannels.getTasks()
     };
   }
 
@@ -35,12 +34,14 @@ class TaskComponent extends Component {
 
   _saveChanges() {
     const task = this.props.task;
-    TasksDispatch({
-      type: 'tasks/update',
-      task: {
-        id: task.get('id'),
-        name: this.refs[`taskName${task.get('id')}`].getValue(),
-        type: this.refs[`taskType${task.get('id')}`].getValue(),
+    TasksChannels.dispatch({
+      channel: 'tasks/update',
+      outgoing: {
+        task: {
+          id: task.get('id'),
+          name: this.refs[`taskName${task.get('id')}`].getValue(),
+          type: this.refs[`taskType${task.get('id')}`].getValue(),
+        }
       }
     });
   }

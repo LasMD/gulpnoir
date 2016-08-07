@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {findDOMNode } from 'react-dom';
 import joint from 'jointjs';
-import { TasksDispatch } from '../../stores/Tasks/TasksDispatcher';
-import TasksStore from '../../stores/Tasks/TasksStore';
+import TasksChannels from '../../stores/Tasks/TasksChannels';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
@@ -35,12 +34,12 @@ function collect(connect, monitor) {
 class FlowGraph extends Component {
 
   static getStores() {
-    return [TasksStore];
+    return [TasksChannels];
   }
 
   static calculateState(prevState) {
     return {
-      selectedCell: TasksStore.getSelectedItem()
+      selectedCell: TasksChannels.getSelectedItem()
     }
   }
 
@@ -113,9 +112,11 @@ class FlowGraph extends Component {
     boundCell.remove();
     this.graphState.boundCellID = null;
     this.graphState.selectedCell = null;
-    TasksDispatch({
-      type: 'tasks/items/select',
-      item: null
+    TasksChannels.dispatch({
+      channel: 'tasks/items/select',
+      outgoing: {
+        item: null
+      }
     });
   }
 
@@ -151,9 +152,11 @@ class FlowGraph extends Component {
     this.graphState.boundCellID = boundCell.id;
     this.graph.addCell(boundCell);
     boundCell.embed(cell.model);
-    TasksDispatch({
-      type: 'tasks/items/select',
-      item: cell.model
+    TasksChannels.dispatch({
+      channel: 'tasks/items/select',
+      outgoing: {
+        item: cell.model
+      }
     });
     return boundCell;
   }
@@ -192,11 +195,13 @@ class FlowGraph extends Component {
     }
 
     setTimeout(() => {
-      TasksDispatch({
-        type: 'tasks/update',
-        task: {
-          id: this.props.task.get('id'),
-          exportGraph: this.exportGraph.bind(this)
+      TasksChannels.dispatch({
+        channel: 'tasks/update',
+        outgoing: {
+          task: {
+            id: this.props.task.get('id'),
+            exportGraph: this.exportGraph.bind(this)
+          }
         }
       });
     }, 500);
