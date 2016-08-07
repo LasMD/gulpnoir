@@ -74,21 +74,30 @@ class FlowGraphWindow extends Component {
 
   handleTabClose(e, key, currentTabs) {
     if (key == this.state.selectedTab) {
-      TasksChannels.dispatch({
+      TasksChannels.dispatch(() => ({
         channel: 'tasks/items/select',
         outgoing: {
           item: null
         }
-      });
+      }));
     }
-    TasksChannels.dispatch({
+
+    TasksChannels.dispatch(() => ([{
+      channel: 'tasks/update',
+      outgoing: {
+        task: {
+          id: key,
+        }
+      }
+    }, {
       channel: 'tasks/close',
       outgoing: {
         task: {
           id: key
         }
       }
-    });
+    }]));
+
   }
 
   handleTabPositionChange(e, key, currentTabs) {
