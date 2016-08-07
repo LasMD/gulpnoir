@@ -98,21 +98,21 @@ class TasksChannels extends Channelizer {
         }
       });
 
-      // Nested worlds are not yet allowed
-      //
-      // receiver.world('items/', ({ receiver }) => {
-      //
-      //   receiver.tune({
-      //     channel: 'new',
-      //     controller: ({ state, incoming }) => newState.setIn(['taskItems', incoming.task.id, prop], incoming.task[prop])
-      //   });
-      //
-      //   receiver.tune({
-      //     channel: 'select',
-      //     controller: ({ state, incoming }) => state.set('selectedItem', incoming.item)
-      //   });
-      //
-      // });
+      receiver.world({
+        prefix: 'items/',
+        controller: ({ receiver }) => {
+
+        receiver.tune({
+          channel: 'new',
+          controller: ({ state, incoming }) => newState.setIn(['taskItems', incoming.task.id, prop], incoming.task[prop])
+        });
+
+        receiver.tune({
+          channel: 'select',
+          controller: ({ state, incoming }) => state.set('selectedItem', incoming.item)
+        });
+
+      }});
 
     }});
   }
