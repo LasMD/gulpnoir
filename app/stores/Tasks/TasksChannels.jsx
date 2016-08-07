@@ -69,12 +69,7 @@ class TasksChannels extends Channelizer {
 
       receiver.tune({
         channel: 'new',
-        controller: ({ state, incoming }) => {
-          if (incoming.task) {
-            return this._newTask({state, ...incoming.task});
-          }
-          return state;
-        }
+        controller: this.ctrlNewTask
       });
 
       receiver.tune({
@@ -139,15 +134,16 @@ class TasksChannels extends Channelizer {
   }
 
 
-  _newTask({state, name, type}) {
+  ctrlNewTask({ state, incoming }) {
+    if (!incoming.task) return state;
     let tasks = state.get('tasks');
     let taskNo = 1;
     if (tasks) {
       taskNo = tasks.size + 1;
     }
-    name = name || 'NewTask' + taskNo;
-    type = type || "Functional";
-    const newTask = new Task({name, type});
+    let name = incoming.task.name || 'NewTask' + taskNo;
+    let type = incoming.task.type || "Functional";
+    const newTask = new Task({ name, type });
 
     let newState = state.set('selectedTaskID', newTask.id)
       .setIn(['tasks', newTask.id], newTask);
