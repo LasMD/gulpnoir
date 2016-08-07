@@ -5,7 +5,7 @@ import vstyles from './_style.scss';
 import FlatButton from 'material-ui/FlatButton';
 import { DragSource } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
-import { GulpPluginsDispatch } from '../../stores/GulpPlugins/GulpPluginsDispatcher';
+import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 
 const cardSource = {
   beginDrag() {
@@ -23,9 +23,11 @@ const cardSource = {
     position.x = Math.floor(position.x / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     position.y = Math.floor(position.y / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     grid.createPlugin({text: props.name.replace(/gulp(_|\-)?/g, ""), ...position});
-    GulpPluginsDispatch({
-      type: 'plugins/install',
-      plugin: props
+    GulpPluginsChannels.dispatch({
+      channel: 'plugins/install',
+      outgoing: {
+        plugin: props
+      }
     });
     component.state.installed = true;
     component.forceUpdate();
@@ -62,9 +64,11 @@ class GulpPlugin extends Component {
   }
 
   onPluginInstall() {
-    GulpPluginsDispatch({
-      type: 'plugins/install',
-      plugin: this.props
+    GulpPluginsChannels.dispatch({
+      channel: 'plugins/install',
+      outgoing: {
+        plugin: this.props
+      }
     });
     this.state.installed = true;
     this.forceUpdate();

@@ -1,7 +1,6 @@
 import { ReduceStore } from 'flux/utils';
 import { Channelizer } from 'channelizer';
-import { GulpPluginsDispatch } from '../GulpPlugins/GulpPluginsDispatcher';
-import GulpPluginsStore from '../GulpPlugins/GulpPluginsStore';
+import GulpPluginsChannels from '../GulpPlugins/GulpPluginsChannels';
 import Immutable from 'immutable';
 import Task from './Task';
 import StateSync from '../StateSync';
@@ -13,7 +12,7 @@ class TasksChannels extends Channelizer {
     ipcRenderer.on('save_state', (e, filename) => {
       StateSync.save(filename, {
         tasks: this.getState(),
-        installedPlugins: GulpPluginsStore.getInstalledPlugins()
+        installedPlugins: GulpPluginsChannels.getInstalledPlugins()
       });
     });
     ipcRenderer.on('load_state', (e, msg) => {
@@ -24,9 +23,11 @@ class TasksChannels extends Channelizer {
           state: newstate.tasks
         }
       });
-      GulpPluginsDispatch({
-        type: 'plugins/installed/set',
-        installed: newstate.installedPlugins
+      GulpPluginsChannels.dispatch({
+        channel: 'plugins/installed/set',
+        outgoing: {
+          installed: newstate.installedPlugins
+        }
       });
     });
 

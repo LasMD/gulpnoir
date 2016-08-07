@@ -4,8 +4,7 @@ import GulpPlugin from '../GulpPlugin';
 import Drawer from 'material-ui/Drawer';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Divider from 'material-ui/Divider';
-import GulpPluginsStore from '../../stores/GulpPlugins/GulpPluginsStore';
-import { GulpPluginsDispatch } from '../../stores/GulpPlugins/GulpPluginsDispatcher';
+import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 import {Container} from 'flux/utils';
 
 import vstyles from './_style.scss';
@@ -13,12 +12,12 @@ import vstyles from './_style.scss';
 class PluginsList extends Component {
 
   static getStores() {
-    return [ GulpPluginsStore ];
+    return [ GulpPluginsChannels ];
   }
 
   static calculateState() {
     return {
-      gulpPlugins: GulpPluginsStore.getGulpPlugins()
+      gulpPlugins: GulpPluginsChannels.getGulpPlugins()
     };
   }
 
@@ -54,7 +53,7 @@ class PluginsList extends Component {
 
   getGulpPluginListItem(index) {
     let plugin = this.state.gulpPlugins[index];
-    if (GulpPluginsStore.getInstalledPlugins().get(plugin.name[0])) {
+    if (GulpPluginsChannels.getInstalledPlugins().get(plugin.name[0])) {
       plugin.installed = true;
     }
     return (

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { GulpPluginsDispatch } from '../../stores/GulpPlugins/GulpPluginsDispatcher';
-import GulpPluginsStore from '../../stores/GulpPlugins/GulpPluginsStore';
+import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 import { List, ListItem } from 'material-ui/List';
 import { Container } from 'flux/utils';
 import { DragSource } from 'react-dnd';
@@ -12,19 +11,19 @@ class InstalledPluginsComponent extends Component {
 
 
   static getStores() {
-    return [GulpPluginsStore];
+    return [GulpPluginsChannels];
   }
 
   static calculateState(prevState) {
     return {
-      installedPlugins: GulpPluginsStore.getInstalledPlugins()
+      installedPlugins: GulpPluginsChannels.getInstalledPlugins()
     };
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      installedPlugins: GulpPluginsStore.getInstalledPlugins()
+      installedPlugins: GulpPluginsChannels.getInstalledPlugins()
     };
   }
 
