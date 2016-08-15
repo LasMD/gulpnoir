@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {findDOMNode } from 'react-dom';
+import { findDOMNode } from 'react-dom';
 import joint from 'jointjs';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import { Container } from 'flux/utils';
@@ -10,12 +10,12 @@ import './_style.scss';
 
 const gridTarget = {
   drop(props, monitor, component) {
-    let offset = monitor.getClientOffset();
-    let componentRect = component.refs.placeholder.getClientRects()[0];
+    const offset = monitor.getClientOffset();
+    const componentRect = component.refs.placeholder.getClientRects()[0];
     const position = {
-        x: offset.x - componentRect.left,
-        y: offset.y - componentRect.top
-      };
+      x: offset.x - componentRect.left,
+      y: offset.y - componentRect.top
+    };
     return {
       grid: component,
       position
@@ -37,10 +37,10 @@ class FlowGraph extends Component {
     return [TasksChannels];
   }
 
-  static calculateState(prevState) {
+  static calculateState() {
     return {
       selectedCell: TasksChannels.getSelectedItem()
-    }
+    };
   }
 
   constructor(props) {
@@ -50,14 +50,10 @@ class FlowGraph extends Component {
       graphCellsAttrs: new Map(),
       selectedCell: null,
       boundCellID: null
-    }
+    };
   }
 
-  test() {
-    console.log('yolo');
-  }
-
-  createPlugin({x, y, text}) {
+  createPlugin({ x, y, text }) {
     const props = {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.PLUGIN

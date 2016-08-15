@@ -1,28 +1,29 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import Paper from 'material-ui/Paper';
-import vstyles from './_style.scss';
 import FlatButton from 'material-ui/FlatButton';
 import { DragSource } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 
+import './_style.scss';
+
 const cardSource = {
   beginDrag() {
     return {
 
-    }
+    };
   },
 
   endDrag(props, monitor, component) {
-    let result = monitor.getDropResult();
+    const result = monitor.getDropResult();
     if (!result) return;
-    let { grid, position } = monitor.getDropResult();
+    const { grid, position } = monitor.getDropResult();
     position.x -= GRID_CONST.ITEM.PLUGIN.size.width / 2;
     position.y -= GRID_CONST.ITEM.PLUGIN.size.height / 2;
     position.x = Math.floor(position.x / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     position.y = Math.floor(position.y / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
-    grid.createPlugin({text: props.name.replace(/gulp(_|\-)?/g, ""), ...position});
+    grid.createPlugin({ text: props.name.replace(/gulp(_|\-)?/g, ''), ...position });
     GulpPluginsChannels.dispatch({
       channel: 'plugins/install',
       outgoing: {
@@ -57,9 +58,9 @@ class GulpPlugin extends Component {
     }
     if (this.props.reportHeight) {
       this.props.reportHeight({
-          index: this.props.index,
-          height: findDOMNode(this).offsetHeight
-        });
+        index: this.props.index,
+        height: findDOMNode(this).offsetHeight
+      });
     }
   }
 
@@ -81,15 +82,15 @@ class GulpPlugin extends Component {
     const { connectDragSource, isDragging } = this.props;
     return connectDragSource(
       <div>
-        <Paper zDepth={2}
-              className={`pluginPaper`}
-              style={(this.props.installed || this.state.installed) ?
-                {
-                  backgroundColor: 'limegreen'
-                } :
-                {}
+        <Paper
+          zDepth={2}
+          className={`pluginPaper`}
+          style={(this.props.installed || this.state.installed) ?
+            {
+              backgroundColor: 'limegreen'
+            } : {}
               }
-          >
+        >
           <h3>{this.props.name} <i>v{this.props.version}</i></h3>
           <h4>Author: {this.props.author}</h4>
           <p>{this.props.description}</p>
@@ -109,10 +110,10 @@ class GulpPlugin extends Component {
           }
           </p>
         </Paper>
-    </div>
+      </div>
     );
   }
 }
 
-export default DragSource("GraphItems", cardSource, collect)(GulpPlugin);
+export default DragSource('GraphItems', cardSource, collect)(GulpPlugin);
 export { GulpPlugin as Jest };
