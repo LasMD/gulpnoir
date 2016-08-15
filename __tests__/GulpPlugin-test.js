@@ -2,6 +2,7 @@ import React from 'react';
 import { Jest as GulpPlugin } from '../app/components/GulpPlugin';
 import renderer from 'react-test-renderer';
 import Faker from 'faker';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 jest.mock('react/lib/ReactDefaultInjection');
 
@@ -18,20 +19,22 @@ describe('GulpPlugin', () => {
     GP.installed = false;
 
     const component = renderer.create(
-      <GulpPlugin
-        index={0}
-        name={GP.name}
-        author={GP.author}
-        version={GP.version}
-        description={GP.description}
-        keywords={GP.keywords.split(' ')}
-        onPluginSelect={() => {}}
-        installed={GP.installed}
-        connectDragSource={(props) => props}
-      />
+      <MuiThemeProvider>
+        <GulpPlugin
+          index={0}
+          name={GP.name}
+          author={GP.author}
+          version={GP.version}
+          description={GP.description}
+          keywords={GP.keywords.split(' ')}
+          onPluginSelect={() => {}}
+          installed={GP.installed}
+          connectDragSource={(props) => props}
+        />
+      </MuiThemeProvider>
     );
-    // let tree = component.toJSON();
-    // expect(tree).toMatchSnapshot();
-    //
+    let tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+
   });
 });
