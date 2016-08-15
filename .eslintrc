@@ -3,7 +3,6 @@
   "extends": "airbnb",
   "env": {
     "browser": true,
-    "mocha": true,
     "node": true
   },
   "rules": {
@@ -19,6 +18,15 @@
     "react"
   ],
   "settings": {
-    "import/resolver": "webpack"
+    "import/resolver": {
+      "webpack": {
+        "config": './webpack.config.base.js'
+      }
+    }
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
   }
 }
