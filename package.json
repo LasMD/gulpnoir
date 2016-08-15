@@ -5,7 +5,7 @@
   "description": "Visual Development UI for Gulp and Gulpfiles",
   "main": "main.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --no-cache",
     "lint": "eslint app test *.js",
     "hot-server": "node -r babel-register server.js",
     "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
@@ -17,6 +17,24 @@
     "package-all": "npm run package -- --all",
     "postinstall": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\""
+  },
+  "jest": {
+    "verbose": true,
+    "scriptPreprocessor": "<rootDir>/preprocessor.jest",
+    "moduleFileExtensions": [
+      "jsx",
+      "js"
+    ],
+    "unmockedModulePathPatterns": [
+      "react",
+      "react-dom",
+      "react-test-renderer",
+      "react-addons-test-utils",
+      "faker",
+      "react-dnd",
+      "lodash",
+      "<rootDir>/app/"
+    ]
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -81,6 +99,7 @@
     "eslint-plugin-react": "^5.1.1",
     "express": "^4.13.4",
     "extract-text-webpack-plugin": "^1.0.1",
+    "faker": "^3.1.0",
     "fbjs-scripts": "^0.7.1",
     "file-loader": "^0.9.0",
     "jest": "^14.1.0",

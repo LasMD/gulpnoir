@@ -115,3 +115,4 @@ class GulpPlugin extends Component {
 }
 
 export default DragSource("GraphItems", cardSource, collect)(GulpPlugin);
+export { GulpPlugin as Jest };
