@@ -24,7 +24,7 @@ describe('GulpPlugin', () => {
         author={GP.author}
         version={GP.version}
         description={GP.description}
-        keywords={GP.keywords.split('')}
+        keywords={GP.keywords.split(' ')}
         onPluginSelect={() => {}}
         installed={GP.installed}
         connectDragSource={(props) => props}

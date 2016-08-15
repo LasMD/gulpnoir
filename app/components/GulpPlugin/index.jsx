@@ -103,8 +103,8 @@ class GulpPlugin extends Component {
             </p>
           <p className={'keywords-wrapper'}>
           {
-            this.props.keywords.map((keyword) => {
-              return <i className={'keyword'}>{keyword}</i>;
+            this.props.keywords.map((keyword, index) => {
+              return <i key={index} className={'keyword'}>{keyword}</i>;
             })
           }
           </p>
