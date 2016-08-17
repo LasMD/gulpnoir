@@ -82,21 +82,25 @@ class FlowGraphWindow extends Component {
       }));
     }
 
-    TasksChannels.dispatch(() => ([{
-      channel: 'tasks/update',
-      outgoing: {
-        task: {
-          id: key,
+    TasksChannels.dispatch(() => {
+
+      return [{
+        channel: 'tasks/update',
+        outgoing: {
+          task: {
+            id: key,
+          }
         }
-      }
-    }, {
-      channel: 'tasks/close',
-      outgoing: {
-        task: {
-          id: key
+      }, {
+        channel: 'tasks/close',
+        outgoing: {
+          task: {
+            id: key
+          }
         }
-      }
-    }]));
+      }];
+
+    });
 
   }
 
