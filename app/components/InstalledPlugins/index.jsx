@@ -35,7 +35,7 @@ class InstalledPluginsComponent extends Component {
 
     this.state.installedPlugins.map((plugin) => {
       plugins.push((
-        <DraggablePlugin plugin={plugin} />
+        <DraggablePlugin key={plugin.name + 'li'} plugin={plugin} />
       ));
     });
 
@@ -48,7 +48,7 @@ class InstalledPluginsComponent extends Component {
         primaryTogglesNestedList={true}
         nestedItems={plugins}
         leftIcon={<EditorLinearScale />}
-        />
+      />
     );
   }
 }

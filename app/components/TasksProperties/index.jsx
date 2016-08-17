@@ -50,9 +50,9 @@ class TasksProperties extends Component {
       availableTasks = [];
     }
 
-    this.state.tasks.map((task) => {
+    this.state.tasks.map((task, id) => {
       availableTasks.push((
-        <ListItem primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
+        <ListItem key={task.get('id')} primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
       ));
     });
 
