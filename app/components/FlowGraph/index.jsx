@@ -205,8 +205,21 @@ class FlowGraph extends Component {
     });
 
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
+      if (cell.model.attributes.type == 'link' && cell.model.attributes.target.id) {
+        let linkCount = 0;
+        let connector = this.graph.getCell(cell.model.attributes.target.id).collection.find(function(model) {
+          if (model.get('type') == 'link') {
+            linkCount++;
+          }
+        });
+        if (linkCount > 1) {
+          cell.remove();
+          return;
+        }
+      }
       if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
         cell.remove();
+        return;
       }
     });
 
