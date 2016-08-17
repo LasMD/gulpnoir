@@ -94,6 +94,18 @@ class TasksChannels extends Channelizer {
         }
       });
 
+      receiver.tune({
+        channel: 'arrange',
+        controller: ({ state, incoming }) => {
+          let openTaskLength = state.get('openTasks').size;
+          let newOpenTaskArrangement = state.get('openTasks').splice(0, openTaskLength);
+          incoming.forEach((newTabArrangement) => {
+            newOpenTaskArrangement = newOpenTaskArrangement.push(newTabArrangement.key * 1);
+          });
+          return state.set('openTasks', newOpenTaskArrangement);
+        }
+      });
+
       receiver.world({
         prefix: 'items/',
         controller: ({ receiver }) => {

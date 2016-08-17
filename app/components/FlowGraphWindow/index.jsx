@@ -105,7 +105,10 @@ class FlowGraphWindow extends Component {
   }
 
   handleTabPositionChange(e, key, currentTabs) {
-    this.setState({tabs: currentTabs});
+    TasksChannels.dispatch({
+      channel: 'tasks/arrange',
+      outgoing: currentTabs
+    });
   }
 
   handleTabAddButtonClick(e, currentTabs) {
