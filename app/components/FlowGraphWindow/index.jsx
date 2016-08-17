@@ -116,7 +116,7 @@ class FlowGraphWindow extends Component {
   }
 
   handleClose(type) {
-    if (type == "Functional" || type == "Parallel") {
+    if (type == "Functional" || type == "Parallel" || type == "Sequence") {
       TasksChannels.dispatch({
         channel: 'tasks/new',
         outgoing: {
@@ -164,6 +164,10 @@ class FlowGraphWindow extends Component {
       <FlatButton
         label="Parallel"
         onTouchTap={this.handleClose.bind(this, 'Parallel')}
+        />,
+      <FlatButton
+        label="Sequence"
+        onTouchTap={this.handleClose.bind(this, 'Sequence')}
         />,
       <FlatButton
         label="Cancel"
