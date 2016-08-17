@@ -21,9 +21,10 @@ class TasksProperties extends Component {
   static calculateState(prevState) {
     return {
       openTasks: TasksChannels.getOpenTasks(),
-      tasks: TasksChannels.getTasks(),
+      functionalTasks: TasksChannels.getTasks('Functional'),
+      parallelTasks: TasksChannels.getTasks('Parallel'),
+      sequenceTasks: TasksChannels.getTasks('Sequence'),
       selectedTask: TasksChannels.getSelectedTask(),
-      selectedItem: TasksChannels.getSelectedItem(),
     };
   }
 
@@ -31,7 +32,9 @@ class TasksProperties extends Component {
     super(props);
     this.state = {
       openTasks: TasksChannels.getOpenTasks(),
-      tasks: TasksChannels.getTasks(),
+      functionalTasks: TasksChannels.getTasks('Functional'),
+      parallelTasks: TasksChannels.getTasks('Parallel'),
+      sequenceTasks: TasksChannels.getTasks('Sequence'),
       selectedTask: TasksChannels.getSelectedTask()
     };
   }
@@ -44,14 +47,35 @@ class TasksProperties extends Component {
     }
 
     let anyTasksOpen = this.state.openTasks.size > 0;
-    let availableTasks = 0;
 
-    if (this.state.tasks.size > 0) {
-      availableTasks = [];
+    let availableFunctionalTasks = 0;
+    if (this.state.functionalTasks.size > 0) {
+      availableFunctionalTasks = [];
     }
+    this.state.functionalTasks.map((task, id) => {
+      availableFunctionalTasks.push((
+        <ListItem key={task.get('id')} primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
+      ));
+    });
 
-    this.state.tasks.map((task, id) => {
-      availableTasks.push((
+
+    let availableParallelTasks = 0;
+    if (this.state.parallelTasks.size > 0) {
+      availableParallelTasks = [];
+    }
+    this.state.parallelTasks.map((task, id) => {
+      availableParallelTasks.push((
+        <ListItem key={task.get('id')} primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
+      ));
+    });
+
+
+    let availableSequenceTasks = 0;
+    if (this.state.sequenceTasks.size > 0) {
+      availableSequenceTasks = [];
+    }
+    this.state.sequenceTasks.map((task, id) => {
+      availableSequenceTasks.push((
         <ListItem key={task.get('id')} primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
       ));
     });
@@ -70,17 +94,29 @@ class TasksProperties extends Component {
                 key={1}
                 primaryText="Tasks"
                 primaryTogglesNestedList={true}
-                nestedItems={availableTasks ? availableTasks : []}
+                nestedItems={[
+                  <ListItem
+                    key={"TasksFunctional"}
+                    primaryText="Functional"
+                    primaryTogglesNestedList={true}
+                    nestedItems={availableFunctionalTasks ? availableFunctionalTasks : []}
+                  />,
+                  <ListItem
+                    key={"TasksParallel"}
+                    primaryText="Parallel"
+                    primaryTogglesNestedList={true}
+                    nestedItems={availableParallelTasks ? availableParallelTasks : []}
+                  />,
+                  <ListItem
+                    key={"TasksSequence"}
+                    primaryText="Sequence"
+                    primaryTogglesNestedList={true}
+                    nestedItems={availableSequenceTasks ? availableSequenceTasks : []}
+                  />
+                ]}
                 leftIcon={<EditorFormatListBulleted />}
                 />
               <InstalledPluginsComponent />
-              <ListItem
-                key={3}
-                primaryText="Special"
-                primaryTogglesNestedList={true}
-                // nestedItems={specialItems ? specialItems : []}
-                leftIcon={<ActionDonutSmall />}
-              />
             </List>
           </Tab>
           {anyTasksOpen ? (

@@ -130,8 +130,16 @@ class TasksChannels extends Channelizer {
     return this.getState().get('tasks').get(selectedTaskID) || 0;
   }
 
-  getTasks() {
-    return this.getState().get('tasks') || [];
+  getTasks(type) {
+    if (!type) return this.getState().get('tasks');
+    let tasks = this.getState().get('tasks');
+    let tasksToReturn = Immutable.Map();
+    for (let [idx, task] of tasks) {
+      if (task.get('type') == type) {
+        tasksToReturn = tasksToReturn.set(task.id, task);
+      }
+    }
+    return tasksToReturn;
   }
 
   getOpenTasks() {
