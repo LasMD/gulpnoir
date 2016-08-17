@@ -81,18 +81,12 @@ class FlowGraph extends Component {
     this.graph.addCell(cell);
   }
 
-  createPipeSource({x, y, text}) {
+  createPipeSource({x, y}) {
     const props = {
       position: { x: x, y: y },
-      size: { width: 150, height: 150 },
-      attrs: {
-        rect: { fill: 'yellow' },
-        '.label': { text: text },
-        '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
-        '.outPorts circle': { fill: '#E74C3C', type: 'output' },
-      },
-      outPorts: ['Out'],
+      ...GRID_CONST.ITEM.PIPE_SOURCE
     };
+
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
@@ -188,6 +182,12 @@ class FlowGraph extends Component {
 
     if (this.props.task.get('graph')) {
       this.graph = this.graph.fromJSON(JSON.parse(this.props.task.get('graph')));
+    } else {
+      switch (this.props.task.get('type')) {
+        case 'Functional': {
+          this.createPipeSource({x: 100, y: 100});
+        }
+      }
     }
 
     TasksChannels.dispatch({

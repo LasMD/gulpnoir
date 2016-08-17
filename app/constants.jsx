@@ -4,8 +4,8 @@ export default {
     ITEM: {
       PLUGIN: {
         size: {
-          width: 120,
-          height: 120
+          width: 80,
+          height: 80
         },
         attrs: {
           rect: { fill: 'orange' },
@@ -15,13 +15,22 @@ export default {
         inPorts: ['In'],
         outPorts: ['Out']
       },
+      PIPE_SOURCE: {
+        size: {
+          width: 60,
+          height: 60
+        },
+        attrs: {
+          rect: { fill: 'green' },
+          '.outPorts circle': { fill: '#E74C3C', type: 'output', r: 8 },
+          '.label': { text: 'Source', color: 'white' }
+        },
+        outPorts: ['']
+      },
       PARALLEL: {
 
       },
       SEQUENCE: {
-
-      },
-      PIPE_SOURCE: {
 
       }
     }
