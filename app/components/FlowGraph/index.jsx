@@ -178,11 +178,13 @@ class FlowGraph extends Component {
         el: findDOMNode(this.refs.placeholder),
         model: this.graph,
         gridSize: GRID_CONST.SNAP_SIZE,
-        validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+        validateConnection: (cellViewS, magnetS, cellViewT, magnetT, end, linkView) => {
             // Prevent linking from input ports.
             if (magnetS && magnetS.getAttribute('type') === 'input') return false;
             // Prevent linking from output ports to input ports within one element.
             if (cellViewS === cellViewT) return false;
+            // Disallow multiple connections to a single port
+            if (this.graph.getConnectedLinks(cellViewT.model).length > 0) return false;
             // Prevent linking to input ports.
             return magnetT && magnetT.getAttribute('type') === 'input';
         },
@@ -222,18 +224,6 @@ class FlowGraph extends Component {
     });
 
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
-      if (cell.model.attributes.type == 'link' && cell.model.attributes.target.id) {
-        let linkCount = 0;
-        let connector = this.graph.getCell(cell.model.attributes.target.id).collection.find(function(model) {
-          if (model.get('type') == 'link') {
-            linkCount++;
-          }
-        });
-        if (linkCount > 1) {
-          cell.remove();
-          return;
-        }
-      }
       if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
         cell.remove();
         return;
