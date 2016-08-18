@@ -222,6 +222,14 @@ class FlowGraph extends Component {
         },
     });
 
+    this.paper.options.restrictTranslate = function(cellView) {
+      // move element inside the bounding box of the paper element only
+      let boundArea = cellView.paper.getArea();
+      boundArea.width = (Math.floor(cellView.paper.el.clientWidth / GRID_CONST.SNAP_SIZE) -1) * GRID_CONST.SNAP_SIZE;
+      boundArea.height = (Math.floor(cellView.paper.el.clientHeight / GRID_CONST.SNAP_SIZE) -1) * GRID_CONST.SNAP_SIZE;
+      return boundArea;
+    }
+
     if (this.props.task.get('graph')) {
       this.graph = this.graph.fromJSON(JSON.parse(this.props.task.get('graph')));
     } else {
