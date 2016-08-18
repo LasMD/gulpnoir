@@ -66,14 +66,10 @@ class FlowGraph extends Component {
     this.graph.addCell(cell);
   }
 
-  createParallel({x, y, text}) {
+  createParallel({x, y}) {
     const props = {
       position: { x: x, y: y },
-      size: { width: 150, height: 150 },
-      attrs: {
-        circle: { fill: 'blue' },
-        text: { text: text, fill: 'white' }
-      }
+      ...GRID_CONST.ITEM.PARALLEL
     };
     let cell = new joint.shapes.basic.Circle(props);
     this.graphState.graphCells.set(cell.id, cell);
@@ -85,6 +81,18 @@ class FlowGraph extends Component {
     const props = {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.PIPE_SOURCE
+    };
+
+    let cell = new joint.shapes.devs.Model(props);
+    this.graphState.graphCells.set(cell.id, cell);
+    this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graph.addCell(cell);
+  }
+
+  createSequence({x, y}) {
+    const props = {
+      position: { x: x, y: y },
+      ...GRID_CONST.ITEM.SEQUENCE
     };
 
     let cell = new joint.shapes.devs.Model(props);
@@ -186,6 +194,15 @@ class FlowGraph extends Component {
       switch (this.props.task.get('type')) {
         case 'Functional': {
           this.createPipeSource({x: 100, y: 100});
+          break;
+        }
+        case 'Sequence': {
+          this.createSequence({x: 100, y: 100});
+          break;
+        }
+        case 'Parallel': {
+          this.createParallel({x: 100, y: 100});
+          break;
         }
       }
     }

@@ -23,15 +23,31 @@ export default {
         attrs: {
           rect: { fill: 'green' },
           '.outPorts circle': { fill: '#E74C3C', type: 'output', r: 8 },
-          '.label': { text: 'Source', color: 'white' }
+          '.label': { text: 'Source', fill: 'white' }
         },
         outPorts: ['']
       },
       PARALLEL: {
-
+        size: {
+          width: 100,
+          height: 100
+        },
+        attrs: {
+          'circle': { fill: 'purple'},
+          'text': { text: 'Parallel', fill: 'white' }
+        }
       },
       SEQUENCE: {
-
+        size: {
+          width: 120,
+          height: 60
+        },
+        attrs: {
+          rect: { fill: 'blue' },
+          '.outPorts circle': { fill: '#E74C3C', type: 'output', r: 8 },
+          '.label': { text: 'Sequence', fill: 'white' }
+        },
+        outPorts: ['']
       }
     }
   }
