@@ -179,6 +179,8 @@ class FlowGraph extends Component {
         model: this.graph,
         gridSize: GRID_CONST.SNAP_SIZE,
         validateConnection: (cellViewS, magnetS, cellViewT, magnetT, end, linkView) => {
+
+          // Disallow multiple connections from a single Out port
           let connectedLinks = this.graph.getConnectedLinks(cellViewS.model);
           if (connectedLinks.length > 0) {
             connectedLinks.forEach((link) => {
@@ -195,11 +197,13 @@ class FlowGraph extends Component {
               }
             });
           }
+
           // Prevent linking from input ports.
           if (magnetS && magnetS.getAttribute('type') === 'input') return false;
           // Prevent linking from output ports to input ports within one element.
           if (cellViewS === cellViewT) return false;
-          // Disallow multiple connections to a single port
+
+          // Disallow multiple connections to a single In port
           connectedLinks = this.graph.getConnectedLinks(cellViewT.model);
           let hasLink = false;
           if (connectedLinks.length > 0) {
@@ -212,6 +216,7 @@ class FlowGraph extends Component {
             });
           }
           if (hasLink) return false;
+
           // Prevent linking to input ports.
           return magnetT && magnetT.getAttribute('type') === 'input';
         },
