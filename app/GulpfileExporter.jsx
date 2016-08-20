@@ -22,6 +22,7 @@ export default class Exporter {
   }
   _writePlugins() {
     let result = [];
+    result.push(`import gulp from 'gulp';`);
     for (let plugin of this.plugins) {
       let pluginName = plugin[0];
       let pluginFriendlyName = pluginName.replace(/gulp-/, '').replace(/-([a-z])/g, (full, letter) => {
