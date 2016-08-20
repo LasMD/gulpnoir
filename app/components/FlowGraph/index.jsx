@@ -167,7 +167,8 @@ class FlowGraph extends Component {
     }
   }
 
-  exportGraph() {
+  exportGraph(raw) {
+    if (raw) return this.graph;
     return JSON.stringify(this.graph.toJSON());
   }
 

@@ -84,7 +84,7 @@ app.on('ready', async () => {
           }
         );
         if (!newSaveFile) return;
-        mainWindow.webContents.send('save_state', newSaveFile);
+        mainWindow.webContents.send('eSaveState', newSaveFile);
       }
     }, {
       label: '&Open Project',
@@ -105,14 +105,22 @@ app.on('ready', async () => {
           return;
         }
 
-        mainWindow.webContents.send('load_state', noirFile);
+        mainWindow.webContents.send('eLoadState', noirFile);
 
       }
     }, {
       label: '&Export',
       accelerator: 'Ctrl+E',
       click() {
-        mainWindow.close();
+        let newSaveFile = dialog.showSaveDialog(
+          {
+            filters: [
+              { name: 'Gulpfile', extensions: ['js'] }
+            ]
+          }
+        );
+        if (!newSaveFile) return;
+        mainWindow.webContents.send('eExport', newSaveFile);
       }
     }, {
       'type': 'separator'

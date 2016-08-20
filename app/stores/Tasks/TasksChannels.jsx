@@ -1,35 +1,14 @@
 import { ReduceStore } from 'flux/utils';
 import { Channelizer } from 'channelizer';
-import GulpPluginsChannels from '../GulpPlugins/GulpPluginsChannels';
 import Immutable from 'immutable';
 import Task from './Task';
-import StateSync from '../StateSync';
-import { ipcRenderer } from 'electron';
+import ipcEvents from '../../ipcEvents';
 
 class TasksChannels extends Channelizer {
 
   Model() {
-    ipcRenderer.on('save_state', (e, filename) => {
-      StateSync.save(filename, {
-        tasks: this.getState(),
-        installedPlugins: GulpPluginsChannels.getInstalledPlugins()
-      });
-    });
-    ipcRenderer.on('load_state', (e, msg) => {
-      let newstate = StateSync.load(msg);
-      this.dispatch({
-        channel: 'tasks/set',
-        outgoing: {
-          state: newstate.tasks
-        }
-      });
-      GulpPluginsChannels.dispatch({
-        channel: 'plugins/installed/set',
-        outgoing: {
-          installed: newstate.installedPlugins
-        }
-      });
-    });
+
+    new ipcEvents();
 
     return Immutable.Map()
     .set('tasks', Immutable.Map())
