@@ -48,12 +48,13 @@ class FlowGraph extends Component {
     this.graphState = {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
+      connections: [],
       selectedCell: null,
       boundCellID: null
     };
   }
 
-  createPlugin({ x, y, text }) {
+  createPlugin({ x, y, text, id }) {
     const props = {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.PLUGIN
@@ -86,6 +87,7 @@ class FlowGraph extends Component {
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graphState.connections.push("source");
     this.graph.addCell(cell);
   }
 
@@ -172,6 +174,10 @@ class FlowGraph extends Component {
     return JSON.stringify(this.graph.toJSON());
   }
 
+  exportConnections() {
+    return this.graphState.connections;
+  }
+
   componentDidMount() {
 
     this.graph = new joint.dia.Graph();
@@ -255,7 +261,8 @@ class FlowGraph extends Component {
       outgoing: {
         task: {
           id: this.props.task.get('id'),
-          exportGraph: this.exportGraph.bind(this)
+          exportGraph: this.exportGraph.bind(this),
+          exportConnections: this.exportConnections.bind(this)
         }
       }
     });

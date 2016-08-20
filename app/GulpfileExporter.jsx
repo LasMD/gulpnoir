@@ -38,9 +38,21 @@ export default class Exporter {
     let result = [];
     for (let task of this.tasks.functional) {
       result.push(`export function ${task[1].get('name')}() {`);
-      result.push(`\treturn gulp.src('./my/path')`);
-      result.push('\t\t.pipe(someFun());');
-      result.push(`}`);
+      let connections = task[1].get('exportConnections')();
+      let resultAppend = ``;
+      for (let i = 0; i < connections.length; i++) {
+        if (i == 0) {
+          resultAppend = `\treturn gulp.src('./my/path')`;
+        } else if (i > 0) {
+          resultAppend = '\t\t.pipe(someFun())';
+        }
+        if (i == connections.length - 1) {
+          result.push(resultAppend + ';');
+          result.push(`}`);
+        } else {
+          result.push(resultAppend);
+        }
+      }
     }
     result.push('');
     return result;
