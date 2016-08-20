@@ -1,8 +1,6 @@
-import { ReduceStore } from 'flux/utils';
 import { Channelizer } from 'channelizer';
 import Immutable from 'immutable';
 import Task from './Task';
-import ipcEvents from '../../ipcEvents';
 
 class TasksChannels extends Channelizer {
 
@@ -14,7 +12,7 @@ class TasksChannels extends Channelizer {
     .set('_stateID', Date.now());
 
   }
-
+  
   Channels({ receiver }) {
 
     receiver.world({

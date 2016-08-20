@@ -15,6 +15,7 @@ import Divider from 'material-ui/Divider';
 import { Container } from 'flux/utils';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
+import ipcEvents from '../../ipcEvents';
 
 import SplitPane from 'react-split-pane';
 
