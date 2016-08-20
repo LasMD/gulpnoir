@@ -45,8 +45,7 @@ class ipcEvents {
       alert("You can't export a Gulpfile without any tasks");
     } else {
       let taskGraphs = {};
-      let _tasks = tasks.get('tasks');
-      let exporter = new GulpfileExporter({filename, tasks: _tasks, plugins: GulpPluginsChannels.getInstalledPlugins()});
+      let exporter = new GulpfileExporter({filename});
       // for (let [id, task] of _tasks) {
       //   let getTask = _tasks.get(id);
       //   taskGraphs[getTask.get('name')] = getTask.get('exportGraph')(true);

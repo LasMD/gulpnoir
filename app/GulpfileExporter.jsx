@@ -1,11 +1,17 @@
 import fs from 'fs';
+import GulpPluginsChannels from './stores/GulpPlugins/GulpPluginsChannels';
+import TasksChannels from './stores/Tasks/TasksChannels';
 
 export default class Exporter {
 
-  constructor({filename, tasks, plugins}) {
+  constructor({ filename }) {
     this.filename = filename;
-    this.tasks = tasks;
-    this.plugins = plugins;
+    this.tasks = {
+      functional: TasksChannels.getTasks('Functional'),
+      parallel: TasksChannels.getTasks('Parallel'),
+      series: TasksChannels.getTasks('Series')
+    };
+    this.plugins = GulpPluginsChannels.getInstalledPlugins();
 
     this.headline = `
     /**
@@ -27,14 +33,42 @@ export default class Exporter {
     return result;
   }
 
-  _writeTasks() {
+  _writeFunctionalTasks() {
     let result = [];
-    for (let task of this.tasks) {
+    for (let task of this.tasks.functional) {
       result.push(`export function ${task[1].get('name')}() {`);
+      result.push(`\treturn gulp.src('./my/path')`);
+      result.push('\t\t.pipe(someFun());');
       result.push(`}`);
     }
     result.push('');
     return result;
+  }
+
+  _writeParallelTasks() {
+    let result = [];
+    for (let task of this.tasks.parallel) {
+      result.push(`export const ${task[1].get('name')} = gulp.parallel(some, parallel);`);
+    }
+    result.push('');
+    return result;
+  }
+
+  _writeSeriesTasks() {
+    let result = [];
+    for (let task of this.tasks.series) {
+      result.push(`export const ${task[1].get('name')} = gulp.series(some, series);`);
+    }
+    result.push('');
+    return result;
+  }
+
+  _writeTasks() {
+    return [
+      ...this._writeFunctionalTasks(),
+      ...this._writeParallelTasks(),
+      ...this._writeSeriesTasks()
+    ];
   }
 
   write() {
