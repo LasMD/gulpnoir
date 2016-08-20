@@ -2,6 +2,7 @@ import GulpPluginsChannels from './stores/GulpPlugins/GulpPluginsChannels';
 import TasksChannels from './stores/Tasks/TasksChannels';
 import StateSync from './stores/StateSync';
 import { ipcRenderer } from 'electron';
+import GulpfileExporter from './GulpfileExporter';
 
 class ipcEvents {
   constructor() {
@@ -39,18 +40,19 @@ class ipcEvents {
   }
 
   eExport(e, filename) {
-    let tasks = this.getState();
+    let tasks = TasksChannels.getState();
     if (tasks.get('tasks').size == 0) {
       alert("You can't export a Gulpfile without any tasks");
     } else {
       let taskGraphs = {};
       let _tasks = tasks.get('tasks');
-      let exporter = new GulpfileExporter({tasks: _tasks, plugins: GulpPluginsChannels.getInstalledPlugins()});
+      let exporter = new GulpfileExporter({filename, tasks: _tasks, plugins: GulpPluginsChannels.getInstalledPlugins()});
       // for (let [id, task] of _tasks) {
       //   let getTask = _tasks.get(id);
       //   taskGraphs[getTask.get('name')] = getTask.get('exportGraph')(true);
       // }
       // console.log(taskGraphs);
+      exporter.write();
     }
   }
 
