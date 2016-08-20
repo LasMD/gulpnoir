@@ -3,7 +3,7 @@ import TasksChannels from './stores/Tasks/TasksChannels';
 import StateSync from './stores/StateSync';
 import { ipcRenderer } from 'electron';
 
-export default class ipcEvents {
+class ipcEvents {
   constructor() {
     this.validEvents = [
       'eSaveState',
@@ -60,3 +60,5 @@ export default class ipcEvents {
     }
   }
 }
+
+new ipcEvents();

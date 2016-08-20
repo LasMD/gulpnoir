@@ -8,8 +8,6 @@ class TasksChannels extends Channelizer {
 
   Model() {
 
-    new ipcEvents();
-
     return Immutable.Map()
     .set('tasks', Immutable.Map())
     .set('openTasks', Immutable.List())
