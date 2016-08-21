@@ -48,15 +48,18 @@ class GulpPlugin extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {};
+  }
+
+  componentWillMount() {
     this.pluginId = this.props.pluginId || Date.now();
     GulpPluginsChannels.dispatch({
       channel: 'plugins/new',
       outgoing: {
         id: this.pluginId,
-        ...props
+        ...this.props
       }
     });
-    this.state = {};
   }
 
   componentDidMount() {
