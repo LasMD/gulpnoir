@@ -15,7 +15,9 @@ class GulpPluginsChannels extends Channelizer {
         }
       });
     });
-    return Immutable.Map().set('installed', Immutable.Map());
+    return Immutable.Map()
+    .set('installed', Immutable.Map())
+    .set('pluginObjects', Immutable.Map());
   }
 
   Channels({ receiver }) {
@@ -23,6 +25,11 @@ class GulpPluginsChannels extends Channelizer {
     receiver.world({
       prefix: 'plugins/',
       controller: ({ receiver }) => {
+
+        receiver.tune({
+          channel: 'new',
+          controller: ({ state, incoming }) => this.ctrlNewPlugin({ state, incoming })
+        });
 
         receiver.tune({
           channel: 'set',
@@ -45,12 +52,20 @@ class GulpPluginsChannels extends Channelizer {
     });
   }
 
+  ctrlNewPlugin({ state, incoming }) {
+    return state.setIn(['pluginObjects', incoming.id], incoming);
+  }
+
   getInstalledPlugins() {
     return this.getState().get('installed');
   }
 
   getGulpPlugins() {
     return this.getState().get('plugins') || [];
+  }
+
+  getPluginObjectById(id) {
+    return this.getState().getIn(['pluginObjects', id]);
   }
 
 }

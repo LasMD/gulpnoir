@@ -25,7 +25,6 @@ export default class GulpPlugin extends GulpPluginRecord {
     version
   }) {
     super({
-      id: Date.now(),
       author: author,
       description: null,
       homepage: null,

@@ -23,7 +23,7 @@ const cardSource = {
     position.y -= GRID_CONST.ITEM.PLUGIN.size.height / 2;
     position.x = Math.floor(position.x / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     position.y = Math.floor(position.y / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
-    grid.createPlugin({ text: props.name.replace(/gulp(_|\-)?/g, ''), ...position });
+    grid.createPlugin({ text: props.name.replace(/gulp(_|\-)?/g, ''), id: component.pluginId, ...position });
     GulpPluginsChannels.dispatch({
       channel: 'plugins/install',
       outgoing: {
@@ -48,6 +48,14 @@ class GulpPlugin extends Component {
 
   constructor(props) {
     super(props);
+    this.pluginId = this.props.pluginId || Date.now();
+    GulpPluginsChannels.dispatch({
+      channel: 'plugins/new',
+      outgoing: {
+        id: this.pluginId,
+        ...props
+      }
+    });
     this.state = {};
   }
 

@@ -20,14 +20,19 @@ export default class Exporter {
      **/
     `;
   }
+
+  _friendlify(str) {
+    return str.replace(/gulp-/, '').replace(/-([a-z])/g, (full, letter) => {
+      return letter.toUpperCase();
+    });
+  }
+
   _writePlugins() {
     let result = [];
     result.push(`import gulp from 'gulp';`);
     for (let plugin of this.plugins) {
       let pluginName = plugin[0];
-      let pluginFriendlyName = pluginName.replace(/gulp-/, '').replace(/-([a-z])/g, (full, letter) => {
-        return letter.toUpperCase();
-      });
+      let pluginFriendlyName = this._friendlify(pluginName);
       result.push(`import ${pluginFriendlyName} from '${plugin[0]}';`);
     }
     result.push('');
@@ -44,7 +49,11 @@ export default class Exporter {
         if (i == 0) {
           resultAppend = `\treturn gulp.src('./my/path')`;
         } else if (i > 0) {
-          resultAppend = '\t\t.pipe(someFun())';
+          console.log(connections);
+          let pluginObj = GulpPluginsChannels.getPluginObjectById(connections[i].itemId);
+          console.log(pluginObj);
+          let friendlyName = this._friendlify(pluginObj.name);
+          resultAppend = `\t\t.pipe(${friendlyName}())`;
         }
         if (i == connections.length - 1) {
           result.push(resultAppend + ';');

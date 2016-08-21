@@ -50,6 +50,7 @@ class FlowGraph extends Component {
       graphCellsAttrs: new Map(),
       connections: [],
       selectedCell: null,
+      graphCellPluginIdMap: new Map(),
       boundCellID: null
     };
   }
@@ -64,6 +65,7 @@ class FlowGraph extends Component {
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graphState.graphCellPluginIdMap.set(cell.id, id);
     this.graph.addCell(cell);
   }
 
@@ -87,7 +89,7 @@ class FlowGraph extends Component {
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
-    this.graphState.connections.push("source");
+    this.graphState.connections.push({cellId: cell.id, itemId: "source"});
     this.graph.addCell(cell);
   }
 
@@ -275,6 +277,11 @@ class FlowGraph extends Component {
       if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
         cell.remove();
         return;
+      } else if (cell.model.attributes.type == 'link') {
+        console.log(cell.model);
+        if (cell.model.attributes.source.id == this.graphState.connections[this.graphState.connections.length-1].cellId) {
+          this.graphState.connections.push({cellId: cell.model.attributes.target.id, itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)});
+        }
       }
     });
 
