@@ -284,10 +284,8 @@ class FlowGraph extends Component {
         if (cell.model.attributes.source.id == this.graphState.connections.last.data.cellId || this.graphState.connections.length == 1) {
 
           let newLink = new LinkChain({
-              data: {
-                cellId: cell.model.attributes.target.id,
-                itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)
-              }
+            cellId: cell.model.attributes.target.id,
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)
           });
 
           this.graphState.connections.append(newLink);

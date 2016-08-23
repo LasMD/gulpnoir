@@ -2,17 +2,16 @@ import "babel-polyfill";
 
 export default class LinkChain {
 
-  constructor(props) {
-    props = props || {};
-    this.data = props.data || 'source';
+  constructor(data = 'source') {
+    this.data = data;
   }
 
   get length() {
-    let length = 1;
-    let getNext = this.next;
-    while (getNext) {
+    let length = 0;
+    let getLink = this.first;
+    while (getLink) {
       length += 1;
-      getNext = getNext.next;
+      getLink = getLink.next;
     }
     return length;
   }
@@ -33,6 +32,13 @@ export default class LinkChain {
     this._previous = val;
   }
 
+  get first() {
+    if (!this.previous) {
+      return this;
+    } else {
+      return this.previous.first;
+    }
+  }
   get last() {
     if (!this.next) {
       return this;
