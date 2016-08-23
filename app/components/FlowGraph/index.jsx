@@ -274,31 +274,31 @@ class FlowGraph extends Component {
     });
 
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
-      if (cell.model.attributes.type != 'link') {
+      if (!cell.model.isLink()) {
         this.setSelectedCell(cell);
       }
     });
 
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
-      if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
+      if (cell.model.isLink() && (!cell.model.get('target').id || !cell.model.get('source').id)) {
         cell.remove();
         return;
-      } else if (cell.model.attributes.type == 'link') {
-        let target = this.graph.getCell(cell.model.attributes.target.id);
+      } else if (cell.model.isLink()) {
+        let target = this.graph.getCell(cell.model.get('target').id);
         console.log(this.graphState.connectionsMap);
-        if (!this.graphState.connectionsMap[cell.model.attributes.source.id]) {
-          this.graphState.connectionsMap[cell.model.attributes.source.id] = new LinkChain({
-            cellId: cell.model.attributes.source.id,
-            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.source.id)
+        if (!this.graphState.connectionsMap[cell.model.get('source').id]) {
+          this.graphState.connectionsMap[cell.model.get('source').id] = new LinkChain({
+            cellId: cell.model.get('source').id,
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('source').id)
           });
         }
-        if (!this.graphState.connectionsMap[cell.model.attributes.target.id]) {
-          this.graphState.connectionsMap[cell.model.attributes.target.id] = new LinkChain({
-            cellId: cell.model.attributes.target.id,
-            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)
+        if (!this.graphState.connectionsMap[cell.model.get('target').id]) {
+          this.graphState.connectionsMap[cell.model.get('target').id] = new LinkChain({
+            cellId: cell.model.get('target').id,
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id)
           });
         }
-        this.graphState.connectionsMap[cell.model.attributes.source.id].append(this.graphState.connectionsMap[cell.model.attributes.target.id]);
+        this.graphState.connectionsMap[cell.model.get('source').id].append(this.graphState.connectionsMap[cell.model.get('target').id]);
 
         for (let link of this.graphState.connections) {
           console.log("link", link);
