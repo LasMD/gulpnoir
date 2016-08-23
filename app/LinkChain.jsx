@@ -49,13 +49,13 @@ export default class LinkChain {
   }
 
   insert(link) {
-    if (this.next) {
-      let linkStore = this.next;
-      linkStore.previous = link;
-      link.next = linkStore;
+    if (this.previous) {
+      let linkStore = this.previous;
+      linkStore.next = link;
+      link.previous = linkStore;
     }
-    this.next = link;
-    link.previous = this;
+    this.previous = link;
+    link.next = this;
   }
 
   append(link) {
