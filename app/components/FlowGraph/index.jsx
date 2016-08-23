@@ -270,7 +270,9 @@ class FlowGraph extends Component {
     });
 
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
-      this.setSelectedCell(cell);
+      if (cell.model.attributes.type != 'link') {
+        this.setSelectedCell(cell);
+      }
     });
 
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
