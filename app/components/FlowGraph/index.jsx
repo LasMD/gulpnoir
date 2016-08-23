@@ -50,6 +50,7 @@ class FlowGraph extends Component {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
       connections: new LinkChain(),
+      connectionsMap: {},
       selectedCell: null,
       graphCellPluginIdMap: new Map(),
       boundCellID: null
@@ -102,6 +103,10 @@ class FlowGraph extends Component {
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graph.addCell(cell);
     cell.on('change:position', this.collisionLookup);
+    this.graphState.connectionsMap[cell.id] = this.graphState.connections = new LinkChain({
+      cellId: cell.id,
+      itemId: "source"
+    });
   }
 
   createSequence({x, y}) {
@@ -280,19 +285,23 @@ class FlowGraph extends Component {
         return;
       } else if (cell.model.attributes.type == 'link') {
         let target = this.graph.getCell(cell.model.attributes.target.id);
-        console.log(this.graphState.connections);
-        if (cell.model.attributes.source.id == this.graphState.connections.last.data.cellId || this.graphState.connections.length == 1) {
-
-          let newLink = new LinkChain({
+        console.log(this.graphState.connectionsMap);
+        if (!this.graphState.connectionsMap[cell.model.attributes.source.id]) {
+          this.graphState.connectionsMap[cell.model.attributes.source.id] = new LinkChain({
+            cellId: cell.model.attributes.source.id,
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.source.id)
+          });
+        }
+        if (!this.graphState.connectionsMap[cell.model.attributes.target.id]) {
+          this.graphState.connectionsMap[cell.model.attributes.target.id] = new LinkChain({
             cellId: cell.model.attributes.target.id,
             itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)
           });
+        }
+        this.graphState.connectionsMap[cell.model.attributes.source.id].append(this.graphState.connectionsMap[cell.model.attributes.target.id]);
 
-          this.graphState.connections.append(newLink);
-
-          for (let link of this.graphState.connections) {
-            console.log("link", link);
-          }
+        for (let link of this.graphState.connections) {
+          console.log("link", link);
         }
       }
     });
