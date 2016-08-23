@@ -5,6 +5,7 @@ import TasksChannels from '../../stores/Tasks/TasksChannels';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
+import _ from 'lodash';
 
 import './_style.scss';
 
@@ -55,6 +56,14 @@ class FlowGraph extends Component {
     };
   }
 
+  collisionLookup(cell, pos, opt) {
+    var rect = joint.g.rect(cell.getBBox());
+    var collisions = this.graph.findModelsInArea(rect);
+    if (collisions.length > 1) {
+      cell.translate(-opt.tx, -opt.ty);
+    }
+  }
+
   createPlugin({ x, y, text, id }) {
     const props = {
       position: { x: x, y: y },
@@ -67,6 +76,7 @@ class FlowGraph extends Component {
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graphState.graphCellPluginIdMap.set(cell.id, id);
     this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
   }
 
   createParallel({x, y}) {
@@ -78,6 +88,7 @@ class FlowGraph extends Component {
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
   }
 
   createPipeSource({x, y}) {
@@ -91,6 +102,7 @@ class FlowGraph extends Component {
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graphState.connections.push({cellId: cell.id, itemId: "source"});
     this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
   }
 
   createSequence({x, y}) {
@@ -103,6 +115,7 @@ class FlowGraph extends Component {
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
   }
 
   removeBoundCell() {
@@ -270,7 +283,7 @@ class FlowGraph extends Component {
     });
 
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
-      this.setSelectedCell(cell);
+      // this.setSelectedCell(cell);
     });
 
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
