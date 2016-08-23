@@ -8,7 +8,7 @@
   			"babel-plugin-transform-remove-console",
   			"babel-plugin-transform-remove-debugger",
   			"babel-plugin-dev-expression"
-  		]
+			]
   	},
     "development": {
       "presets": ["react-hmre"]

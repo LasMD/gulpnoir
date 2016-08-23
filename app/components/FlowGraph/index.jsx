@@ -5,7 +5,7 @@ import TasksChannels from '../../stores/Tasks/TasksChannels';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
-import _ from 'lodash';
+import LinkChain from '../../LinkChain';
 
 import './_style.scss';
 
@@ -49,7 +49,7 @@ class FlowGraph extends Component {
     this.graphState = {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
-      connections: [],
+      connections: new LinkChain(),
       selectedCell: null,
       graphCellPluginIdMap: new Map(),
       boundCellID: null
@@ -100,7 +100,6 @@ class FlowGraph extends Component {
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
-    this.graphState.connections.push({cellId: cell.id, itemId: "source"});
     this.graph.addCell(cell);
     cell.on('change:position', this.collisionLookup);
   }
@@ -280,9 +279,22 @@ class FlowGraph extends Component {
         cell.remove();
         return;
       } else if (cell.model.attributes.type == 'link') {
-        console.log(cell.model);
-        if (cell.model.attributes.source.id == this.graphState.connections[this.graphState.connections.length-1].cellId) {
-          this.graphState.connections.push({cellId: cell.model.attributes.target.id, itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)});
+        let target = this.graph.getCell(cell.model.attributes.target.id);
+        console.log(this.graphState.connections);
+        if (cell.model.attributes.source.id == this.graphState.connections.last.data.cellId || this.graphState.connections.length == 1) {
+
+          let newLink = new LinkChain({
+              data: {
+                cellId: cell.model.attributes.target.id,
+                itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)
+              }
+          });
+
+          this.graphState.connections.append(newLink);
+
+          for (let link of this.graphState.connections) {
+            console.log("link", link);
+          }
         }
       }
     });
