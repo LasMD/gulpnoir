@@ -45,17 +45,17 @@ export default class Exporter {
       result.push(`export function ${task[1].get('name')}() {`);
       let connections = task[1].get('exportConnections')();
       let resultAppend = ``;
-      for (let i = 0; i < connections.length; i++) {
-        if (i == 0) {
+      for (let link of connections) {
+        if (link == connections.first) {
           resultAppend = `\treturn gulp.src('./my/path')`;
-        } else if (i > 0) {
+        } else {
           console.log(connections);
-          let pluginObj = GulpPluginsChannels.getPluginObjectById(connections[i].itemId);
+          let pluginObj = GulpPluginsChannels.getPluginObjectById(link.data.itemId);
           console.log(pluginObj);
           let friendlyName = this._friendlify(pluginObj.name);
           resultAppend = `\t\t.pipe(${friendlyName}())`;
         }
-        if (i == connections.length - 1) {
+        if (link == connections.last) {
           result.push(resultAppend + ';');
           result.push(`}`);
         } else {
