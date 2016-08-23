@@ -39,12 +39,23 @@ export default class LinkChain {
       return this.previous.first;
     }
   }
+
   get last() {
     if (!this.next) {
       return this;
     } else {
       return this.next.last;
     }
+  }
+
+  insert(link) {
+    if (this.next) {
+      let linkStore = this.next;
+      linkStore.previous = link;
+      link.next = linkStore;
+    }
+    this.next = link;
+    link.previous = this;
   }
 
   append(link) {
