@@ -44,11 +44,15 @@ class HomePage extends Component {
     return (
       <main className={'page-home'}>
         <FlexRow>
-          <SplitPane split="vertical" minSize={50} defaultSize={300}>
+          <SplitPane split="vertical" minSize={50}
+            defaultSize={ parseInt(localStorage.getItem('splitPanelv1'), 10) || 300 }
+            onChange={ size => localStorage.setItem('splitPanelv1', size) }>
             <FlexColumn>
-              <SplitPane split="horizontal" minSize={50} defaultSize={300}
-                onChange={ size => this.refs['plugin-list'].updateHeight(size) }
-                >
+              <SplitPane split="horizontal" minSize={50} defaultSize={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+                onChange={ size => {
+                  localStorage.setItem('splitPanelh1', size);
+                  this.refs['plugin-list'].updateHeight(size);
+                }}>
                 <PluginsList
                 onPluginSelect={(plugin) => { console.log(plugin) }}
                 ref='plugin-list'
@@ -57,7 +61,9 @@ class HomePage extends Component {
                   propertiesDisabled ? (
                     <TasksProperties />
                   ) : (
-                    <SplitPane split="horizontal" minSize={50} defaultSize={300}>
+                    <SplitPane split="horizontal" minSize={50}
+                      defaultSize={ parseInt(localStorage.getItem('splitPanelh2'), 10) || 300 }
+                      onChange={ size => localStorage.setItem('splitPanelh2', size) }>
                       <TasksProperties />
                       <Tabs>
                         <Tab label="Item Properties">
