@@ -171,15 +171,16 @@ class FlowGraph extends Component {
           item: cell.model
         }
       });
-      // this.createSelectedBound(cell);
     }
   }
 
+  // Utilized by StateSync
   exportGraph(raw) {
     if (raw) return this.graph;
     return JSON.stringify(this.graph.toJSON());
   }
 
+  // Utilized by GulpfileExporter
   exportConnections() {
     return this.graphState.connections;
   }
@@ -235,17 +236,21 @@ class FlowGraph extends Component {
         },
     });
 
+    // Move element inside the bounding box of the paper element only.
+    // Elements should not overflow
     this.paper.options.restrictTranslate = function(cellView) {
-      // move element inside the bounding box of the paper element only
       let boundArea = cellView.paper.getArea();
       boundArea.width = (Math.floor(cellView.paper.el.clientWidth / GRID_CONST.SNAP_SIZE) -1) * GRID_CONST.SNAP_SIZE;
       boundArea.height = (Math.floor(cellView.paper.el.clientHeight / GRID_CONST.SNAP_SIZE) -1) * GRID_CONST.SNAP_SIZE;
       return boundArea;
     }
 
+    // If we already have a graph in our props, this means our Task was loaded.
+    // Tasks can be loaded from opening a previously closed tab, or loading a file
     if (this.props.task.get('graph')) {
       this.graph = this.graph.fromJSON(JSON.parse(this.props.task.get('graph')));
     } else {
+      // Task was not loaded, so initialize
       switch (this.props.task.get('type')) {
         case 'Functional': {
           this.createPipeSource({x: 100, y: 100});
@@ -262,6 +267,7 @@ class FlowGraph extends Component {
       }
     }
 
+    // Initialize the graph as a task
     TasksChannels.dispatch({
       channel: 'tasks/update',
       outgoing: {
@@ -273,19 +279,41 @@ class FlowGraph extends Component {
       }
     });
 
+    this.graph.on('remove', function(cell, collection, opt) {
+       if (cell.isLink()) {
+         cell.removed = true;
+       }
+    })
+
+    // Handle cell selection
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
       if (!cell.model.isLink()) {
         this.setSelectedCell(cell);
       }
     });
 
+
+    // Handle linking
+    // Invalid links should disappear rather than float. Valid links should create a LinkChain for future exporting
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
       if (cell.model.isLink() && (!cell.model.get('target').id || !cell.model.get('source').id)) {
         cell.remove();
         return;
       } else if (cell.model.isLink()) {
+
+        // Invalidate broken links
+        if (cell.model.removed) {
+          if (this.graphState.connectionsMap[cell.model.get('source').id]) {
+            this.graphState.connectionsMap[cell.model.get('source').id].next = null;
+          }
+          if (this.graphState.connectionsMap[cell.model.get('target').id]) {
+            this.graphState.connectionsMap[cell.model.get('target').id].previous = null;
+          }
+          cell.remove();
+          return;
+        }
+
         let target = this.graph.getCell(cell.model.get('target').id);
-        console.log(this.graphState.connectionsMap);
         if (!this.graphState.connectionsMap[cell.model.get('source').id]) {
           this.graphState.connectionsMap[cell.model.get('source').id] = new LinkChain({
             cellId: cell.model.get('source').id,
@@ -298,14 +326,13 @@ class FlowGraph extends Component {
             itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id)
           });
         }
-        this.graphState.connectionsMap[cell.model.get('source').id].append(this.graphState.connectionsMap[cell.model.get('target').id]);
 
-        for (let link of this.graphState.connections) {
-          console.log("link", link);
-        }
+        this.graphState.connectionsMap[cell.model.get('source').id].append(this.graphState.connectionsMap[cell.model.get('target').id]);
       }
     });
 
+
+    // Blank click should deselect a cell
     this.paper.on('blank:pointerclick', (e, x, y) => {
       if (this.graphState.selectedCell) {
         this.deselectCell();
@@ -323,4 +350,5 @@ class FlowGraph extends Component {
   }
 }
 
+// DropTarget is used for Drag and Drop functionality
 export default DropTarget("GraphItems", gridTarget, collect)(Container.create(FlowGraph));
