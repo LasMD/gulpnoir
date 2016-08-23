@@ -118,69 +118,56 @@ class FlowGraph extends Component {
     cell.on('change:position', this.collisionLookup);
   }
 
-  removeBoundCell() {
-    let boundCell = this.graph.getCell(this.graphState.boundCellID);
-    let embeds = boundCell.get('embeds');
-    for (let index in embeds) {
-      boundCell.unembed(this.graph.getCell(embeds[index]));
+  deselectCell() {
+    if (this.graphState.selectedCell) {
+      let selectedCell = this.graph.getCell(this.graphState.selectedCell);
+      this.graphState.selectedCell = null;
+      selectedCell.attr({
+        rect: {
+          stroke: 'black',
+          'stroke-width': '1',
+          'stroke-dasharray': '0',
+        }
+      });
+      TasksChannels.dispatch({
+        channel: 'tasks/items/select',
+        outgoing: {
+          item: null
+        }
+      });
     }
-    boundCell.remove();
-    this.graphState.boundCellID = null;
-    this.graphState.selectedCell = null;
-    TasksChannels.dispatch({
-      channel: 'tasks/items/select',
-      outgoing: {
-        item: null
-      }
-    });
   }
 
-  createSelectedBound(cell) {
-
-    if (this.graphState.boundCellID) {
-      this.removeBoundCell();
-    }
-
-    const width = cell.model.attributes.size.width;
-    const height = cell.model.attributes.size.height;
-    const x = cell.model.attributes.position.x;
-    const y = cell.model.attributes.position.y;
-    const props = {
-      position: { x: x, y: y },
-      size: { width: width, height: height },
-      attrs: {}
-    };
-
-    let shape = "";
-    if (cell.model.attributes.attrs.hasOwnProperty('rect')) {
-      shape = 'Rect';
-    } else {
-      shape = 'Circle';
-    }
-
-    const shapeLower = shape.toLowerCase();
-    let boundCell = new joint.shapes.basic[shape](props);
-    boundCell.attr(shapeLower + '/stroke', 'lime');
-    boundCell.attr(shapeLower + '/fill-opacity', '0');
-    boundCell.attr(shapeLower + '/stroke-width', '4');
-    boundCell.attr(shapeLower + '/stroke-dasharray', '5,5');
-    this.graphState.boundCellID = boundCell.id;
-    this.graph.addCell(boundCell);
-    boundCell.embed(cell.model);
-    TasksChannels.dispatch({
-      channel: 'tasks/items/select',
-      outgoing: {
-        item: cell.model
-      }
-    });
-    return boundCell;
-  }
 
   setSelectedCell(cell) {
-    if (this.graphState.selectedCell && (cell.model.id == this.graphState.selectedCell || this.graphState.boundCellID == cell.model.id)) return;
+    if (this.graphState.selectedCell && (cell.model.id == this.graphState.selectedCell)) return;
     else {
+      if (this.graphState.selectedCell) {
+        let selectedCell = this.graph.getCell(this.graphState.selectedCell);
+        this.graphState.selectedCell = null;
+        selectedCell.attr({
+          rect: {
+            stroke: 'black',
+            'stroke-width': '1',
+            'stroke-dasharray': '0',
+          }
+        });
+      }
       this.graphState.selectedCell = cell.model.id;
-      this.createSelectedBound(cell);
+      cell.model.attr({
+        rect: {
+          stroke: 'lime',
+          'stroke-width': '4',
+          'stroke-dasharray': '5,5',
+        }
+      });
+      TasksChannels.dispatch({
+        channel: 'tasks/items/select',
+        outgoing: {
+          item: cell.model
+        }
+      });
+      // this.createSelectedBound(cell);
     }
   }
 
@@ -283,7 +270,7 @@ class FlowGraph extends Component {
     });
 
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
-      // this.setSelectedCell(cell);
+      this.setSelectedCell(cell);
     });
 
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
@@ -299,8 +286,8 @@ class FlowGraph extends Component {
     });
 
     this.paper.on('blank:pointerclick', (e, x, y) => {
-      if (this.graphState.boundCellID) {
-        this.removeBoundCell();
+      if (this.graphState.selectedCell) {
+        this.deselectCell();
       }
     });
   }
