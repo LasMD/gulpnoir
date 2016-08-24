@@ -56,6 +56,7 @@ class HomePage extends Component {
                 <PluginsList
                 onPluginSelect={(plugin) => { console.log(plugin) }}
                 ref='plugin-list'
+                height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
                 />
                 {
                   propertiesDisabled ? (

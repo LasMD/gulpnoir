@@ -42,9 +42,7 @@ class PluginsList extends Component {
     // vscroll recomputeRowHeights calls recomputeGridSize and forceUpdate on
     // vscroll._grid. However, for some reason vscroll._grid is null for a split
     // when its children have rendered.
-    setTimeout(() => {
-      this.refs.autosizer.refs.vscroll.recomputeRowHeights(index);
-    }, 100);
+    setTimeout(() => this.refs.autosizer.refs.vscroll.recomputeRowHeights(index), 100);
   }
 
   onPluginSelect(index) {
@@ -92,7 +90,7 @@ class PluginsList extends Component {
                 <VirtualScroll
                   ref={'vscroll'}
                   width={width}
-                  height={this.refs['autosizer'] ? (this.refs['autosizer'].setHeight || 300 - 48) : 300 - 48}
+                  height={this.refs['autosizer'] ? (this.refs['autosizer'].setHeight || this.props.height - 48) : this.props.height - 48}
                   className={vstyles.VirtualScroll}
                   rowCount={this.getGulpPluginsResultsCount()}
                   rowRenderer={
