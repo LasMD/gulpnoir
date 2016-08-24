@@ -6,6 +6,10 @@ import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
 import LinkChain from '../../LinkChain';
+import {
+  blueGrey100, blueGrey200, blueGrey300, blueGrey400, blueGrey500, blueGrey600, blueGrey700
+} from 'material-ui/styles/colors';
+
 
 import './_style.scss';
 
@@ -347,7 +351,11 @@ class FlowGraph extends Component {
   render() {
     const { x, y, connectDropTarget, isOver } = this.props;
     return connectDropTarget(
-      <div className={'paper'}>
+      <div className={'paper'}
+        style={{
+          backgroundColor: `${blueGrey500}`
+        }}
+        >
         <div ref="placeholder" ></div>
       </div>
     );

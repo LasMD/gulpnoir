@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import {
-  blueGrey600, blueGrey700, blueGrey800, blueGrey900
+  blueGrey100, blueGrey200, blueGrey300, blueGrey400, blueGrey500, blueGrey600, blueGrey700
 } from 'material-ui/styles/colors';
 
 import './_style.scss';
@@ -179,7 +179,7 @@ class FlowGraphWindow extends Component {
       <div style={{
           height: '100%',
           width: '100%',
-          backgroundColor: 'darkslategrey'
+          backgroundColor: `${blueGrey300}`
         }}>
         <Dialog
           title="Create New Task"
@@ -201,28 +201,28 @@ class FlowGraphWindow extends Component {
         tabs={tabs}
         tabsStyles={{
           tabBar: {
-            backgroundColor: 'darkslategray'
+            backgroundColor: `${blueGrey300}`
           },
           tab: {
-            backgroundImage: `linear-gradient(${blueGrey800}, ${blueGrey900})`,
+            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
             cursor: 'pointer'
           },
           tabBefore: {
-            backgroundImage: `linear-gradient(${blueGrey800}, ${blueGrey900})`,
+            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
             cursor: 'pointer'
           },
           tabAfter: {
-            backgroundImage: `linear-gradient(${blueGrey800}, ${blueGrey900})`,
+            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
             cursor: 'pointer'
           },
           tabOnHover: {
-            backgroundImage: `linear-gradient(${blueGrey700}, ${blueGrey800})`
+            backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
           },
           tabBeforeOnHover: {
-            backgroundImage: `linear-gradient(${blueGrey700}, ${blueGrey800})`
+            backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
           },
           tabAfterOnHover: {
-            backgroundImage: `linear-gradient(${blueGrey700}, ${blueGrey800})`
+            backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
           },
           tabTitle: {
             cursor: 'pointer'
@@ -231,15 +231,15 @@ class FlowGraphWindow extends Component {
             cursor: 'default'
           },
           tabActive: {
-            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+            backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
             cursor: 'default'
           },
           tabBeforeActive: {
-            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+            backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
             cursor: 'default'
           },
           tabAfterActive: {
-            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+            backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
             cursor: 'default'
           },
         }}
