@@ -5,6 +5,8 @@ import FlatButton from 'material-ui/FlatButton';
 import { DragSource } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
+import IconContentLink from 'material-ui/svg-icons/content/link'
+import { shell } from 'electron';
 
 import './_style.scss';
 
@@ -89,6 +91,11 @@ class GulpPlugin extends Component {
     this.props.onPluginSelect(this.props.index);
   }
 
+  openHomePage() {
+    shell.openExternal(this.props.homepage);
+    return false;
+  }
+
   render() {
     const { connectDragSource, isDragging } = this.props;
     return connectDragSource(
@@ -98,7 +105,7 @@ class GulpPlugin extends Component {
           className={`pluginPaper`}
           style={(this.props.installed || this.state.installed) ? {opacity: '0.75'} : {}}>
           <div className={`header`}>
-            <h2 className={`title`}>{this.props.name} <i>v{this.props.version}</i></h2>
+            <h2 className={`title`}>{this.props.name} <i>v{this.props.version}</i>&nbsp;<a href="#" onClick={this.openHomePage.bind(this)}><IconContentLink /></a></h2>
               {
                 (this.props.installed || this.state.installed) ?
                 <FlatButton label={'Uninstall'} onClick={this.onPluginUninstall.bind(this)}  />

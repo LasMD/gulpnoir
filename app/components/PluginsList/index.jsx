@@ -67,6 +67,7 @@ class PluginsList extends Component {
           reportHeight={this.updatePluginHeight.bind(this)}
           onPluginSelect={this.onPluginSelect.bind(this)}
           installed={plugin.installed}
+          homepage={plugin.homepage[0]}
         />
         <Divider />
       </div>
