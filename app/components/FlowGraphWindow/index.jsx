@@ -112,7 +112,6 @@ class FlowGraphWindow extends Component {
   }
 
   handleTabAddButtonClick(e, currentTabs) {
-    console.log("click");
     this.setState({newTaskTypeDialogOpen: true});
   }
 
@@ -175,8 +174,6 @@ class FlowGraphWindow extends Component {
         onTouchTap={this.handleClose.bind(this)}
       />,
     ];
-
-    console.log(this.state.selectedTab);
 
     return (
       <div className={`window-wrapper`}
