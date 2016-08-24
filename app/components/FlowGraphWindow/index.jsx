@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import {
-  blueGrey100, blueGrey200, blueGrey300, blueGrey400, blueGrey500, blueGrey600, blueGrey700
+  blueGrey100, blueGrey200, blueGrey300, blueGrey400, blueGrey500, blueGrey600, blueGrey700, blueGrey800, blueGrey900
 } from 'material-ui/styles/colors';
 
 import './_style.scss';
@@ -112,6 +112,7 @@ class FlowGraphWindow extends Component {
   }
 
   handleTabAddButtonClick(e, currentTabs) {
+    console.log("click");
     this.setState({newTaskTypeDialogOpen: true});
   }
 
@@ -175,11 +176,12 @@ class FlowGraphWindow extends Component {
       />,
     ];
 
+    console.log(this.state.selectedTab);
+
     return (
-      <div style={{
-          height: '100%',
-          width: '100%',
-          backgroundColor: `${blueGrey300}`
+      <div className={`window-wrapper`}
+        style={{
+        backgroundColor: `${blueGrey700}`
         }}>
         <Dialog
           title="Create New Task"
@@ -192,66 +194,77 @@ class FlowGraphWindow extends Component {
             <i>Tip: Functional contains Gulp plugins. Parallel contains other Gulp tasks.</i>
           </p>
         </Dialog>
-        <Tabs
-        selectedTab={this.state.selectedTab ? this.state.selectedTab : "tab2"}
-        onTabSelect={this.handleTabSelect.bind(this)}
-        onTabClose={this.handleTabClose.bind(this)}
-        onTabAddButtonClick={this.handleTabAddButtonClick.bind(this)}
-        onTabPositionChange={this.handleTabPositionChange.bind(this)}
-        tabs={tabs}
-        tabsStyles={{
-          tabBar: {
-            backgroundColor: `${blueGrey300}`
-          },
-          tab: {
-            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
-            cursor: 'pointer'
-          },
-          tabBefore: {
-            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
-            cursor: 'pointer'
-          },
-          tabAfter: {
-            backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
-            cursor: 'pointer'
-          },
-          tabOnHover: {
-            backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
-          },
-          tabBeforeOnHover: {
-            backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
-          },
-          tabAfterOnHover: {
-            backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
-          },
-          tabTitle: {
-            cursor: 'pointer'
-          },
-          tabTitleActive: {
-            cursor: 'default'
-          },
-          tabActive: {
-            backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
-            cursor: 'default'
-          },
-          tabBeforeActive: {
-            backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
-            cursor: 'default'
-          },
-          tabAfterActive: {
-            backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
-            cursor: 'default'
-          },
-        }}
-        shortCutKeys={
-          {
-            'close': ['alt+command+w', 'alt+ctrl+w'],
-            'create': ['alt+command+t', 'alt+ctrl+t'],
-            'moveRight': ['alt+command+tab', 'alt+ctrl+tab'],
-            'moveLeft': ['shift+alt+command+tab', 'shift+alt+ctrl+tab']
+        { this.state.selectedTab != 0 ? <Tabs
+          selectedTab={this.state.selectedTab ? this.state.selectedTab : "none"}
+          onTabSelect={this.handleTabSelect.bind(this)}
+          onTabClose={this.handleTabClose.bind(this)}
+          onTabAddButtonClick={this.handleTabAddButtonClick.bind(this)}
+          onTabPositionChange={this.handleTabPositionChange.bind(this)}
+          tabs={tabs}
+          tabsStyles={{
+            tabBar: {
+              backgroundColor: `${blueGrey300}`
+            },
+            tab: {
+              backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+              cursor: 'pointer'
+            },
+            tabBefore: {
+              backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+              cursor: 'pointer'
+            },
+            tabAfter: {
+              backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
+              cursor: 'pointer'
+            },
+            tabOnHover: {
+              backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
+            },
+            tabBeforeOnHover: {
+              backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
+            },
+            tabAfterOnHover: {
+              backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
+            },
+            tabTitle: {
+              cursor: 'pointer'
+            },
+            tabTitleActive: {
+              cursor: 'default'
+            },
+            tabActive: {
+              backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
+              cursor: 'default'
+            },
+            tabBeforeActive: {
+              backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
+              cursor: 'default'
+            },
+            tabAfterActive: {
+              backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
+              cursor: 'default'
+            },
+          }}
+          shortCutKeys={
+            {
+              'close': ['alt+command+w', 'alt+ctrl+w'],
+              'create': ['alt+command+t', 'alt+ctrl+t'],
+              'moveRight': ['alt+command+tab', 'alt+ctrl+tab'],
+              'moveLeft': ['shift+alt+command+tab', 'shift+alt+ctrl+tab']
+            }
           }
-        }
-      />
+        />
+      :
+      <div className={'welcome-wrapper'}>
+        <h1 style={{
+            color: `${blueGrey900}`
+          }}>Welcome to GulpNoir</h1>
+        <FlatButton
+          label={'Create a new Task'}
+          onClick={this.handleTabAddButtonClick.bind(this)}
+          />
+      </div>
+    }
     </div>
     );
   }
