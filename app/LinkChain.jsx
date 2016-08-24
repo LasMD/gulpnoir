@@ -50,6 +50,11 @@ export default class LinkChain {
     }
   }
 
+  sever() {
+    this.next.previous = null;
+    this.next = null;
+  }
+
   insert(link) {
     if (this.previous) {
       let linkStore = this.previous;

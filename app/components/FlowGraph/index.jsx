@@ -61,6 +61,7 @@ class FlowGraph extends Component {
     var rect = joint.g.rect(cell.getBBox());
     var collisions = this.graph.findModelsInArea(rect);
     if (collisions.length > 1) {
+      // let links = this.graph.getConnectedLinks(cell);
       cell.translate(-opt.tx, -opt.ty);
     }
   }
@@ -205,6 +206,9 @@ class FlowGraph extends Component {
                   return false;
                 }
                 if (link.get('source').port != 'In' && cellViewS.model.id == link.get('source').id) {
+                  if (this.graphState.connectionsMap[link.get('source').id]) {
+                    this.graphState.connectionsMap[link.get('source').id].sever();
+                  }
                   link.remove();
                   return false;
                 }
@@ -233,7 +237,7 @@ class FlowGraph extends Component {
 
           // Prevent linking to input ports.
           return magnetT && magnetT.getAttribute('type') === 'input';
-        },
+        }
     });
 
     // Move element inside the bounding box of the paper element only.
