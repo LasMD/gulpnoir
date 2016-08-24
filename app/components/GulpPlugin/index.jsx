@@ -125,6 +125,7 @@ class GulpPlugin extends Component {
           </p>
         </Paper>
       </div>
+      <br />
     </div>
     );
   }
