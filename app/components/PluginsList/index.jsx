@@ -69,7 +69,6 @@ class PluginsList extends Component {
           installed={plugin.installed}
           homepage={plugin.homepage[0]}
         />
-        <Divider />
       </div>
     );
   }

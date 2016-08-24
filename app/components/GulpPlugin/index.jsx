@@ -99,6 +99,7 @@ class GulpPlugin extends Component {
   render() {
     const { connectDragSource, isDragging } = this.props;
     return connectDragSource(
+      <div className={`pluginWrapper`}>
       <div style={(this.props.installed || this.state.installed) ? {backgroundColor: 'limegreen'} : {}}>
         <Paper
           zDepth={2}
@@ -124,6 +125,8 @@ class GulpPlugin extends Component {
           </p>
         </Paper>
       </div>
+      <br />
+    </div>
     );
   }
 }

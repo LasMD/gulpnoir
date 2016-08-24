@@ -1,6 +1,9 @@
+.pluginWrapper {
+	margin: 1em;
+}
+
 .pluginPaper {
 	padding: 10px;
-	margin: 5px;
 
 	.header {
 		display: flex;
@@ -39,5 +42,4 @@
 			cursor: pointer;
 		}
 	}
-
 }
