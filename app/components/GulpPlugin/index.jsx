@@ -7,7 +7,7 @@ import { GRID_CONST } from '../../constants';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 import IconContentLink from 'material-ui/svg-icons/content/link'
 import { shell } from 'electron';
-
+import IconButton from 'material-ui/IconButton';
 import './_style.scss';
 
 const cardSource = {
@@ -106,7 +106,7 @@ class GulpPlugin extends Component {
           className={`pluginPaper`}
           style={(this.props.installed || this.state.installed) ? {opacity: '0.75'} : {}}>
           <div className={`header`}>
-            <h2 className={`title`}>{this.props.name} <i>v{this.props.version}</i>&nbsp;<a href="#" onClick={this.openHomePage.bind(this)}><IconContentLink /></a></h2>
+            <h2 className={`title`}>{this.props.name} <i>v{this.props.version}</i>&nbsp;<IconButton onClick={this.openHomePage.bind(this)}><IconContentLink /></IconButton></h2>
               {
                 (this.props.installed || this.state.installed) ?
                 <FlatButton label={'Uninstall'} onClick={this.onPluginUninstall.bind(this)}  />
@@ -125,7 +125,6 @@ class GulpPlugin extends Component {
           </p>
         </Paper>
       </div>
-      <br />
     </div>
     );
   }
