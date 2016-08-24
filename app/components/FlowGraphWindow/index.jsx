@@ -202,17 +202,23 @@ class FlowGraphWindow extends Component {
             tabBar: {
               backgroundColor: `${blueGrey300}`
             },
+            tabBarAfter: {
+              backgroundColor: `${blueGrey500}`
+            },
             tab: {
               backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: `${blueGrey700} -1px 1px 0px inset, rgba(0, 0, 0, 0.0980392) 4px 0px 4px`
             },
             tabBefore: {
               backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: `${blueGrey700} 1px 1px 0px inset, rgba(0, 0, 0, 0.0980392) -4px 0px 4px`
             },
             tabAfter: {
               backgroundImage: `linear-gradient(${blueGrey600}, ${blueGrey700})`,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: `${blueGrey700} -1px 1px 0px inset, rgba(0, 0, 0, 0.0980392) 4px 0px 4px`
             },
             tabOnHover: {
               backgroundImage: `linear-gradient(${blueGrey500}, ${blueGrey600})`
@@ -231,15 +237,18 @@ class FlowGraphWindow extends Component {
             },
             tabActive: {
               backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
-              cursor: 'default'
+              cursor: 'default',
+              boxShadow: `${blueGrey600} -1px 1px 0px inset, rgba(0, 0, 0, 0.0980392) 4px 0px 4px`
             },
             tabBeforeActive: {
               backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
-              cursor: 'default'
+              cursor: 'default',
+              boxShadow: `${blueGrey600} 1px 1px 0px inset, rgba(0, 0, 0, 0.0980392) -4px 0px 4px`
             },
             tabAfterActive: {
               backgroundImage: `linear-gradient(${blueGrey400}, ${blueGrey500})`,
-              cursor: 'default'
+              cursor: 'default',
+              boxShadow: `${blueGrey600} -1px 1px 0px inset, rgba(0, 0, 0, 0.0980392) 4px 0px 4px`
             },
           }}
           shortCutKeys={
