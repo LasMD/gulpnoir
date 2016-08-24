@@ -92,31 +92,22 @@ class GulpPlugin extends Component {
   render() {
     const { connectDragSource, isDragging } = this.props;
     return connectDragSource(
-      <div style={(this.props.installed || this.state.installed) ?
-          {
-            backgroundColor: 'limegreen'
-          } : {}
-            }>
+      <div style={(this.props.installed || this.state.installed) ? {backgroundColor: 'limegreen'} : {}}>
         <Paper
           zDepth={2}
           className={`pluginPaper`}
-          style={(this.props.installed || this.state.installed) ?
-            {
-              opacity: '0.75'
-            } : {}
+          style={(this.props.installed || this.state.installed) ? {opacity: '0.75'} : {}}>
+          <div className={`header`}>
+            <h2 className={`title`}>{this.props.name} <i>v{this.props.version}</i></h2>
+              {
+                (this.props.installed || this.state.installed) ?
+                <FlatButton label={'Uninstall'} onClick={this.onPluginUninstall.bind(this)}  />
+                :
+                <FlatButton label={'Install'} onClick={this.onPluginInstall.bind(this)} />
               }
-        >
-          <h3>{this.props.name} <i>v{this.props.version}</i></h3>
-          <h4>Author: {this.props.author}</h4>
-          <p>{this.props.description}</p>
-          <p>
-            {(this.props.installed || this.state.installed) ?
-              <FlatButton label={'Uninstall'} onClick={this.onPluginUninstall.bind(this)}  />
-              :
-              <FlatButton label={'Install'} onClick={this.onPluginInstall.bind(this)} />
-            }
-
-            </p>
+          </div>
+          <h3 className={`author`}>Author:</h3> {this.props.author}
+          <p className={`description`}>{this.props.description}</p>
           <p className={'keywords-wrapper'}>
           {
             this.props.keywords.map((keyword, index) => {
