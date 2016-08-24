@@ -1,5 +1,3 @@
-// @flow
-
 import "babel-polyfill";
 
 export default class LinkChain {
