@@ -7,4 +7,5 @@
 GulpNoir is a GUI built for [GulpJS](https://github.com/gulpjs/gulp). GulpNoir uses [Electron](http://electron.atom.io/) for native app compilation, and [React](https://facebook.github.io/react/) as the view library. The design uses the popular [Google Material spec](http://www.material-ui.com/).
 
 ## Screenshot
-![screenshot from 2016-08-24 11-45-58](https://cloud.githubusercontent.com/assets/13342266/17941393/5602c6bc-69f0-11e6-8dc6-361732b86ca2.png)
+![screenshot from 2016-08-24 12-22-41](https://cloud.githubusercontent.com/assets/13342266/17942641/7b09e8dc-69f5-11e6-8ac7-9c41bf0a6c3a.png)
+
