@@ -40,7 +40,6 @@ class PropertiesGulpPlugin extends Component {
       paramsList = (<div>Empty</div>);
     }
 
-    console.log(this.props.task);
     if (this.props.GulpPlugin) {
       renderItem = (
         <Paper className={`propertyPaper`} zDepth={1}>

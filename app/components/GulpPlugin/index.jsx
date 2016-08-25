@@ -18,6 +18,14 @@ const cardSource = {
   },
 
   endDrag(props, monitor, component) {
+    let pluginId = Date.now();
+    GulpPluginsChannels.dispatch({
+      channel: 'plugins/object/new',
+      outgoing: {
+        id: pluginId,
+        ...component.props
+      }
+    });
     const result = monitor.getDropResult();
     if (!result) return;
     const { grid, position } = monitor.getDropResult();
@@ -25,7 +33,7 @@ const cardSource = {
     position.y -= GRID_CONST.ITEM.PLUGIN.size.height / 2;
     position.x = Math.floor(position.x / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     position.y = Math.floor(position.y / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
-    grid.createPlugin({ text: props.name.replace(/gulp(_|\-)?/g, ''), id: component.pluginId, ...position });
+    grid.createPlugin({ text: props.name.replace(/gulp(_|\-)?/g, ''), id: pluginId, ...position });
     GulpPluginsChannels.dispatch({
       channel: 'plugins/install',
       outgoing: {
@@ -54,15 +62,7 @@ class GulpPlugin extends Component {
   }
 
   componentWillMount() {
-    this.pluginId = this.props.pluginId || Date.now();
-    console.log(this.props);
-    GulpPluginsChannels.dispatch({
-      channel: 'plugins/object/new',
-      outgoing: {
-        id: this.pluginId,
-        ...this.props
-      }
-    });
+
   }
 
   componentDidMount() {

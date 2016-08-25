@@ -65,7 +65,7 @@ class GulpPluginsChannels extends Channelizer {
   }
 
   ctrlNewPlugin({ state, incoming }) {
-    let pluginObject = new GulpPlugin(incoming);
+    let pluginObject = new GulpPlugin({id: incoming.id, ...incoming});
     return state.setIn(['pluginObjects', incoming.id], pluginObject);
   }
 
