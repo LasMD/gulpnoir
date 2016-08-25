@@ -5,6 +5,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import TasksList from '../../components/TasksList';
+import TasksDetail from '../../components/TasksDetail';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import PropertiesGulpPlugin from '../../components/PropertiesGulpPlugin';
 import PropertiesPipeSource from '../../components/PropertiesPipeSource';
@@ -54,9 +55,30 @@ class HomePage extends Component {
     }
 
     let taskItem;
+    let showList = (<PluginsList
+        onPluginSelect={(plugin) => { console.log(plugin) }}
+        ref='plugin-list'
+        height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+      />);
     if (this.state.selectedTask) {
       taskItem = (<PropertiesTask task={this.state.selectedTask}></PropertiesTask>);
+
+      if (this.state.selectedTask.get('type') == "Functional") {
+        showList = (<PluginsList
+          onPluginSelect={(plugin) => { console.log(plugin) }}
+          ref='plugin-list'
+          height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+        />);
+      } else {
+        showList = (<TasksList
+          onPluginSelect={(plugin) => { console.log(plugin) }}
+          ref='tasks-list'
+          height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+        />);
+      }
     }
+
+
 
     return (
       <main className={'page-home'}>
@@ -70,14 +92,10 @@ class HomePage extends Component {
                   localStorage.setItem('splitPanelh1', size);
                   this.refs['plugin-list'].updateHeight(size);
                 }}>
-                <PluginsList
-                onPluginSelect={(plugin) => { console.log(plugin) }}
-                ref='plugin-list'
-                height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
-                />
-              <Tabs>
+                {showList}
+                <Tabs>
                   <Tab label='Project Details'>
-                    <TasksList />
+                    <TasksDetail />
                     {taskItem}
                     {propertyItem}
                   </Tab>

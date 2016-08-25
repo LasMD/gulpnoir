@@ -93,6 +93,7 @@ class FlowGraph extends Component {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.PARALLEL
     };
+    props['itemType'] = "Parallel";
     let cell = new joint.shapes.basic.Circle(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
@@ -135,7 +136,7 @@ class FlowGraph extends Component {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.SEQUENCE
     };
-
+    props['itemType'] = "Sequence";
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
@@ -218,6 +219,12 @@ class FlowGraph extends Component {
         model: this.graph,
         gridSize: GRID_CONST.SNAP_SIZE,
         validateConnection: (cellViewS, magnetS, cellViewT, magnetT, end, linkView) => {
+
+          console.log(cellViewS, magnetS, cellViewT, magnetT, end, linkView);
+          if (cellViewT.model.attributes.itemType == "Parallel") {
+            // Instantly allow connection to parallels without restriction
+            return true;
+          }
 
           // Disallow multiple connections from a single Out port
           let connectedLinks = this.graph.getConnectedLinks(cellViewS.model);
