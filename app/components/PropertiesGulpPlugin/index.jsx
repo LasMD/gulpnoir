@@ -3,7 +3,9 @@ import { GRID_CONST } from '../../constants';
 import TextField from '../MutableTextField';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
+import IconContentRemove from 'material-ui/svg-icons/content/remove-circle-outline';
 import './_style.scss';
 
 class PropertiesGulpPlugin extends Component {
@@ -30,12 +32,26 @@ class PropertiesGulpPlugin extends Component {
     this.forceUpdate();
   }
 
+  removeParam(idx) {
+    let params = this.props.GulpPlugin.get('params');
+    params.splice(idx, 1);
+    this.props.GulpPlugin.set('params', params);
+    GulpPluginsChannels.dispatch({
+      channel: 'plugins/object/set',
+      outgoing: {
+        id: this.props.GulpPlugin.get('id'),
+        plugin: this.props.GulpPlugin,
+      }
+    });
+    this.forceUpdate();
+  }
+
   render() {
 
 
     let renderItem = (<div></div>);
     let paramsList = this.props.GulpPlugin.get('params').map((param, idx) => {
-      return <div key={`${this.props.GulpPlugin.get('name')}-param-${idx}`}>{param}</div>;
+      return <div key={`${this.props.GulpPlugin.get('name')}-param-${idx}`} className={`plugin-property-param`}>{param}<IconButton onClick={this.removeParam.bind(this, idx)}><IconContentRemove /></IconButton></div>;
     });
 
     if (!paramsList.length) {
