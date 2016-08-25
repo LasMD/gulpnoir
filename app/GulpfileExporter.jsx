@@ -42,18 +42,27 @@ export default class Exporter {
   _writeFunctionalTasks() {
     let result = [];
     for (let task of this.tasks.functional) {
+      let pipeSource = TasksChannels.getTaskItemById({taskId: task[0], itemId: 'PipeSource'});
       result.push(`export function ${task[1].get('name')}() {`);
       let connections = task[1].get('exportConnections')();
       let resultAppend = ``;
       for (let link of connections) {
         if (link == connections.first) {
-          resultAppend = `\treturn gulp.src('./my/path')`;
+          resultAppend = `\treturn gulp.src('${pipeSource.get('glob')}')`;
         } else {
           console.log(connections);
           let pluginObj = GulpPluginsChannels.getPluginObjectById(link.data.itemId);
           console.log(pluginObj);
           let friendlyName = this._friendlify(pluginObj.get('name'));
-          resultAppend = `\t\t.pipe(${friendlyName}())`;
+          resultAppend = `\t\t.pipe(${friendlyName}(`;
+          let pluginParams =  pluginObj.get('params');
+          for (let i = 0; i < pluginParams.length; i++) {
+            resultAppend += pluginParams[i];
+            if (i < pluginParams.length-1) {
+              resultAppend += ',';
+            }
+          }
+          resultAppend += '))';
         }
         if (link == connections.last) {
           result.push(resultAppend + ';');
