@@ -10,6 +10,7 @@ const GulpPluginRecord = Immutable.Record({
   name: null,
   rating: null,
   version: null,
+  params: null,
 });
 
 export default class GulpPlugin extends GulpPluginRecord {
@@ -22,7 +23,8 @@ export default class GulpPlugin extends GulpPluginRecord {
     modified,
     name,
     rating,
-    version
+    version,
+    params = []
   }) {
     super({
       id,
@@ -34,6 +36,7 @@ export default class GulpPlugin extends GulpPluginRecord {
       name: name,
       rating: rating,
       version: version,
+      params: params
     });
   }
 }

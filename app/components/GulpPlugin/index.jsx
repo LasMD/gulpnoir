@@ -57,7 +57,7 @@ class GulpPlugin extends Component {
     this.pluginId = this.props.pluginId || Date.now();
     console.log(this.props);
     GulpPluginsChannels.dispatch({
-      channel: 'plugins/new',
+      channel: 'plugins/object/new',
       outgoing: {
         id: this.pluginId,
         ...this.props

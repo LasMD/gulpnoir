@@ -45,11 +45,11 @@ class HomePage extends Component {
       propertiesDisabled = false;
       if (this.state.selectedItem.GulpPlugin) {
         propertyItem = (
-          <PropertiesGulpPlugin GulpPlugin={this.state.selectedItem.GulpPlugin} item={this.state.selectedItem.item} />
+          <PropertiesGulpPlugin GulpPlugin={this.state.selectedItem.GulpPlugin} item={this.state.selectedItem.item} task={this.state.selectedTask} />
         );
       } else if (this.state.selectedItem.PipeSource) {
         propertyItem = (
-          <PropertiesPipeSource PipeSource={this.state.selectedItem.PipeSource} item={this.state.selectedItem.item} />
+          <PropertiesPipeSource PipeSource={this.state.selectedItem.PipeSource} item={this.state.selectedItem.item} task={this.state.selectedTask} />
         );
       }
     }
