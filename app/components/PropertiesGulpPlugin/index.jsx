@@ -13,8 +13,10 @@ class PropertiesGulpPlugin extends Component {
     this.newParamValue = '';
   }
 
-  pushNewParam(a, b, c) {
+  pushNewParam() {
     let params = this.props.GulpPlugin.get('params');
+    let newValue = this.refs.newParamInput.getValue();
+    if (!newValue.match(/\w+/)) return;
     params.push(this.refs.newParamInput.getValue());
     this.newParamValue = '';
     this.props.GulpPlugin.set('params', params);

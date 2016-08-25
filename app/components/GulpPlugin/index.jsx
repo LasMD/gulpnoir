@@ -61,10 +61,6 @@ class GulpPlugin extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
-
-  }
-
   componentDidMount() {
     // gulpplugin is implied
     if (this.props.keywords.indexOf('gulpplugin') > -1) {
