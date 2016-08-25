@@ -1,10 +1,34 @@
 import React, { Component } from 'react';
 import { GRID_CONST } from '../../constants';
 import TextField from '../MutableTextField';
+import FlatButton from 'material-ui/FlatButton';
+import TasksChannels from '../../stores/Tasks/TasksChannels';
 import Paper from 'material-ui/Paper';
+import PipeSource from '../../stores/Tasks/PipeSource';
 import './_style.scss';
 
 class PropertiesPipeSource extends Component {
+
+  componentWillMount() {
+    this.globValue = this.props.PipeSource.get('glob');
+  }
+
+  updateGlob() {
+    this.globValue = this.refs.globInput.getValue();
+    TasksChannels.dispatch({
+      channel: 'tasks/items/new',
+      outgoing: {
+        task: {
+          id: this.props.task.get('id'),
+        },
+        itemId: "PipeSource",
+        item: new PipeSource({
+          glob: this.refs.globInput.getValue()
+        })
+      }
+    });
+    this.forceUpdate();
+  }
 
   render() {
     let renderItem = (<div></div>);
@@ -13,9 +37,8 @@ class PropertiesPipeSource extends Component {
       renderItem = (
         <Paper className={`propertyPaper`}  zDepth={1}>
           <h2>Source Properties</h2>
-          <h3>
-              {this.props.PipeSource.get('glob')}
-          </h3>
+          <b>Glob:</b> <TextField ref={'globInput'} value={this.globValue} placeholder={`./my/html/files/**/*.html`} />
+          <FlatButton onClick={this.updateGlob.bind(this)} label={`Update`} />
         </Paper>
       )
     }

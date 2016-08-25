@@ -124,7 +124,7 @@ class FlowGraph extends Component {
         },
         itemId: "PipeSource",
         item: new PipeSource({
-          glob: "./my/path"
+          glob: null
         })
       }
     });
