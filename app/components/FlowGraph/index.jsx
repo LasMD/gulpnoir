@@ -187,7 +187,6 @@ class FlowGraph extends Component {
       let outgoing = {
         item: cell.model
       };
-      console.log("gcpidmap", this.graphState.graphCellPluginIdMap);
       if (cell.model.attributes.itemType == "GulpPlugin") {
         outgoing.GulpPlugin = GulpPluginsChannels.getPluginObjectById(this.graphState.graphCellPluginIdMap.get(cell.model.id));
       } else if (cell.model.attributes.itemType == "PipeSource") {
