@@ -25,7 +25,7 @@ const cardSource = {
     position.y -= GRID_CONST.ITEM.PLUGIN.size.height / 2;
     position.x = Math.floor(position.x / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     position.y = Math.floor(position.y / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
-    grid.createTask({ text: props.name.replace(/gulp(_|\-)?/g, ''), id: taskId, ...position });
+    grid.createTask({ text: props.task.get('name'), id: taskId, ...position });
     component.forceUpdate();
   }
 };

@@ -15,6 +15,17 @@ export default {
         inPorts: ['In'],
         outPorts: ['Out']
       },
+      TASK: {
+        size: {
+          width: 80,
+          height: 80
+        },
+        attrs: {
+          rect: { fill: 'brown' },
+          '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+        },
+        outPorts: ['']
+      },
       PIPE_SOURCE: {
         size: {
           width: 60,

@@ -88,6 +88,22 @@ class FlowGraph extends Component {
     cell.on('change:position', this.collisionLookup);
   }
 
+  createTask({ x, y, text, id }) {
+    const props = {
+      position: { x: x, y: y },
+      ...GRID_CONST.ITEM.TASK
+    };
+    props.attrs['.label'] = { text };
+    props['itemType'] = "Task";
+
+    let cell = new joint.shapes.devs.Model(props);
+    this.graphState.graphCells.set(cell.id, cell);
+    this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graphState.graphCellPluginIdMap.set(cell.id, id);
+    this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
+  }
+
   createParallel({x, y}) {
     const props = {
       position: { x: x, y: y },
