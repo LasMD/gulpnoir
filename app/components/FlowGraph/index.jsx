@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom';
 import joint from 'jointjs';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
+import PipeSource from '../../stores/Tasks/PipeSource';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
@@ -77,6 +78,7 @@ class FlowGraph extends Component {
       ...GRID_CONST.ITEM.PLUGIN
     };
     props.attrs['.label'] = { text };
+    props['itemType'] = "GulpPlugin";
 
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
@@ -103,7 +105,7 @@ class FlowGraph extends Component {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.PIPE_SOURCE
     };
-
+    props['itemType'] = "PipeSource";
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
@@ -111,15 +113,17 @@ class FlowGraph extends Component {
     cell.on('change:position', this.collisionLookup);
     this.graphState.connectionsMap[cell.id] = this.graphState.connections = new LinkChain({
       cellId: cell.id,
-      itemId: "source",
-      itemType: "PipeSource"
+      itemId: "source"
     });
 
     TasksChannels.dispatch({
       channel: 'tasks/items/new',
       outgoing: {
-        id: "PipeSource",
-        data: new PipeSource({
+        task: {
+          id: this.props.task.get('id'),
+        },
+        itemId: "PipeSource",
+        item: new PipeSource({
           glob: "./my/path"
         })
       }
@@ -152,9 +156,7 @@ class FlowGraph extends Component {
       });
       TasksChannels.dispatch({
         channel: 'tasks/items/select',
-        outgoing: {
-          item: null
-        }
+        outgoing: null
       });
     }
   }
@@ -185,9 +187,10 @@ class FlowGraph extends Component {
       let outgoing = {
         item: cell.model
       };
-      if (this.graphState.graphCellPluginIdMap.has(cell.model.id)) {
-        if ()
+      if (cell.model.attributes.itemType == "GulpPlugin") {
         outgoing.GulpPlugin = GulpPluginsChannels.getPluginObjectById(this.graphState.graphCellPluginIdMap.get(cell.model.id));
+      } else if (cell.model.attributes.itemType == "PipeSource") {
+        outgoing.PipeSource = TasksChannels.getTaskItemById({taskId: this.props.task.get('id'), itemId: "PipeSource"});
       }
       TasksChannels.dispatch({
         channel: 'tasks/items/select',
@@ -342,15 +345,13 @@ class FlowGraph extends Component {
         if (!this.graphState.connectionsMap[cell.model.get('source').id]) {
           this.graphState.connectionsMap[cell.model.get('source').id] = new LinkChain({
             cellId: cell.model.get('source').id,
-            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('source').id),
-            itemType: 'GulpPlugin'
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('source').id)
           });
         }
         if (!this.graphState.connectionsMap[cell.model.get('target').id]) {
           this.graphState.connectionsMap[cell.model.get('target').id] = new LinkChain({
             cellId: cell.model.get('target').id,
-            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id),
-            itemType: 'GulpPlugin'
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id)
           });
         }
 

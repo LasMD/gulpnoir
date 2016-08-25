@@ -11,7 +11,7 @@ class PropertiesPipeSource extends Component {
       renderItem = (
         <div>
           <h3>
-              {this.props.PipeSource.get('name')}
+              {this.props.PipeSource.get('glob')}
           </h3>
         </div>
       )

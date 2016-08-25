@@ -38,7 +38,8 @@ class HomePage extends Component {
 
     let propertiesDisabled = true;
     let propertyItem = null;
-    if (this.state.selectedItem && this.state.selectedItem.item) {
+    console.log(this.state.selectedItem);
+    if (this.state.selectedItem) {
       propertiesDisabled = false;
       if (this.state.selectedItem.GulpPlugin) {
         propertyItem = (

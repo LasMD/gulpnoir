@@ -87,7 +87,7 @@ class TasksChannels extends Channelizer {
 
         receiver.tune({
           channel: 'new',
-          controller: ({ state, incoming }) => newState.setIn(['taskItems', incoming.task.id, prop], incoming.task[prop])
+          controller: ({ state, incoming }) => state.setIn(['taskItems', incoming.task.id, incoming.itemId], incoming.item)
         });
 
         receiver.tune({
@@ -123,6 +123,10 @@ class TasksChannels extends Channelizer {
 
   getTaskItems() {
     return this.getState().get('taskItems') || [];
+  }
+
+  getTaskItemById({taskId, itemId}) {
+    return this.getState().getIn(['taskItems', taskId, itemId]);
   }
 
   getSelectedItem() {

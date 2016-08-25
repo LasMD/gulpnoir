@@ -2,7 +2,7 @@ import "babel-polyfill";
 
 export default class LinkChain {
 
-  constructor(data = 'source') {
+  constructor(data = {}) {
     this.data = data;
   }
 
