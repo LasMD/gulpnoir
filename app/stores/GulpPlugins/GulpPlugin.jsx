@@ -10,11 +10,11 @@ const GulpPluginRecord = Immutable.Record({
   name: null,
   rating: null,
   version: null,
-  installed: null
 });
 
 export default class GulpPlugin extends GulpPluginRecord {
   constructor({
+    id,
     author,
     description,
     homepage,
@@ -25,15 +25,15 @@ export default class GulpPlugin extends GulpPluginRecord {
     version
   }) {
     super({
+      id,
       author: author,
-      description: null,
-      homepage: null,
-      keywords: null,
+      description: description,
+      homepage: homepage,
+      keywords: keywords,
       modified: null,
-      name: null,
-      rating: null,
-      version: null,
-      installed: false
+      name: name,
+      rating: rating,
+      version: version,
     });
   }
 }

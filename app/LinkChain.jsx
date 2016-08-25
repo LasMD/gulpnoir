@@ -17,7 +17,7 @@ export default class LinkChain {
   }
 
   get next() {
-    return this._next || false;
+    return this._next || null;
   }
 
   set next(val) {
@@ -25,7 +25,7 @@ export default class LinkChain {
   }
 
   get previous() {
-    return this._previous || false;
+    return this._previous || null;
   }
 
   set previous(val) {
@@ -49,7 +49,12 @@ export default class LinkChain {
   }
 
   sever() {
-    this.next.previous = null;
+    if (this.next) {
+      this.next.previous = null;
+    }
+    if (this.previous) {
+      this.previous.next = null;
+    }
     this.next = null;
   }
 

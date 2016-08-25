@@ -12,7 +12,7 @@ class TasksChannels extends Channelizer {
     .set('_stateID', Date.now());
 
   }
-  
+
   Channels({ receiver }) {
 
     receiver.world({
@@ -92,7 +92,7 @@ class TasksChannels extends Channelizer {
 
         receiver.tune({
           channel: 'select',
-          controller: ({ state, incoming }) => state.set('selectedItem', incoming.item)
+          controller: ({ state, incoming }) => state.set('selectedItem', incoming)
         });
 
       }});

@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
 import { Channelizer } from 'channelizer';
 import $ from 'jquery';
+import GulpPlugin from './GulpPlugin';
 
 class GulpPluginsChannels extends Channelizer {
 
@@ -53,7 +54,8 @@ class GulpPluginsChannels extends Channelizer {
   }
 
   ctrlNewPlugin({ state, incoming }) {
-    return state.setIn(['pluginObjects', incoming.id], incoming);
+    let pluginObject = new GulpPlugin(incoming);
+    return state.setIn(['pluginObjects', incoming.id], pluginObject);
   }
 
   getInstalledPlugins() {

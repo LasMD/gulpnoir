@@ -6,7 +6,8 @@ import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import TasksProperties from '../../components/TasksProperties';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
-import ItemProperties from '../../components/ItemProperties';
+import PropertiesGulpPlugin from '../../components/PropertiesGulpPlugin';
+import PropertiesPipeSource from '../../components/PropertiesPipeSource';
 import FlowGraph from '../../components/FlowGraph';
 import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
@@ -36,9 +37,18 @@ class HomePage extends Component {
   render() {
 
     let propertiesDisabled = true;
-
-    if (this.state.selectedItem) {
+    let propertyItem = null;
+    if (this.state.selectedItem && this.state.selectedItem.item) {
       propertiesDisabled = false;
+      if (this.state.selectedItem.GulpPlugin) {
+        propertyItem = (
+          <PropertiesGulpPlugin GulpPlugin={this.state.selectedItem.GulpPlugin} item={this.state.selectedItem.item} />
+        );
+      } else if (this.state.selectedItem.PipeSource) {
+        propertyItem = (
+          <PropertiesPipeSource PipeSource={this.state.selectedItem.PipeSource} item={this.state.selectedItem.item} />
+        );
+      }
     }
 
     return (
@@ -68,7 +78,7 @@ class HomePage extends Component {
                       <TasksProperties />
                       <Tabs>
                         <Tab label="Item Properties">
-                          <ItemProperties item={this.state.selectedItem} />
+                          {propertyItem}
                         </Tab>
                       </Tabs>
                     </SplitPane>)

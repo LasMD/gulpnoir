@@ -52,7 +52,7 @@ export default class Exporter {
           console.log(connections);
           let pluginObj = GulpPluginsChannels.getPluginObjectById(link.data.itemId);
           console.log(pluginObj);
-          let friendlyName = this._friendlify(pluginObj.name);
+          let friendlyName = this._friendlify(pluginObj.get('name'));
           resultAppend = `\t\t.pipe(${friendlyName}())`;
         }
         if (link == connections.last) {

@@ -55,6 +55,7 @@ class GulpPlugin extends Component {
 
   componentWillMount() {
     this.pluginId = this.props.pluginId || Date.now();
+    console.log(this.props);
     GulpPluginsChannels.dispatch({
       channel: 'plugins/new',
       outgoing: {

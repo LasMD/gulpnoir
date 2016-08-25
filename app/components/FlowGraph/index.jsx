@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import joint from 'jointjs';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
+import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
@@ -110,7 +111,18 @@ class FlowGraph extends Component {
     cell.on('change:position', this.collisionLookup);
     this.graphState.connectionsMap[cell.id] = this.graphState.connections = new LinkChain({
       cellId: cell.id,
-      itemId: "source"
+      itemId: "source",
+      itemType: "PipeSource"
+    });
+
+    TasksChannels.dispatch({
+      channel: 'tasks/items/new',
+      outgoing: {
+        id: "PipeSource",
+        data: new PipeSource({
+          glob: "./my/path"
+        })
+      }
     });
   }
 
@@ -170,11 +182,16 @@ class FlowGraph extends Component {
           'stroke-dasharray': '5,5',
         }
       });
+      let outgoing = {
+        item: cell.model
+      };
+      if (this.graphState.graphCellPluginIdMap.has(cell.model.id)) {
+        if ()
+        outgoing.GulpPlugin = GulpPluginsChannels.getPluginObjectById(this.graphState.graphCellPluginIdMap.get(cell.model.id));
+      }
       TasksChannels.dispatch({
         channel: 'tasks/items/select',
-        outgoing: {
-          item: cell.model
-        }
+        outgoing: outgoing
       });
     }
   }
@@ -325,13 +342,15 @@ class FlowGraph extends Component {
         if (!this.graphState.connectionsMap[cell.model.get('source').id]) {
           this.graphState.connectionsMap[cell.model.get('source').id] = new LinkChain({
             cellId: cell.model.get('source').id,
-            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('source').id)
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('source').id),
+            itemType: 'GulpPlugin'
           });
         }
         if (!this.graphState.connectionsMap[cell.model.get('target').id]) {
           this.graphState.connectionsMap[cell.model.get('target').id] = new LinkChain({
             cellId: cell.model.get('target').id,
-            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id)
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id),
+            itemType: 'GulpPlugin'
           });
         }
 
