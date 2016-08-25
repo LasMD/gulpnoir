@@ -12,6 +12,7 @@ class PropertiesGulpPlugin extends Component {
     if (this.props.GulpPlugin) {
       renderItem = (
         <Paper className={`propertyPaper`} zDepth={1}>
+          <h2>Plugin Properties</h2>
           <h3>
               {this.props.GulpPlugin.get('name')}
           </h3>

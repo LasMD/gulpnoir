@@ -3,11 +3,11 @@ import { RadioButton } from 'material-ui/RadioButton';
 import TextField from '../MutableTextField';
 import RadioButtonGroup from '../MutableRadioButtonGroup';
 import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
 import { Container } from 'flux/utils';
-
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 
-class TaskComponent extends Component {
+class PropertiesTask extends Component {
 
   static getStores() {
     return [TasksChannels];
@@ -25,10 +25,10 @@ class TaskComponent extends Component {
       this.refs[`taskName${task.get('id')}`].forceUpdate();
     }
     return (
-      <div>
+      <Paper className={`propertyPaper`} zDepth={1}>
+        <h2>Task Properties</h2>
         <h3><b>{task.get('name')}</b> <i>({task.get('type')})</i></h3>
-        <FlatButton label="Save Changes" onClick={this._saveChanges.bind(this)} />
-      </div>
+      </Paper>
     );
   }
 
@@ -52,4 +52,4 @@ class TaskComponent extends Component {
 
 }
 
-export default Container.create(TaskComponent);
+export default Container.create(PropertiesTask);

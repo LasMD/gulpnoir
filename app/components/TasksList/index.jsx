@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import TaskComponent from './TaskComponent';
 import InstalledPluginsComponent from '../InstalledPlugins';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import FlatButton from 'material-ui/FlatButton';
@@ -13,7 +12,7 @@ import ActionDonutSmall from 'material-ui/svg-icons/action/donut-small'
 
 import './_style.scss';
 
-class TasksProperties extends Component {
+class TasksList extends Component {
 
 
   static getStores() {
@@ -42,11 +41,6 @@ class TasksProperties extends Component {
   }
 
   render() {
-
-    let taskItem;
-    if (this.state.selectedTask) {
-      taskItem = (<TaskComponent task={this.state.selectedTask}></TaskComponent>);
-    }
 
     let anyTasksOpen = this.state.openTasks.size > 0;
 
@@ -88,49 +82,37 @@ class TasksProperties extends Component {
     // ];
 
     return (
-      <div className={'task-list'}>
-        <Tabs ref='tabs'>
-          <Tab label='Available Items'>
-            <Paper className={`propertyPaper`} zDepth={1}>
-              <List>
-                <ListItem
-                  key={1}
-                  primaryText="Tasks"
-                  primaryTogglesNestedList={true}
-                  nestedItems={[
-                    <ListItem
-                      key={"TasksFunctional"}
-                      primaryText="Functional"
-                      primaryTogglesNestedList={true}
-                      nestedItems={availableFunctionalTasks ? availableFunctionalTasks : []}
-                    />,
-                    <ListItem
-                      key={"TasksParallel"}
-                      primaryText="Parallel"
-                      primaryTogglesNestedList={true}
-                      nestedItems={availableParallelTasks ? availableParallelTasks : []}
-                    />,
-                    <ListItem
-                      key={"TasksSequence"}
-                      primaryText="Sequence"
-                      primaryTogglesNestedList={true}
-                      nestedItems={availableSequenceTasks ? availableSequenceTasks : []}
-                    />
-                  ]}
-                  leftIcon={<EditorFormatListBulleted />}
-                  />
-                <InstalledPluginsComponent />
-              </List>
-            </Paper>
-          </Tab>
-          {anyTasksOpen ? (
-            <Tab label="Task Details">
-              {(taskItem || 'Loading...')}
-            </Tab>)
-            : null
-          }
-        </Tabs>
-      </div>
+      <Paper className={`propertyPaper`} zDepth={1}>
+        <List>
+          <ListItem
+            key={1}
+            primaryText="Tasks"
+            primaryTogglesNestedList={true}
+            nestedItems={[
+              <ListItem
+                key={"TasksFunctional"}
+                primaryText="Functional"
+                primaryTogglesNestedList={true}
+                nestedItems={availableFunctionalTasks ? availableFunctionalTasks : []}
+              />,
+              <ListItem
+                key={"TasksParallel"}
+                primaryText="Parallel"
+                primaryTogglesNestedList={true}
+                nestedItems={availableParallelTasks ? availableParallelTasks : []}
+              />,
+              <ListItem
+                key={"TasksSequence"}
+                primaryText="Sequence"
+                primaryTogglesNestedList={true}
+                nestedItems={availableSequenceTasks ? availableSequenceTasks : []}
+              />
+            ]}
+            leftIcon={<EditorFormatListBulleted />}
+            />
+          <InstalledPluginsComponent />
+        </List>
+      </Paper>
     );
   }
 
@@ -147,4 +129,4 @@ class TasksProperties extends Component {
 
 }
 
-export default Container.create(TasksProperties);
+export default Container.create(TasksList);

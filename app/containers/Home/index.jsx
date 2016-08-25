@@ -4,10 +4,11 @@ import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
-import TasksProperties from '../../components/TasksProperties';
+import TasksList from '../../components/TasksList';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import PropertiesGulpPlugin from '../../components/PropertiesGulpPlugin';
 import PropertiesPipeSource from '../../components/PropertiesPipeSource';
+import PropertiesTask from '../../components/PropertiesTask';
 import FlowGraph from '../../components/FlowGraph';
 import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
@@ -31,6 +32,7 @@ class HomePage extends Component {
   static calculateState(prevState) {
     return {
       selectedItem: TasksChannels.getSelectedItem(),
+      selectedTask: TasksChannels.getSelectedTask()
     };
   }
 
@@ -52,6 +54,11 @@ class HomePage extends Component {
       }
     }
 
+    let taskItem;
+    if (this.state.selectedTask) {
+      taskItem = (<PropertiesTask task={this.state.selectedTask}></PropertiesTask>);
+    }
+
     return (
       <main className={'page-home'}>
         <FlexRow>
@@ -69,21 +76,13 @@ class HomePage extends Component {
                 ref='plugin-list'
                 height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
                 />
-                {
-                  propertiesDisabled ? (
-                    <TasksProperties />
-                  ) : (
-                    <SplitPane split="horizontal" minSize={50}
-                      defaultSize={ parseInt(localStorage.getItem('splitPanelh2'), 10) || 300 }
-                      onChange={ size => localStorage.setItem('splitPanelh2', size) }>
-                      <TasksProperties />
-                      <Tabs>
-                        <Tab label="Item Properties">
-                          {propertyItem}
-                        </Tab>
-                      </Tabs>
-                    </SplitPane>)
-                }
+              <Tabs>
+                  <Tab label='Project Details'>
+                    <TasksList />
+                    {taskItem}
+                    {propertyItem}
+                  </Tab>
+                </Tabs>
               </SplitPane>
             </FlexColumn>
             <FlowGraphWindow />

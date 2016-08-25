@@ -12,6 +12,7 @@ class PropertiesPipeSource extends Component {
     if (this.props.PipeSource) {
       renderItem = (
         <Paper className={`propertyPaper`}  zDepth={1}>
+          <h2>Source Properties</h2>
           <h3>
               {this.props.PipeSource.get('glob')}
           </h3>
