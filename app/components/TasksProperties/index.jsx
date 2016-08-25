@@ -4,6 +4,8 @@ import TaskComponent from './TaskComponent';
 import InstalledPluginsComponent from '../InstalledPlugins';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
+
 import {Container} from 'flux/utils';
 import {List, ListItem} from 'material-ui/List';
 import EditorFormatListBulleted from 'material-ui/svg-icons/editor/format-list-bulleted'
@@ -89,35 +91,37 @@ class TasksProperties extends Component {
       <div className={'task-list'}>
         <Tabs ref='tabs'>
           <Tab label='Available Items'>
-            <List>
-              <ListItem
-                key={1}
-                primaryText="Tasks"
-                primaryTogglesNestedList={true}
-                nestedItems={[
-                  <ListItem
-                    key={"TasksFunctional"}
-                    primaryText="Functional"
-                    primaryTogglesNestedList={true}
-                    nestedItems={availableFunctionalTasks ? availableFunctionalTasks : []}
-                  />,
-                  <ListItem
-                    key={"TasksParallel"}
-                    primaryText="Parallel"
-                    primaryTogglesNestedList={true}
-                    nestedItems={availableParallelTasks ? availableParallelTasks : []}
-                  />,
-                  <ListItem
-                    key={"TasksSequence"}
-                    primaryText="Sequence"
-                    primaryTogglesNestedList={true}
-                    nestedItems={availableSequenceTasks ? availableSequenceTasks : []}
+            <Paper className={`propertyPaper`} zDepth={1}>
+              <List>
+                <ListItem
+                  key={1}
+                  primaryText="Tasks"
+                  primaryTogglesNestedList={true}
+                  nestedItems={[
+                    <ListItem
+                      key={"TasksFunctional"}
+                      primaryText="Functional"
+                      primaryTogglesNestedList={true}
+                      nestedItems={availableFunctionalTasks ? availableFunctionalTasks : []}
+                    />,
+                    <ListItem
+                      key={"TasksParallel"}
+                      primaryText="Parallel"
+                      primaryTogglesNestedList={true}
+                      nestedItems={availableParallelTasks ? availableParallelTasks : []}
+                    />,
+                    <ListItem
+                      key={"TasksSequence"}
+                      primaryText="Sequence"
+                      primaryTogglesNestedList={true}
+                      nestedItems={availableSequenceTasks ? availableSequenceTasks : []}
+                    />
+                  ]}
+                  leftIcon={<EditorFormatListBulleted />}
                   />
-                ]}
-                leftIcon={<EditorFormatListBulleted />}
-                />
-              <InstalledPluginsComponent />
-            </List>
+                <InstalledPluginsComponent />
+              </List>
+            </Paper>
           </Tab>
           {anyTasksOpen ? (
             <Tab label="Task Details">

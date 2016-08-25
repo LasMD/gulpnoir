@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { GRID_CONST } from '../../constants';
 import TextField from '../MutableTextField';
+import Paper from 'material-ui/Paper';
+import './_style.scss';
 
 class PropertiesPipeSource extends Component {
 
@@ -9,11 +11,11 @@ class PropertiesPipeSource extends Component {
 
     if (this.props.PipeSource) {
       renderItem = (
-        <div>
+        <Paper className={`propertyPaper`}  zDepth={1}>
           <h3>
               {this.props.PipeSource.get('glob')}
           </h3>
-        </div>
+        </Paper>
       )
     }
 

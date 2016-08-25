@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { GRID_CONST } from '../../constants';
 import TextField from '../MutableTextField';
+import Paper from 'material-ui/Paper';
+import './_style.scss';
 
 class PropertiesGulpPlugin extends Component {
 
@@ -9,11 +11,11 @@ class PropertiesGulpPlugin extends Component {
 
     if (this.props.GulpPlugin) {
       renderItem = (
-        <div>
+        <Paper className={`propertyPaper`} zDepth={1}>
           <h3>
               {this.props.GulpPlugin.get('name')}
           </h3>
-        </div>
+        </Paper>
       )
     }
 
