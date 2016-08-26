@@ -61,6 +61,14 @@ class FlowGraph extends Component {
       graphCellPluginIdMap: new Map(),
       boundCellID: null
     };
+
+    this.itemTypeShapes = {
+      'Parallel': 'circle',
+      'GulpPlugin': 'rect',
+      'Series': 'rect',
+      'Task': 'rect',
+      'PipeSource': 'rect'
+    }
   }
 
   collisionLookup(cell, pos, opt) {
@@ -148,12 +156,12 @@ class FlowGraph extends Component {
     });
   }
 
-  createSequence({x, y}) {
+  createSeries({x, y}) {
     const props = {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.SEQUENCE
     };
-    props['itemType'] = "Sequence";
+    props['itemType'] = "Series";
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
@@ -164,9 +172,8 @@ class FlowGraph extends Component {
   deselectCell() {
     if (this.graphState.selectedCell) {
       let selectedCell = this.graph.getCell(this.graphState.selectedCell);
-      this.graphState.selectedCell = null;
       selectedCell.attr({
-        rect: {
+        [this.itemTypeShapes[selectedCell.attributes.itemType]]: {
           stroke: 'black',
           'stroke-width': '1',
           'stroke-dasharray': '0',
@@ -176,6 +183,7 @@ class FlowGraph extends Component {
         channel: 'tasks/items/select',
         outgoing: null
       });
+      this.graphState.selectedCell = null;
     }
   }
 
@@ -186,17 +194,21 @@ class FlowGraph extends Component {
       if (this.graphState.selectedCell) {
         let selectedCell = this.graph.getCell(this.graphState.selectedCell);
         this.graphState.selectedCell = null;
+        if (selectedCell.attributes.item) {
+
+        }
         selectedCell.attr({
-          rect: {
+          [this.itemTypeShapes[selectedCell.attributes.itemType]]: {
             stroke: 'black',
             'stroke-width': '1',
             'stroke-dasharray': '0',
           }
         });
       }
+      console.log(cell.model);
       this.graphState.selectedCell = cell.model.id;
       cell.model.attr({
-        rect: {
+        [this.itemTypeShapes[cell.model.attributes.itemType]]: {
           stroke: 'lime',
           'stroke-width': '4',
           'stroke-dasharray': '5,5',
@@ -311,8 +323,8 @@ class FlowGraph extends Component {
           this.createPipeSource({x: 100, y: 100});
           break;
         }
-        case 'Sequence': {
-          this.createSequence({x: 100, y: 100});
+        case 'Series': {
+          this.createSeries({x: 100, y: 100});
           break;
         }
         case 'Parallel': {

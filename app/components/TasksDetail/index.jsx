@@ -24,7 +24,7 @@ class TasksDetail extends Component {
       openTasks: TasksChannels.getOpenTasks(),
       functionalTasks: TasksChannels.getTasks('Functional'),
       parallelTasks: TasksChannels.getTasks('Parallel'),
-      sequenceTasks: TasksChannels.getTasks('Sequence'),
+      seriesTasks: TasksChannels.getTasks('Series'),
       selectedTask: TasksChannels.getSelectedTask(),
     };
   }
@@ -35,7 +35,7 @@ class TasksDetail extends Component {
       openTasks: TasksChannels.getOpenTasks(),
       functionalTasks: TasksChannels.getTasks('Functional'),
       parallelTasks: TasksChannels.getTasks('Parallel'),
-      sequenceTasks: TasksChannels.getTasks('Sequence'),
+      seriesTasks: TasksChannels.getTasks('Series'),
       selectedTask: TasksChannels.getSelectedTask()
     };
   }
@@ -66,12 +66,12 @@ class TasksDetail extends Component {
     });
 
 
-    let availableSequenceTasks = 0;
-    if (this.state.sequenceTasks.size > 0) {
-      availableSequenceTasks = [];
+    let availableSeriesTasks = 0;
+    if (this.state.seriesTasks.size > 0) {
+      availableSeriesTasks = [];
     }
-    this.state.sequenceTasks.map((task, id) => {
-      availableSequenceTasks.push((
+    this.state.seriesTasks.map((task, id) => {
+      availableSeriesTasks.push((
         <ListItem key={task.get('id')} primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
       ));
     });
@@ -102,10 +102,10 @@ class TasksDetail extends Component {
                 nestedItems={availableParallelTasks ? availableParallelTasks : []}
               />,
               <ListItem
-                key={"TasksSequence"}
-                primaryText="Sequence"
+                key={"TasksSeries"}
+                primaryText="Series"
                 primaryTogglesNestedList={true}
-                nestedItems={availableSequenceTasks ? availableSequenceTasks : []}
+                nestedItems={availableSeriesTasks ? availableSeriesTasks : []}
               />
             ]}
             leftIcon={<EditorFormatListBulleted />}

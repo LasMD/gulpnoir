@@ -56,7 +56,7 @@ export default {
         attrs: {
           rect: { fill: 'blue' },
           '.outPorts circle': { fill: '#E74C3C', type: 'output', r: 8 },
-          '.label': { text: 'Sequence', fill: 'white' }
+          '.label': { text: 'Series', fill: 'white' }
         },
         outPorts: ['']
       }
