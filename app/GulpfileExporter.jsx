@@ -105,7 +105,21 @@ export default class Exporter {
   _writeSeriesTasks() {
     let result = [];
     for (let task of this.tasks.series) {
-      result.push(`export const ${task[1].get('name')} = gulp.series(some, series);`);
+      result.push(`export ${task[1].get('name')} = gulp.series(`);
+      let connections = task[1].get('exportConnections')();
+      console.log("series connections", connections);
+      for (let link of connections) {
+        // Skip initial series block
+        if (link.data.itemId == 'series') continue;
+        let task = TasksChannels.getTaskById(link.data.itemId);
+        console.log("link", link, "task", task);
+        let resultAppend = `\t${task.get('name')}`;
+        if (connections.next) {
+          resultAppend += `,`;
+        }
+        result.push(resultAppend);
+      }
+      result.push(`);`);
     }
     result.push('');
     return result;
