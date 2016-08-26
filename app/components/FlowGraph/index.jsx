@@ -97,10 +97,20 @@ class FlowGraph extends Component {
   }
 
   createTask({ x, y, text, id }) {
-    const props = {
-      position: { x: x, y: y },
-      ...GRID_CONST.ITEM.TASK
-    };
+
+    let props;
+
+    if (this.props.task.get('type') == "Parallel") {
+      props = {
+        position: { x: x, y: y },
+        ...GRID_CONST.ITEM.TASK
+      };
+    } else {
+      props = {
+        position: { x: x, y: y },
+        ...GRID_CONST.ITEM.TASK_TWO_WAY
+      };
+    }
     props.attrs['.label'] = { text };
     props['itemType'] = "Task";
 
@@ -167,6 +177,11 @@ class FlowGraph extends Component {
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graph.addCell(cell);
     cell.on('change:position', this.collisionLookup);
+    this.graphState.connections = new LinkChain({
+      cellId: cell.id,
+      itemId: "series"
+    });
+    this.graphState.connectionsMap.set(cell.id, this.graphState.connections);
   }
 
   deselectCell() {

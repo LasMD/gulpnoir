@@ -26,6 +26,19 @@ export default {
         },
         outPorts: ['']
       },
+      TASK_TWO_WAY: {
+        size: {
+          width: 80,
+          height: 80
+        },
+        attrs: {
+          rect: { fill: 'brown' },
+          '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
+          '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+        },
+        inPorts: ['In'],
+        outPorts: ['Out']
+      },
       PIPE_SOURCE: {
         size: {
           width: 60,
