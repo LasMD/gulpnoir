@@ -117,6 +117,10 @@ class TasksChannels extends Channelizer {
     return tasksToReturn;
   }
 
+  getTaskById(taskId) {
+    return this.getState().get('tasks').get(taskId) || false;
+  }
+
   getOpenTasks() {
     return this.getState().get('openTasks') || [];
   }

@@ -56,7 +56,7 @@ class FlowGraph extends Component {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
       connections: new LinkChain(),
-      connectionsMap: {},
+      connectionsMap: new Map(),
       selectedCell: null,
       graphCellPluginIdMap: new Map(),
       boundCellID: null
@@ -128,10 +128,11 @@ class FlowGraph extends Component {
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graph.addCell(cell);
     cell.on('change:position', this.collisionLookup);
-    this.graphState.connectionsMap[cell.id] = this.graphState.connections = new LinkChain({
+    this.graphState.connections = new LinkChain({
       cellId: cell.id,
       itemId: "source"
     });
+    this.graphState.connectionsMap.set(cell.id, this.graphState.connections);
 
     TasksChannels.dispatch({
       channel: 'tasks/items/new',
@@ -224,6 +225,10 @@ class FlowGraph extends Component {
 
   // Utilized by GulpfileExporter
   exportConnections() {
+    if (this.props.task.get('type') == "Parallel") {
+      // Any existing connection should be counted
+      return this.graphState.connectionsMap;
+    }
     return this.graphState.connections;
   }
 
@@ -236,7 +241,6 @@ class FlowGraph extends Component {
         gridSize: GRID_CONST.SNAP_SIZE,
         validateConnection: (cellViewS, magnetS, cellViewT, magnetT, end, linkView) => {
 
-          console.log(cellViewS, magnetS, cellViewT, magnetT, end, linkView);
           if (cellViewT.model.attributes.itemType == "Parallel") {
             // Instantly allow connection to parallels without restriction
             return true;
@@ -253,8 +257,8 @@ class FlowGraph extends Component {
                   return false;
                 }
                 if (link.get('source').port != 'In' && cellViewS.model.id == link.get('source').id) {
-                  if (this.graphState.connectionsMap[link.get('source').id]) {
-                    this.graphState.connectionsMap[link.get('source').id].sever();
+                  if (this.graphState.connectionsMap.has(link.get('source').id)) {
+                    this.graphState.connectionsMap.get(link.get('source').id).sever();
                   }
                   link.remove();
                   return false;
@@ -354,31 +358,37 @@ class FlowGraph extends Component {
 
         // Invalidate broken links
         if (cell.model.removed) {
-          if (this.graphState.connectionsMap[cell.model.get('source').id]) {
-            this.graphState.connectionsMap[cell.model.get('source').id].next = null;
+          if (this.graphState.connectionsMap.has(cell.model.get('source').id)) {
+            this.graphState.connectionsMap.get(cell.model.get('source').id).next = null;
           }
-          if (this.graphState.connectionsMap[cell.model.get('target').id]) {
-            this.graphState.connectionsMap[cell.model.get('target').id].previous = null;
+          if (this.graphState.connectionsMap.has(cell.model.get('target').id)) {
+            this.graphState.connectionsMap.get(cell.model.get('target').id).previous = null;
+          }
+          if (this.props.task.get('type') == "parallel") {
+            // Connections are always 1-1 in parallel
+            this.graphState.connectionsMap.delete(cell.model.get('source').id);
+            this.graphState.connectionsMap.delete(cell.model.get('target').id);
+            return this.graphState.connectionsMap;
           }
           cell.remove();
           return;
         }
 
         let target = this.graph.getCell(cell.model.get('target').id);
-        if (!this.graphState.connectionsMap[cell.model.get('source').id]) {
-          this.graphState.connectionsMap[cell.model.get('source').id] = new LinkChain({
+        if (!this.graphState.connectionsMap.has(cell.model.get('source').id)) {
+          this.graphState.connectionsMap.set(cell.model.get('source').id, new LinkChain({
             cellId: cell.model.get('source').id,
             itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('source').id)
-          });
+          }));
         }
-        if (!this.graphState.connectionsMap[cell.model.get('target').id]) {
-          this.graphState.connectionsMap[cell.model.get('target').id] = new LinkChain({
+        if (!this.graphState.connectionsMap.has(cell.model.get('target').id)) {
+          this.graphState.connectionsMap.set(cell.model.get('target').id, new LinkChain({
             cellId: cell.model.get('target').id,
             itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id)
-          });
+          }))
         }
 
-        this.graphState.connectionsMap[cell.model.get('source').id].append(this.graphState.connectionsMap[cell.model.get('target').id]);
+        this.graphState.connectionsMap.get(cell.model.get('source').id).append(this.graphState.connectionsMap.get(cell.model.get('target').id));
       }
     });
 

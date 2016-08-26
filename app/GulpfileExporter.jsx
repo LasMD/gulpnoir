@@ -79,7 +79,24 @@ export default class Exporter {
   _writeParallelTasks() {
     let result = [];
     for (let task of this.tasks.parallel) {
-      result.push(`export const ${task[1].get('name')} = gulp.parallel(some, parallel);`);
+      result.push(`export ${task[1].get('name')} = gulp.parallel(`);
+      let connections = task[1].get('exportConnections')();
+      console.log("parallel connections", connections);
+      let idx = 0;
+      for (let link of connections.values()) {
+
+        // Skip Parallel which is the only one with a previous chain
+        if (link.previous) continue;
+        let task = TasksChannels.getTaskById(link.data.itemId);
+        console.log("link", link, "task", task);
+        let resultAppend = `\t${task.get('name')}`;
+        if (idx < connections.size - 1) {
+          resultAppend += `,`;
+        }
+        result.push(resultAppend);
+        idx++;
+      }
+      result.push(`);`);
     }
     result.push('');
     return result;

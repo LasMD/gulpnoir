@@ -17,7 +17,6 @@ const cardSource = {
   },
 
   endDrag(props, monitor, component) {
-    let taskId = Date.now();
     const result = monitor.getDropResult();
     if (!result) return;
     const { grid, position } = monitor.getDropResult();
@@ -25,7 +24,7 @@ const cardSource = {
     position.y -= GRID_CONST.ITEM.PLUGIN.size.height / 2;
     position.x = Math.floor(position.x / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
     position.y = Math.floor(position.y / GRID_CONST.SNAP_SIZE) * GRID_CONST.SNAP_SIZE;
-    grid.createTask({ text: props.task.get('name'), id: taskId, ...position });
+    grid.createTask({ text: props.task.get('name'), id: props.task.get('id'), ...position });
     component.forceUpdate();
   }
 };
