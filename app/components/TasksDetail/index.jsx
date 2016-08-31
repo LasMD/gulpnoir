@@ -10,8 +10,6 @@ import {List, ListItem} from 'material-ui/List';
 import EditorFormatListBulleted from 'material-ui/svg-icons/editor/format-list-bulleted'
 import ActionDonutSmall from 'material-ui/svg-icons/action/donut-small'
 
-import './_style.scss';
-
 class TasksDetail extends Component {
 
 

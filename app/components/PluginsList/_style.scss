@@ -1,5 +1,11 @@
-@import './reactVirtualized';
+// @import 'reactVirtualized';
+// @import '../../color';
 
 .plugins-list {
 	width: 100%;
+	overflow: hidden;
+}
+
+.plugins-title {
+	background-color: green;
 }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab } from 'material-ui/Tabs';
-import TaskDetailFull from '../TaskDetailFull';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
@@ -8,8 +7,6 @@ import {Container} from 'flux/utils';
 import {List, ListItem} from 'material-ui/List';
 import EditorFormatListBulleted from 'material-ui/svg-icons/editor/format-list-bulleted'
 import ActionDonutSmall from 'material-ui/svg-icons/action/donut-small'
-
-import './_style.scss';
 
 class TasksDetail extends Component {
 
@@ -38,11 +35,12 @@ class TasksDetail extends Component {
     });
 
     return (
-      <Tabs className={'tasks-list'}>
-        <Tab label="Available Tasks">
-          {tasksList}
-        </Tab>
-      </Tabs>
+      <div className={'tasks-list'}>
+        <Toolbar>
+          <ToolbarTitle text="Options" firstChild={true} />
+        </Toolbar>
+        {tasksList}
+      </div>
     );
   }
 

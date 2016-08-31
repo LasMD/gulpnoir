@@ -12,8 +12,8 @@ import {
   blueGrey100, blueGrey200, blueGrey300, blueGrey400, blueGrey500, blueGrey600, blueGrey700
 } from 'material-ui/styles/colors';
 
-
-import './_style.scss';
+import '!style!css!jointjs/dist/joint.core.css';
+import '!style!css!jointjs/dist/joint.min.css';
 
 const gridTarget = {
   drop(props, monitor, component) {

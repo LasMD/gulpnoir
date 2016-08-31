@@ -7,7 +7,6 @@ import { GRID_CONST } from '../../constants';
 import IconContentLink from 'material-ui/svg-icons/content/link'
 import { shell } from 'electron';
 import IconButton from 'material-ui/IconButton';
-import './_style.scss';
 
 const cardSource = {
   beginDrag() {

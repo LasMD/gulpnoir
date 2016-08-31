@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { VirtualScroll, AutoSizer } from 'react-virtualized';
 import GulpPlugin from '../GulpPlugin';
 import Drawer from 'material-ui/Drawer';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import Divider from 'material-ui/Divider';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 import {Container} from 'flux/utils';
 
-import vstyles from './_style.scss';
+import vstyles from '!style!css!react-virtualized/styles.css';
 
 class PluginsList extends Component {
 
@@ -82,28 +82,31 @@ class PluginsList extends Component {
 
   render() {
     return (
-      <Tabs className={'plugins-list'}>
-        <Tab label="Browse Plugins">
-          <AutoSizer ref='autosizer' disableHeight>
-          {
-              ({width}) => (
-                <VirtualScroll
-                  ref={'vscroll'}
-                  width={width}
-                  height={this.refs['autosizer'] ? (this.refs['autosizer'].setHeight || this.props.height - 48) : this.props.height - 48}
-                  className={vstyles.VirtualScroll}
-                  rowCount={this.getGulpPluginsResultsCount()}
-                  rowRenderer={
-                    ({ index }) => this.getGulpPluginListItem(index)
-                  }
-                  rowHeight={({index}) => this.pluginsHeights[`plugin-${index}`] || 100 }
-                  overscanRowCount={3}
-                />
-              )
-            }
-            </AutoSizer>
-          </Tab>
-        </Tabs>
+      <div className={'plugins-list'}>
+        <Toolbar className={'plugins-title'}>
+          <ToolbarGroup firstChild={true}>
+            <ToolbarTitle text="Options" />
+          </ToolbarGroup>
+        </Toolbar>
+        <AutoSizer ref='autosizer' disableHeight>
+        {
+          ({width}) => (
+            <VirtualScroll
+              ref={'vscroll'}
+              width={width}
+              height={this.refs['autosizer'] ? (this.refs['autosizer'].setHeight || this.props.height - 48) : this.props.height - 48}
+              className={vstyles.VirtualScroll}
+              rowCount={this.getGulpPluginsResultsCount()}
+              rowRenderer={
+                ({ index }) => this.getGulpPluginListItem(index)
+              }
+              rowHeight={({index}) => this.pluginsHeights[`plugin-${index}`] || 100 }
+              overscanRowCount={3}
+            />
+          )
+        }
+        </AutoSizer>
+      </div>
     );
   }
 

@@ -6,7 +6,6 @@ import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
 import IconContentRemove from 'material-ui/svg-icons/content/remove-circle-outline';
-import './_style.scss';
 
 class PropertiesGulpPlugin extends Component {
 

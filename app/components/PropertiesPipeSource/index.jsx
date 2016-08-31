@@ -5,7 +5,6 @@ import FlatButton from 'material-ui/FlatButton';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import Paper from 'material-ui/Paper';
 import PipeSource from '../../stores/Tasks/PipeSource';
-import './_style.scss';
 
 class PropertiesPipeSource extends Component {
 

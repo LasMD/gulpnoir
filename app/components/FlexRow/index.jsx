@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './_style.scss';
 
 export default class FlexRow extends Component {
 

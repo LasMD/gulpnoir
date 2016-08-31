@@ -10,8 +10,6 @@ import {
   blueGrey100, blueGrey200, blueGrey300, blueGrey400, blueGrey500, blueGrey600, blueGrey700, blueGrey800, blueGrey900
 } from 'material-ui/styles/colors';
 
-import './_style.scss';
-
 class FlowGraphWindow extends Component {
 
   static getStores() {
