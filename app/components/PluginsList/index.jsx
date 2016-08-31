@@ -107,21 +107,21 @@ class PluginsList extends Component {
 
         for (let author of plugin.author) {
           let regex = new RegExp(searchVal, "gi");
-          if (author.match(regex) !== null) {
+          if (author.match(regex)) {
             inAuthor = true;
             break;
           }
         }
         for (let name of plugin.name) {
           let regex = new RegExp(searchVal, "gi");
-          if (name.match(regex) !== null) {
+          if (name.match(regex)) {
             inName = true;
             break;
           }
         }
         for (let keywords of plugin.keywords) {
           let regex = new RegExp(searchVal, "gi");
-          if (keywords.match(regex) !== null) {
+          if (keywords.match(regex)) {
             inKeywords = true;
             break;
           }
