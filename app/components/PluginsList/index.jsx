@@ -30,11 +30,16 @@ class PluginsList extends Component {
     this.setState({addedPlugins: []});
     this.pluginsHeights = {};
     this.pluginsRefs = {};
+    this.pluginSearch = '';
   }
 
   getGulpPluginsResultsCount() {
     if (this.state && this.state.gulpPlugins) {
-      return this.state.gulpPlugins.length;
+      if (this.state.gulpPluginsFiltered) {
+        return this.state.gulpPluginsFiltered.length;
+      } else {
+        return this.state.gulpPlugins.length;
+      }
     } else {
       return 0;
     }
@@ -55,7 +60,12 @@ class PluginsList extends Component {
   }
 
   getGulpPluginListItem(index) {
-    let plugin = this.state.gulpPlugins[index];
+    let plugin;
+    if (this.state.gulpPluginsFiltered) {
+      plugin = this.state.gulpPluginsFiltered[index];
+    } else {
+      plugin = this.state.gulpPlugins[index];
+    }
     if (GulpPluginsChannels.getInstalledPlugins().get(plugin.name[0])) {
       plugin.installed = true;
     }
@@ -85,6 +95,51 @@ class PluginsList extends Component {
     this.forceUpdate();
   }
 
+  onKeyDown(event) {
+    if (event.key == "Enter") {
+      let searchVal = this.refs.pluginSearch.getValue();
+      searchVal = searchVal.replace(/s+/g,'|');
+      this.setState({ pluginSearch: this.refs.pluginSearch.getValue() });
+      let gulpPluginsFiltered = this.state.gulpPlugins.filter(plugin => {
+        let inName = false;
+        let inAuthor = false;
+        let inKeywords = false;
+
+        for (let author of plugin.author) {
+          let regex = new RegExp(searchVal, "gi");
+          if (author.match(regex) !== null) {
+            inAuthor = true;
+            break;
+          }
+        }
+        for (let name of plugin.name) {
+          let regex = new RegExp(searchVal, "gi");
+          if (name.match(regex) !== null) {
+            inName = true;
+            break;
+          }
+        }
+        for (let keywords of plugin.keywords) {
+          let regex = new RegExp(searchVal, "gi");
+          if (keywords.match(regex) !== null) {
+            inKeywords = true;
+            break;
+          }
+        }
+
+        if (inAuthor || inName || inKeywords) {
+          return plugin
+        }
+
+        return false;
+
+      });
+      this.setState({ gulpPluginsFiltered });
+      this.forceUpdate();
+    }
+
+  }
+
   render() {
     return (
       <div className={'plugins-list'}>
@@ -97,10 +152,11 @@ class PluginsList extends Component {
               leftIcon={<IconActionSearch />}
               primaryText={
                 <TextField
-                  ref={'newParamInput'}
+                  ref={'pluginSearch'}
                   name={'newParam'}
                   placeholder={`Search plugins...`}
-                  value={this.newParamValue}
+                  value={this.state.pluginSearch}
+                  onKeyDown={this.onKeyDown.bind(this)}
                 />
               }
             />

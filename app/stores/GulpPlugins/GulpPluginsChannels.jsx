@@ -6,7 +6,7 @@ import GulpPlugin from './GulpPlugin';
 class GulpPluginsChannels extends Channelizer {
 
   Model() {
-    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=20&sort=rating:desc',
+    $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=9001&sort=rating:desc',
     (result) => {
       const jsonResult = JSON.parse(result);
       this.dispatch({
