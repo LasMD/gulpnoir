@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
+
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
 import TasksList from '../../components/TasksList';
@@ -93,13 +95,16 @@ class HomePage extends Component {
                   this.refs['plugin-list'].updateHeight(size);
                 }}>
                 {showList}
-                <Tabs>
-                  <Tab label='Project Details'>
-                    <TasksDetail />
-                    {taskItem}
-                    {propertyItem}
-                  </Tab>
-                </Tabs>
+                <div>
+                  <Toolbar className={'Toolbar'}>
+                    <ToolbarGroup firstChild={true}>
+                      <ToolbarTitle className={'ToolbarTitle'} text="Project Properties" />
+                    </ToolbarGroup>
+                  </Toolbar>
+                  <TasksDetail />
+                  {taskItem}
+                  {propertyItem}
+                </div>
               </SplitPane>
             </FlexColumn>
             <FlowGraphWindow />

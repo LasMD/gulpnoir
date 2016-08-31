@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import { VirtualScroll, AutoSizer } from 'react-virtualized';
 import GulpPlugin from '../GulpPlugin';
 import Drawer from 'material-ui/Drawer';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import Divider from 'material-ui/Divider';
 import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
-import {Container} from 'flux/utils';
+import { Container } from 'flux/utils';
+import { List, ListItem } from 'material-ui/List';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import IconActionSearch from 'material-ui/svg-icons/action/search'
+import TextField from '../MutableTextField';
 
 import vstyles from '!style!css!react-virtualized/styles.css';
 
@@ -83,9 +88,22 @@ class PluginsList extends Component {
   render() {
     return (
       <div className={'plugins-list'}>
-        <Toolbar className={'plugins-title'}>
+        <Toolbar className={'Toolbar'}>
           <ToolbarGroup firstChild={true}>
-            <ToolbarTitle text="Options" />
+            <ToolbarTitle className={'ToolbarTitle'} text="Gulp Plugins" />
+          </ToolbarGroup>
+          <ToolbarGroup>
+            <MenuItem
+              leftIcon={<IconActionSearch />}
+              primaryText={
+                <TextField
+                  ref={'newParamInput'}
+                  name={'newParam'}
+                  placeholder={`Search plugins...`}
+                  value={this.newParamValue}
+                />
+              }
+            />
           </ToolbarGroup>
         </Toolbar>
         <AutoSizer ref='autosizer' disableHeight>

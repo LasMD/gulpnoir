@@ -31,6 +31,7 @@ export default class MutableTextField extends Component {
         onKeyDown={this._onKeyDown}
         value={this.state.value}
         autoFocus={true}
+        style={this.props.style}
       />
     );
   }
