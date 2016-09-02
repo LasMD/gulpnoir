@@ -11,7 +11,7 @@ const TaskRecord = Immutable.Record({
 });
 
 export default class Task extends TaskRecord {
-  constructor({ name, type, graph, connections }) {
+  constructor({ name, type, graph, connections, items = [] }) {
     super({
       id: Date.now(),
       name,
@@ -19,7 +19,7 @@ export default class Task extends TaskRecord {
       graph: graph || '',
       connections: connections || '',
       export: null,
-      items: Immutable.List()
+      items
     });
   }
 }

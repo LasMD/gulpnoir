@@ -15,17 +15,18 @@ class PropertiesGulpPlugin extends Component {
   }
 
   pushNewParam() {
-    let params = this.props.GulpPlugin.get('params');
+    let pluginObject = GulpPluginsChannels.getPluginObjectById(this.props.GulpPlugin.get('id'));
+    let params = pluginObject.get('params');
     let newValue = this.refs.newParamInput.getValue();
     if (!newValue.match(/\w+/)) return;
     params = params.push(this.refs.newParamInput.getValue());
     this.newParamValue = '';
-    this.props.GulpPlugin.set('params', params);
+    pluginObject = pluginObject.set('params', params);
     GulpPluginsChannels.dispatch({
       channel: 'plugins/object/set',
       outgoing: {
-        id: this.props.GulpPlugin.get('id'),
-        plugin: this.props.GulpPlugin,
+        id: pluginObject.get('id'),
+        plugin: pluginObject,
       }
     });
     console.log(params);
@@ -48,12 +49,15 @@ class PropertiesGulpPlugin extends Component {
 
   render() {
 
+    let pluginObject = GulpPluginsChannels.getPluginObjectById(this.props.GulpPlugin.get('id'));
 
     let renderItem = (<div></div>);
-    let paramsList = this.props.GulpPlugin.get('params').map((param, idx) => {
-      return <div key={`${this.props.GulpPlugin.get('name')}-param-${idx}`} className={`plugin-property-param`}>{param}<IconButton onClick={this.removeParam.bind(this, idx)}><IconContentRemove /></IconButton></div>;
-    });
+    let paramsList = [];
 
+    pluginObject.get('params').map((param, idx) => {
+      paramsList.push(<div key={`${pluginObject.get('name')}-param-${idx}`} className={`plugin-property-param`}>{param}<IconButton onClick={this.removeParam.bind(this, idx)}><IconContentRemove /></IconButton></div>);
+    });
+    
     if (!paramsList.length) {
       paramsList = (<div>Empty</div>);
     }

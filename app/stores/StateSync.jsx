@@ -18,15 +18,18 @@ export default class StateSync {
       let { graph, connections } = data.tasks.get('tasks').get(id).get('export')();
       data.tasks = data.tasks.setIn(['tasks', (id * 1), 'graph'], graph);
       data.tasks = data.tasks.setIn(['tasks', (id * 1), 'connections'], connections);
+      data.tasks = data.tasks.deleteIn(['tasks', (id * 1), 'selectedItem']);
     }
 
     let JSONCollection = {};
+    JSONCollection._saved = [];
     for (let datum in data) {
-      console.log(datum);
       JSONCollection[datum] = transit.toJSON(data[datum]);
+      JSONCollection._saved.push(datum);
     }
 
     const saveState = lz.compress(JSON.stringify(JSONCollection), {outputEncoding: 'BinaryString'});
+    //const saveState = JSON.stringify(JSONCollection);
     fs.writeFile(location, saveState);
   }
 
@@ -34,13 +37,16 @@ export default class StateSync {
     let fileContents = fs.readFileSync(location).toString();
     let JSONCollection = {};
     const decodeL1 = JSON.parse(lz.decompress(fileContents, {inputEncoding: 'BinaryString'}));
+    //const decodeL1 = JSON.parse(fileContents);
 
-    for (let datum of data) {
+    let _saved = decodeL1._saved;
+    decodeL1._saved = null;
+
+    for (let datum of _saved) {
       JSONCollection[datum] = transit.fromJSON(decodeL1[datum]);
     }
-    JSONCollection.tasks = transit.fromJSON(decodeL1.tasks);
-    JSONCollection.installedPlugins = transit.fromJSON(decodeL1.installedPlugins);
-    JSONCollection.pluginObjects = transit.fromJSON(decodeL1.pluginObjects);
+
+    console.log(JSONCollection);
 
     return JSONCollection;
   }

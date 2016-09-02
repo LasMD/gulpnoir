@@ -25,7 +25,7 @@ class ipcEvents {
   }
 
   eLoadState(e, filename) {
-    let newstate = StateSync.load(filename, ['tasks', 'taskItems', 'installedPlugins', 'pluginObjects']);
+    let newstate = StateSync.load(filename);
     TasksChannels.dispatch({
       channel: 'tasks/set',
       outgoing: {

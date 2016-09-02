@@ -46,7 +46,7 @@ class GulpPluginsChannels extends Channelizer {
               channel: 'new',
               controller: ({ state, incoming }) => this.ctrlNewPlugin({ state, incoming })
             });
-            
+
             receiver.tune({
               channel: 'set',
               controller: ({ state, incoming }) => state.setIn(['pluginObjects', incoming.id], incoming.plugin)
