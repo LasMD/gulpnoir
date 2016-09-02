@@ -45,6 +45,30 @@ class PluginsList extends Component {
     }
   }
 
+  addKeyword(keyword) {
+    let pluginSearch = this.refs.pluginSearch.getValue();
+    if (pluginSearch.length > 1 && pluginSearch.split(',').length > 0) {
+      pluginSearch += `,${keyword}`;
+    } else {
+      pluginSearch += keyword;
+    }
+    this.setState({ pluginSearch }, () => {
+      this.filterPluginResults();
+    });
+  }
+
+  removeKeyword(keyword) {
+    let pluginSearch = this.refs.pluginSearch.getValue();
+    let pluginSearchArr = this.refs.pluginSearch.getValue().split(',');
+    if (pluginSearchArr.indexOf(keyword) > -1) {
+      pluginSearchArr.splice(pluginSearchArr.indexOf(keyword), 1);
+    }
+    pluginSearch = pluginSearchArr.join(',');
+    this.setState({ pluginSearch }, () => {
+      this.filterPluginResults();
+    });
+  }
+
   updatePluginHeight({index, height}) {
     this.pluginsHeights[`plugin-${index}`] = height;
 
@@ -83,7 +107,9 @@ class PluginsList extends Component {
           onPluginSelect={this.onPluginSelect.bind(this)}
           installed={plugin.installed}
           homepage={plugin.homepage[0]}
-          search={(this.state.pluginSearch || '').split(' ')}
+          search={(this.state.pluginSearch || '').split(',')}
+          addKeyword={this.addKeyword.bind(this)}
+          removeKeyword={this.removeKeyword.bind(this)}
         />
       </div>
     );
@@ -96,71 +122,76 @@ class PluginsList extends Component {
     this.forceUpdate();
   }
 
+
+  filterPluginResults() {
+    let searchVals = this.refs.pluginSearch.getValue();
+    searchVals = searchVals.split(',');
+    // console.log(searchVals);
+    this.setState({ pluginSearch: this.refs.pluginSearch.getValue() });
+    if (!searchVals.length) {
+      this.setState({ gulpPluginsFiltered: this.state.gulpPlugins });
+      this.forceUpdate();
+      return;
+    }
+    let gulpPluginsFiltered = this.state.gulpPlugins.filter(plugin => {
+
+      let matchHash = {};
+
+      for (let author of plugin.author) {
+        let matches = 0;
+        for (let searchVal of searchVals) {
+          let regex = new RegExp(searchVal, "gi");
+          if (author.match(regex)) {
+            matchHash[searchVal]++;
+            if (++matches >= searchVals.length) return plugin;
+          }
+        }
+      }
+
+      for (let name of plugin.name) {
+        let matches = 0;
+        for (let searchVal of searchVals) {
+          let regex = new RegExp(searchVal, "gi");
+          if (name.match(regex)) {
+            matchHash[searchVal]++;
+            if (++matches >= searchVals.length) return plugin;
+          }
+        }
+      }
+
+      let matches = 0;
+      for (let keyword of plugin.keywords) {
+        if (searchVals.indexOf(keyword) > -1) {
+          matchHash[keyword]++;
+          if (++matches >= searchVals.length) return plugin;
+        }
+      }
+
+      // Check to see if at least each search val was matched once in any field
+      let searchSet = Object.assign([], searchVals);
+      matches = 0;
+      for (let match of Object.keys(matchHash)) {
+        if (searchSet.indexOf(match) > -1) {
+          if (++matches >= searchVals.length) return plugin;
+          searchSet.splice(searchSet.indexOf(match), 1);
+        }
+      }
+
+      return false;
+
+    });
+    this.setState({ gulpPluginsFiltered });
+    this.forceUpdate();
+  }
+
   onKeyDown(event) {
     if (event.key == "Enter") {
-      let searchVals = this.refs.pluginSearch.getValue();
-      searchVals = searchVals.split(' ');
-      // console.log(searchVals);
-      this.setState({ pluginSearch: this.refs.pluginSearch.getValue() });
-      if (!searchVals.length) {
-        this.setState({ gulpPluginsFiltered: this.state.gulpPlugins });
-        this.forceUpdate();
-        return;
-      }
-      let gulpPluginsFiltered = this.state.gulpPlugins.filter(plugin => {
-
-        let matchHash = {};
-
-        for (let author of plugin.author) {
-          let matches = 0;
-          for (let searchVal of searchVals) {
-            let regex = new RegExp(searchVal, "gi");
-            if (author.match(regex)) {
-              matchHash[searchVal]++;
-              if (++matches >= searchVals.length) return plugin;
-            }
-          }
-        }
-
-        for (let name of plugin.name) {
-          let matches = 0;
-          for (let searchVal of searchVals) {
-            let regex = new RegExp(searchVal, "gi");
-            if (name.match(regex)) {
-              matchHash[searchVal]++;
-              if (++matches >= searchVals.length) return plugin;
-            }
-          }
-        }
-
-        let matches = 0;
-        for (let keyword of plugin.keywords) {
-          if (searchVals.indexOf(keyword) > -1) {
-            matchHash[keyword]++;
-            if (++matches >= searchVals.length) return plugin;
-          }
-        }
-
-        // Check to see if at least each search val was matched once in any field
-        let searchSet = Object.assign([], searchVals);
-        matches = 0;
-        for (let match of Object.keys(matchHash)) {
-          if (searchSet.indexOf(match) > -1) {
-            if (++matches >= searchVals.length) return plugin;
-            searchSet.splice(searchSet.indexOf(match), 1);
-          }
-        }
-
-        return false;
-
-      });
-      this.setState({ gulpPluginsFiltered });
-      this.forceUpdate();
+      this.filterPluginResults();
     }
-
   }
 
   render() {
+
     return (
       <div className={'plugins-list'}>
         <Toolbar className={'Toolbar'}>

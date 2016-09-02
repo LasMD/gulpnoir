@@ -92,6 +92,13 @@ class GulpPlugin extends Component {
     return false;
   }
 
+  addKeyword(keyword) {
+    this.props.addKeyword(keyword);
+  }
+  removeKeyword(keyword) {
+    this.props.removeKeyword(keyword);
+  }
+
   render() {
     const { connectDragSource, isDragging } = this.props;
     return connectDragSource(
@@ -118,7 +125,10 @@ class GulpPlugin extends Component {
               return <i
                 key={index}
                 style={(this.props.search.indexOf(keyword) > -1) ? {backgroundColor: 'limegreen'} : {}}
-                className={'keyword'}>{keyword}</i>;
+                className={'keyword'}
+                onClick={(this.props.search.indexOf(keyword) > -1) ?
+                  this.removeKeyword.bind(this, keyword)
+                : this.addKeyword.bind(this, keyword) }>{keyword}</i>;
             })
           }
           </p>
