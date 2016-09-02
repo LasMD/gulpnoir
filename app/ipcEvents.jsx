@@ -46,11 +46,6 @@ class ipcEvents {
     } else {
       let taskGraphs = {};
       let exporter = new GulpfileExporter({filename});
-      // for (let [id, task] of _tasks) {
-      //   let getTask = _tasks.get(id);
-      //   taskGraphs[getTask.get('name')] = getTask.get('exportGraph')(true);
-      // }
-      // console.log(taskGraphs);
       exporter.write();
     }
   }

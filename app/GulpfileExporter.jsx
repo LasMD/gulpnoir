@@ -69,7 +69,7 @@ export default class Exporter {
     for (let task of this.tasks.functional) {
       let pipeSource = TasksChannels.getTaskItemById({taskId: task[0], itemId: 'PipeSource'});
       result.push(`export function ${task[1].get('name')}() {`);
-      let connections = task[1].get('exportConnections')();
+      let { connections } = task[1].get('export')('raw');
       let resultAppend = ``;
       for (let link of connections) {
         if (link == connections.first) {
@@ -106,7 +106,7 @@ export default class Exporter {
     let result = [];
     for (let task of this.tasks.parallel) {
       result.push(`export ${task[1].get('name')} = gulp.parallel(`);
-      let connections = task[1].get('exportConnections')();
+      let { connections } = task[1].get('export')('raw');
       console.log("parallel connections", connections);
       let idx = 0;
       for (let link of connections.values()) {
@@ -132,7 +132,7 @@ export default class Exporter {
     let result = [];
     for (let task of this.tasks.series) {
       result.push(`export ${task[1].get('name')} = gulp.series(`);
-      let connections = task[1].get('exportConnections')();
+      let { connections } = task[1].get('export')('raw');
       console.log("series connections", connections);
       for (let link of connections) {
         // Skip initial series block

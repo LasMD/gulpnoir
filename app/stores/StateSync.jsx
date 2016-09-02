@@ -16,11 +16,13 @@ export default class StateSync {
     if (tasks.get('selectedItem')) {
       tasks = tasks.delete('selectedItem');
     }
-
+    
     let _tasks = tasks.get('tasks');
 
     for (let [id, task] of _tasks) {
-      tasks = tasks.setIn(['tasks', (id * 1), 'graph'],  tasks.get('tasks').get(id).get('exportGraph')());
+      let { graph, connections } = tasks.get('tasks').get(id).get('export')();
+      tasks = tasks.setIn(['tasks', (id * 1), 'graph'], graph);
+      tasks = tasks.setIn(['tasks', (id * 1), 'connections'], connections);
     }
 
     let JSONCollection = {};

@@ -84,4 +84,34 @@ export default class LinkChain {
 
   }
 
+  toString() {
+    let first = this.first;
+    let result = [];
+    for (let link of first) {
+      result.push(link.data);
+    }
+    return JSON.stringify(result);
+  }
+
+  // Currently unsupported syntax
+  //
+  // [Symbol.toStringTag]() {
+  //   return "Values...";
+  // }
+
+  static parse(data) {
+    let parsedChain;
+    let objData = JSON.parse(data);
+    let i = 0;
+    for (let datum of objData) {
+      if (i == 0) {
+        parsedChain = new LinkChain(datum);
+      } else {
+        parsedChain.append(new LinkChain(datum));
+      }
+      i++;
+    }
+    return parsedChain;
+  }
+
 }

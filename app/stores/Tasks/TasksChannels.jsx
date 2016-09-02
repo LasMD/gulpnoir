@@ -62,7 +62,8 @@ class TasksChannels extends Channelizer {
       receiver.tune({
         channel: 'close',
         controller: ({ state, incoming }) => {
-          let _newState = state.setIn(['tasks', (incoming.task.id * 1), 'graph'], state.get('tasks').get(incoming.task.id * 1).get('exportGraph')());
+          let { graph, connections } = state.get('tasks').get(incoming.task.id * 1).get('export')();
+          let _newState = state.setIn(['tasks', (incoming.task.id * 1), 'graph'], graph);
           let idx = _newState.get('openTasks').indexOf(incoming.task.id * 1);
           let newOpenTasks = _newState.get('openTasks').splice(idx, 1);
           return _newState.set('openTasks', newOpenTasks);

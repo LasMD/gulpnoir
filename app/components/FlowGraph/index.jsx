@@ -221,7 +221,6 @@ class FlowGraph extends Component {
           }
         });
       }
-      console.log(cell.model);
       this.graphState.selectedCell = cell.model.id;
       cell.model.attr({
         [this.itemTypeShapes[cell.model.attributes.itemType]]: {
@@ -245,6 +244,15 @@ class FlowGraph extends Component {
     }
   }
 
+  exportData(raw) {
+    let toExport = {};
+
+    toExport['graph'] = this.exportGraph(raw);
+    toExport['connections'] = this.exportConnections(raw);
+
+    return toExport;
+  }
+
   // Utilized by StateSync
   exportGraph(raw) {
     if (raw) return this.graph;
@@ -252,12 +260,20 @@ class FlowGraph extends Component {
   }
 
   // Utilized by GulpfileExporter
-  exportConnections() {
-    if (this.props.task.get('type') == "Parallel") {
-      // Any existing connection should be counted
-      return this.graphState.connectionsMap;
+  exportConnections(raw) {
+    if (raw) {
+      if (this.props.task.get('type') == "Parallel") {
+        // Any existing connection should be counted
+        return this.graphState.connectionsMap;
+      }
+      return this.graphState.connections;
+    } else {
+      if (this.props.task.get('type') == "Parallel") {
+        // Any existing connection should be counted
+        return JSON.stringify(Array.from(this.graphState.connectionsMap.entries()));
+      }
+      return this.graphState.connections.toString();
     }
-    return this.graphState.connections;
   }
 
   componentDidMount() {
@@ -350,14 +366,20 @@ class FlowGraph extends Component {
       }
     }
 
+    // If we already have connections in our props, this means our Task was loaded.
+    // Tasks can be loaded from opening a previously closed tab, or loading a file
+    if (this.props.task.get('connections')) {
+      if (this.props.task.get('type') == "Parallel") this.connectionsMap = new Map(JSON.parse(this.props.task.get('connections')));
+      else this.connections = LinkChain.parse(this.props.task.get('connections'));
+    }
+
     // Initialize the graph as a task
     TasksChannels.dispatch({
       channel: 'tasks/update',
       outgoing: {
         task: {
           id: this.props.task.get('id'),
-          exportGraph: this.exportGraph.bind(this),
-          exportConnections: this.exportConnections.bind(this)
+          export: this.exportData.bind(this)
         }
       }
     });
