@@ -19,7 +19,7 @@ export default class Task extends TaskRecord {
       graph: graph || '',
       connections: connections || '',
       export: null,
-      items: []
+      items: Immutable.List()
     });
   }
 }

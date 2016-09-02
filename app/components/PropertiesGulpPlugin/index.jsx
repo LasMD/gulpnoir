@@ -18,7 +18,7 @@ class PropertiesGulpPlugin extends Component {
     let params = this.props.GulpPlugin.get('params');
     let newValue = this.refs.newParamInput.getValue();
     if (!newValue.match(/\w+/)) return;
-    params.push(this.refs.newParamInput.getValue());
+    params = params.push(this.refs.newParamInput.getValue());
     this.newParamValue = '';
     this.props.GulpPlugin.set('params', params);
     GulpPluginsChannels.dispatch({
@@ -28,18 +28,19 @@ class PropertiesGulpPlugin extends Component {
         plugin: this.props.GulpPlugin,
       }
     });
+    console.log(params);
     this.forceUpdate();
   }
 
   removeParam(idx) {
     let params = this.props.GulpPlugin.get('params');
-    params.splice(idx, 1);
+    params = params.splice(idx, 1);
     this.props.GulpPlugin.set('params', params);
     GulpPluginsChannels.dispatch({
       channel: 'plugins/object/set',
       outgoing: {
         id: this.props.GulpPlugin.get('id'),
-        plugin: this.props.GulpPlugin,
+        plugin: this.props.GulpPlugin
       }
     });
     this.forceUpdate();

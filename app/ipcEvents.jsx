@@ -18,22 +18,36 @@ class ipcEvents {
   eSaveState(e, filename) {
     StateSync.save(filename, {
       tasks: TasksChannels.getState(),
-      installedPlugins: GulpPluginsChannels.getInstalledPlugins()
+      taskItems: TasksChannels.getTaskItems(),
+      installedPlugins: GulpPluginsChannels.getInstalledPlugins(),
+      pluginObjects: GulpPluginsChannels.getGulpPluginObjects()
     });
   }
 
   eLoadState(e, filename) {
-    let newstate = StateSync.load(filename);
+    let newstate = StateSync.load(filename, ['tasks', 'taskItems', 'installedPlugins', 'pluginObjects']);
     TasksChannels.dispatch({
       channel: 'tasks/set',
       outgoing: {
         state: newstate.tasks
       }
     });
+    TasksChannels.dispatch({
+      channel: 'tasks/items/set',
+      outgoing: {
+        taskItems: newstate.taskItems
+      }
+    });
     GulpPluginsChannels.dispatch({
       channel: 'plugins/installed/set',
       outgoing: {
         installed: newstate.installedPlugins
+      }
+    });
+    GulpPluginsChannels.dispatch({
+      channel: 'plugins/object/setAll',
+      outgoing: {
+        pluginObjects: newstate.pluginObjects
       }
     });
 

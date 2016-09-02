@@ -46,9 +46,15 @@ class GulpPluginsChannels extends Channelizer {
               channel: 'new',
               controller: ({ state, incoming }) => this.ctrlNewPlugin({ state, incoming })
             });
+            
             receiver.tune({
               channel: 'set',
               controller: ({ state, incoming }) => state.setIn(['pluginObjects', incoming.id], incoming.plugin)
+            });
+
+            receiver.tune({
+              channel: 'setAll',
+              controller: ({ state, incoming }) => state.set('pluginObjects', incoming.pluginObjects)
             });
 
           }
@@ -86,6 +92,10 @@ class GulpPluginsChannels extends Channelizer {
 
   getGulpPlugins() {
     return this.getState().get('plugins') || [];
+  }
+
+  getGulpPluginObjects() {
+    return this.getState().get('pluginObjects');
   }
 
   getPluginObjectById(id) {

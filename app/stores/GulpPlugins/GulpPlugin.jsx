@@ -24,7 +24,7 @@ export default class GulpPlugin extends GulpPluginRecord {
     name,
     rating,
     version,
-    params = []
+    params = Immutable.List()
   }) {
     super({
       id,

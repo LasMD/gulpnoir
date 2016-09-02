@@ -92,9 +92,15 @@ class TasksChannels extends Channelizer {
         });
 
         receiver.tune({
+          channel: 'set',
+          controller: ({ state, incoming }) => state.set('taskItems', incoming.taskItems)
+        });
+
+        receiver.tune({
           channel: 'select',
           controller: ({ state, incoming }) => state.set('selectedItem', incoming)
         });
+
 
       }});
 
