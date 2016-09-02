@@ -61,10 +61,6 @@ class GulpPlugin extends Component {
   }
 
   componentDidMount() {
-    // gulpplugin is implied
-    if (this.props.keywords.indexOf('gulpplugin') > -1) {
-      this.props.keywords.splice(this.props.keywords.indexOf('gulpplugin'), 1);
-    }
     if (this.props.reportHeight) {
       this.props.reportHeight({
         index: this.props.index,

@@ -8,7 +8,18 @@ class GulpPluginsChannels extends Channelizer {
   Model() {
     $.get('http://npmsearch.com/query?fields=name,keywords,rating,description,author,modified,homepage,version&q=keywords:gulpfriendly&q=keywords:gulpplugin&size=9001&sort=rating:desc',
     (result) => {
-      const jsonResult = JSON.parse(result);
+      let jsonResult = JSON.parse(result);
+      for (let plugin of jsonResult.results) {
+        if (plugin.keywords.indexOf('gulp') > -1) {
+          plugin.keywords.splice(plugin.keywords.indexOf('gulp'), 1);
+        }
+        if (plugin.keywords.indexOf('gulpplugin') > -1) {
+          plugin.keywords.splice(plugin.keywords.indexOf('gulpplugin'), 1);
+        }
+        if (plugin.keywords.indexOf('gulp-plugin') > -1) {
+          plugin.keywords.splice(plugin.keywords.indexOf('gulp-plugin'), 1);
+        }
+      }
       this.dispatch({
         channel: 'plugins/set',
         outgoing: {
