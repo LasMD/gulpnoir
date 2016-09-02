@@ -97,38 +97,45 @@ class PluginsList extends Component {
 
   onKeyDown(event) {
     if (event.key == "Enter") {
-      let searchVal = this.refs.pluginSearch.getValue();
-      searchVal = searchVal.replace(/s+/g,'|');
+      let searchVals = this.refs.pluginSearch.getValue();
+      searchVals = searchVals.split(' ');
+      console.log(searchVals);
       this.setState({ pluginSearch: this.refs.pluginSearch.getValue() });
+      if (!searchVals.length) {
+        this.setState({ gulpPluginsFiltered: this.state.gulpPlugins });
+        this.forceUpdate();
+        return;
+      }
       let gulpPluginsFiltered = this.state.gulpPlugins.filter(plugin => {
-        let inName = false;
-        let inAuthor = false;
-        let inKeywords = false;
 
         for (let author of plugin.author) {
-          let regex = new RegExp(searchVal, "gi");
-          if (author.match(regex)) {
-            inAuthor = true;
-            break;
-          }
-        }
-        for (let name of plugin.name) {
-          let regex = new RegExp(searchVal, "gi");
-          if (name.match(regex)) {
-            inName = true;
-            break;
-          }
-        }
-        for (let keywords of plugin.keywords) {
-          let regex = new RegExp(searchVal, "gi");
-          if (keywords.match(regex)) {
-            inKeywords = true;
-            break;
+          let matches = 0;
+          for (let searchVal of searchVals) {
+            let regex = new RegExp(searchVal, "gi");
+            if (author.match(regex)) {
+              if (++matches >= searchVals.length) return plugin;
+            }
           }
         }
 
-        if (inAuthor || inName || inKeywords) {
-          return plugin
+        for (let name of plugin.name) {
+          let matches = 0;
+          for (let searchVal of searchVals) {
+            let regex = new RegExp(searchVal, "gi");
+            if (name.match(regex)) {
+              if (++matches >= searchVals.length) return plugin;
+            }
+          }
+        }
+
+        for (let keywords of plugin.keywords) {
+          let matches = 0;
+          for (let searchVal of searchVals) {
+            let regex = new RegExp(searchVal, "gi");
+            if (keywords.match(regex)) {
+              if (++matches >= searchVals.length) return plugin;
+            }
+          }
         }
 
         return false;
