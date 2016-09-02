@@ -115,7 +115,10 @@ class GulpPlugin extends Component {
           <p className={'keywords-wrapper'}>
           {
             this.props.keywords.map((keyword, index) => {
-              return <i key={index} className={'keyword'}>{keyword}</i>;
+              return <i
+                key={index}
+                style={(this.props.search.indexOf(keyword) > -1) ? {backgroundColor: 'limegreen'} : {}}
+                className={'keyword'}>{keyword}</i>;
             })
           }
           </p>
