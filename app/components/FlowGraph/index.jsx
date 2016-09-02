@@ -160,7 +160,8 @@ class FlowGraph extends Component {
         },
         itemId: "PipeSource",
         item: new PipeSource({
-          glob: null
+          glob: null,
+          dest: null
         })
       }
     });

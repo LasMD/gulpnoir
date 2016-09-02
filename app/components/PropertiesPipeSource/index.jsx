@@ -10,10 +10,12 @@ class PropertiesPipeSource extends Component {
 
   componentWillMount() {
     this.globValue = this.props.PipeSource.get('glob');
+    this.destValue = this.props.PipeSource.get('dest');
   }
 
-  updateGlob() {
+  updateProps() {
     this.globValue = this.refs.globInput.getValue();
+    this.destValue = this.refs.destInput.getValue();
     TasksChannels.dispatch({
       channel: 'tasks/items/new',
       outgoing: {
@@ -22,7 +24,8 @@ class PropertiesPipeSource extends Component {
         },
         itemId: "PipeSource",
         item: new PipeSource({
-          glob: this.refs.globInput.getValue()
+          glob: this.refs.globInput.getValue(),
+          dest: this.refs.destInput.getValue()
         })
       }
     });
@@ -36,8 +39,9 @@ class PropertiesPipeSource extends Component {
       renderItem = (
         <Paper className={`propertyPaper`}  zDepth={1}>
           <h2>Source Properties</h2>
-          <b>Glob:</b> <TextField ref={'globInput'} value={this.globValue} placeholder={`./my/html/files/**/*.html`} />
-          <FlatButton onClick={this.updateGlob.bind(this)} label={`Update`} />
+          <div><b>Glob:</b> <TextField ref={'globInput'} value={this.globValue} placeholder={`./my/html/files/**/*.html`} /></div>
+          <div><b>Dest:</b> <TextField ref={'destInput'} value={this.destValue} placeholder={`./my/html/files/out/`} /></div>
+          <FlatButton onClick={this.updateProps.bind(this)} label={`Update`} />
         </Paper>
       )
     }

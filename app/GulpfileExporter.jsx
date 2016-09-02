@@ -39,8 +39,33 @@ export default class Exporter {
     return result;
   }
 
-  _writeFunctionalTasks() {
+  // Write globs first
+  _writeGlobs() {
     let result = [];
+    result.push(`let paths = {`);
+    let i = 0;
+    for (let task of this.tasks.functional) {
+      i++;
+      let pipeSource = TasksChannels.getTaskItemById({taskId: task[0], itemId: 'PipeSource'});
+      result.push(`\t${task[1].get('name')}: {`);
+      result.push(`\t\tsrc: ['${pipeSource.get('glob')}']`)
+      result.push(`\t\tdest: '${pipeSource.get('dest')}'`)
+      let resultAppend = '\t}';
+      if (i >= this.tasks.functional.size) {
+        resultAppend += '\n};';
+      } else {
+        resultAppend += ',';
+      }
+      result.push(resultAppend);
+    }
+    result.push('');
+    return result;
+  };
+
+  _writeFunctionalTasks() {
+
+    let result = this._writeGlobs();
+
     for (let task of this.tasks.functional) {
       let pipeSource = TasksChannels.getTaskItemById({taskId: task[0], itemId: 'PipeSource'});
       result.push(`export function ${task[1].get('name')}() {`);
@@ -48,7 +73,7 @@ export default class Exporter {
       let resultAppend = ``;
       for (let link of connections) {
         if (link == connections.first) {
-          resultAppend = `\treturn gulp.src('${pipeSource.get('glob')}')`;
+          resultAppend = `\treturn gulp.src(paths.${task[1].get('name')}.src)`;
         } else {
           console.log(connections);
           let pluginObj = GulpPluginsChannels.getPluginObjectById(link.data.itemId);
@@ -65,7 +90,8 @@ export default class Exporter {
           resultAppend += '))';
         }
         if (link == connections.last) {
-          result.push(resultAppend + ';');
+          result.push(resultAppend);
+          result.push(`\t\t.pipe(gulp.dest(paths.${task[1].get('name')}.dest));`)
           result.push(`}`);
         } else {
           result.push(resultAppend);
