@@ -19,15 +19,50 @@ class PropertiesTask extends Component {
     };
   }
 
+  getInitialState() {
+    return {
+      editingTask: false
+    };
+  }
+
+  editName() {
+    this.setState({editingTask: true});
+  }
+
+  updateName() {
+    TasksChannels.dispatch({
+      channel: 'tasks/update',
+      outgoing: {
+        task: {
+          id: this.props.task.get('id'),
+          name: this.refs['newName'].getValue()
+        },
+      }
+    });
+    this.setState({
+      editingTask: false
+    });
+  }
+
   render() {
     const task = this.props.task;
     if (this.refs[`taskName${task.get('id')}`]) {
       this.refs[`taskName${task.get('id')}`].forceUpdate();
     }
+
+    this.newName = task.get('name');
+
     return (
       <Paper className={`propertyPaper`} zDepth={1}>
         <h2>Task Properties</h2>
-        <h3><b>{task.get('name')}</b> <i>({task.get('type')})</i></h3>
+        <h3>
+          {
+              this.state.editingTask ? <TextField ref={'newName'} value={this.newName} placeholder={`Enter a task name...`} />
+              : <b onDoubleClick={this.editName.bind(this)}>{task.get('name')}</b>
+          }
+          <i>({task.get('type')})</i>
+        </h3>
+        { this.state.editingTask ? <FlatButton onClick={this.updateName.bind(this)} label={`Update`} /> : '' }
       </Paper>
     );
   }
