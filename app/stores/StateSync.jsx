@@ -45,9 +45,7 @@ export default class StateSync {
     for (let datum of _saved) {
       JSONCollection[datum] = transit.fromJSON(decodeL1[datum]);
     }
-
-    console.log(JSONCollection);
-
+    
     return JSONCollection;
   }
 

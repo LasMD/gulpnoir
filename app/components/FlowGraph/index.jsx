@@ -369,10 +369,10 @@ class FlowGraph extends Component {
     // If we already have connections in our props, this means our Task was loaded.
     // Tasks can be loaded from opening a previously closed tab, or loading a file
     if (this.props.task.get('connections')) {
-      if (this.props.task.get('type') == "Parallel") this.connectionsMap = new Map(JSON.parse(this.props.task.get('connections')));
+      if (this.props.task.get('type') == "Parallel") this.graphState.connectionsMap = new Map(JSON.parse(this.props.task.get('connections')));
       else {
-        this.connections = LinkChain.parse(this.props.task.get('connections'));
-        for (let connection of this.connections) {
+        this.graphState.connections = LinkChain.parse(this.props.task.get('connections'));
+        for (let connection of this.graphState.connections) {
           this.graphState.graphCellPluginIdMap.set(connection.data.cellId, connection.data.itemId);
         }
       }

@@ -29,7 +29,6 @@ class PropertiesGulpPlugin extends Component {
         plugin: pluginObject,
       }
     });
-    console.log(params);
     this.forceUpdate();
   }
 
@@ -57,7 +56,7 @@ class PropertiesGulpPlugin extends Component {
     pluginObject.get('params').map((param, idx) => {
       paramsList.push(<div key={`${pluginObject.get('name')}-param-${idx}`} className={`plugin-property-param`}>{param}<IconButton onClick={this.removeParam.bind(this, idx)}><IconContentRemove /></IconButton></div>);
     });
-    
+
     if (!paramsList.length) {
       paramsList = (<div>Empty</div>);
     }
