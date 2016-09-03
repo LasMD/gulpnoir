@@ -32,6 +32,7 @@ export default class MutableTextField extends Component {
         value={this.state.value}
         autoFocus={true}
         style={this.props.style}
+        errorText={this.props.errorText}
       />
     );
   }
@@ -41,7 +42,8 @@ export default class MutableTextField extends Component {
   }
 
   _userOnChange = (event) => {
-    this.props.onChange(event, this._onChange.bind(this));
+    this._onChange(event);
+    this.props.onChange(event);
   }
 
   _onChange = (event: any) => {

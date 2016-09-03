@@ -21,7 +21,8 @@ class PropertiesTask extends Component {
 
   getInitialState() {
     return {
-      editingTask: false
+      editingTask: false,
+      newNameError: ''
     };
   }
 
@@ -30,6 +31,7 @@ class PropertiesTask extends Component {
   }
 
   updateName() {
+    if (this.state.newNameError.length) return;
     TasksChannels.dispatch({
       channel: 'tasks/update',
       outgoing: {
@@ -42,6 +44,18 @@ class PropertiesTask extends Component {
     this.setState({
       editingTask: false
     });
+  }
+
+  onChangeNewName(event) {
+    if (event.target.value.match(/\W/)) {
+      this.setState({
+        newNameError: 'Only use word characters [A-z,0-9,_]'
+      });
+    } else {
+      this.setState({
+        newNameError: ''
+      });
+    }
   }
 
   render() {
@@ -57,12 +71,14 @@ class PropertiesTask extends Component {
         <h2>Task Properties</h2>
         <h3>
           {
-              this.state.editingTask ? <TextField ref={'newName'} value={this.newName} placeholder={`Enter a task name...`} />
+              this.state.editingTask ? <TextField onChange={this.onChangeNewName.bind(this)} errorText={this.state.newNameError} ref={'newName'} value={this.newName} placeholder={`Enter a task name...`} />
               : <b onDoubleClick={this.editName.bind(this)}>{task.get('name')}</b>
           }
           <i>({task.get('type')})</i>
         </h3>
-        { this.state.editingTask ? <FlatButton onClick={this.updateName.bind(this)} label={`Update`} /> : '' }
+        { this.state.editingTask ?
+          <span><FlatButton onClick={this.updateName.bind(this)} label={`Update`} /><FlatButton onClick={this.setState.bind(this, {editingTask: false})} label={`Cancel`} /></span>
+          : '' }
       </Paper>
     );
   }
