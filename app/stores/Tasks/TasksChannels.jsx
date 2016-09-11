@@ -22,6 +22,7 @@ class TasksChannels extends Channelizer {
       receiver.tune({
         channel: 'delete',
         controller: ({ state, incoming }) => {
+
           let newState = state;
 
           // Close the deleted task
@@ -47,7 +48,12 @@ class TasksChannels extends Channelizer {
             newState = newState.set('selectedTaskID', newSelectedTask);
           }
 
+          // Delete the task and its items
+          newState = newState.deleteIn(['tasks', incoming.task.id]);
+          newState = newState.deleteIn(['taskItems', incoming.task.id]);
+
           return newState;
+
         }
       })
 
@@ -137,6 +143,54 @@ class TasksChannels extends Channelizer {
       }});
 
     }});
+  }
+
+
+  // Make sure the task isn't currently being used as a grid item
+  // Users must manually delete grid items before deleting the full task
+  // Similar to plugins which users must delete from grid(s) before uninstalling
+  validateDeletion({ id }) {
+    let seriesTasks = this.getTasks('Series');
+    let parallelTasks = this.getTasks('Parallel');
+
+    console.log(seriesTasks, parallelTasks);
+
+    for (let task of seriesTasks) {
+      console.log("s", task);
+      let { connections } = task[1].get('export')('raw');
+      for (let link of connections) {
+        if (!link.data) continue;
+        if (link.data.itemId == id) return false;
+      }
+    }
+
+    for (let task of parallelTasks) {
+      console.log("p", task);
+      let { connections } = task[1].get('export')('raw');
+      for (let link of connections) {
+        if (!link.data) continue;
+        if (link.data.itemId == id) return false;
+      }
+    }
+
+    return true;
+  }
+
+  doDeleteTask({ id }) {
+    if (!this.validateDeletion({ id })) return false;
+
+    console.log("Initiating delete now");
+
+    this.dispatch({
+      channel: 'tasks/delete',
+      outgoing: {
+        task: {
+          id: id
+        }
+      }
+    });
+
+    return true;
   }
 
   getSelectedTask() {

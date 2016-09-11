@@ -86,14 +86,11 @@ class PropertiesTask extends Component {
   }
 
   deleteTask() {
-    TasksChannels.dispatch({
-      channel: 'tasks/delete',
-      outgoing: {
-        task: {
-          id: this.props.task.get('id')
-        }
-      }
-    });
+    if (TasksChannels.doDeleteTask({ id: this.props.task.get('id') })) {
+      console.log('Delete initiated');
+    } else {
+      console.log('Failed');
+    }
   }
 
   _saveChanges() {
