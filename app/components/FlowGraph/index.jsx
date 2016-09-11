@@ -249,8 +249,14 @@ class FlowGraph extends Component {
 
     toExport['graph'] = this.exportGraph(raw);
     toExport['connections'] = this.exportConnections(raw);
+    toExport['graphCellPluginIdMap'] = this.exportGraphCellPluginIdMap(raw);
 
     return toExport;
+  }
+
+  // Utilized by delete task / delete plugin validation in Channels
+  exportGraphCellPluginIdMap(raw) {
+    return this.graphState.graphCellPluginIdMap;
   }
 
   // Utilized by StateSync

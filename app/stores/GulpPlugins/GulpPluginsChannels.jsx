@@ -2,6 +2,7 @@ import Immutable from 'immutable';
 import { Channelizer } from 'channelizer';
 import $ from 'jquery';
 import GulpPlugin from './GulpPlugin';
+import TasksChannels from '../Tasks/TasksChannels';
 
 class GulpPluginsChannels extends Channelizer {
 
@@ -89,6 +90,20 @@ class GulpPluginsChannels extends Channelizer {
   }
 
   validateUninstall({ name }) {
+    let tasks = TasksChannels.getTasks('Functional');
+    for (let task of tasks) {
+      let { graphCellPluginIdMap } = task[1].get('export')('raw');
+
+      for (let mapped of graphCellPluginIdMap) {
+
+        let pluginId = mapped[1];
+
+        let pluginObj = this.getPluginObjectById(pluginId);
+        if (!pluginObj) continue;
+        
+        if (pluginObj.get('name') == name) return false;
+      }
+    }
     return true;
   }
 
