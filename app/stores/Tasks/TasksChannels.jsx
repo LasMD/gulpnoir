@@ -153,23 +153,19 @@ class TasksChannels extends Channelizer {
     let seriesTasks = this.getTasks('Series');
     let parallelTasks = this.getTasks('Parallel');
 
-    console.log(seriesTasks, parallelTasks);
-
     for (let task of seriesTasks) {
-      console.log("s", task);
-      let { connections } = task[1].get('export')('raw');
-      for (let link of connections) {
-        if (!link.data) continue;
-        if (link.data.itemId == id) return false;
+      let { graphCellPluginIdMap } = task[1].get('export')('raw');
+      for (let mapped of graphCellPluginIdMap) {
+        let taskItemId = mapped[1];
+        if (taskItemId == id) return false;
       }
     }
 
     for (let task of parallelTasks) {
-      console.log("p", task);
-      let { connections } = task[1].get('export')('raw');
-      for (let link of connections) {
-        if (!link.data) continue;
-        if (link.data.itemId == id) return false;
+      let { graphCellPluginIdMap } = task[1].get('export')('raw');
+      for (let mapped of graphCellPluginIdMap) {
+        let taskItemId = mapped[1];
+        if (taskItemId == id) return false;
       }
     }
 
@@ -178,9 +174,7 @@ class TasksChannels extends Channelizer {
 
   doDeleteTask({ id }) {
     if (!this.validateDeletion({ id })) return false;
-
-    console.log("Initiating delete now");
-
+    
     this.dispatch({
       channel: 'tasks/delete',
       outgoing: {
