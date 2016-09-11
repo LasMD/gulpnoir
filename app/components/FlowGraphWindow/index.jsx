@@ -27,15 +27,9 @@ class FlowGraphWindow extends Component {
 
     if (selectedTask) {
       toReturn.selectedTab = selectedTask.get('id').toString();
-
-
-
     } else {
       toReturn.selectedTab = '0';
     }
-
-
-
 
     return toReturn;
 
@@ -80,24 +74,13 @@ class FlowGraphWindow extends Component {
       }));
     }
 
-    TasksChannels.dispatch(() => {
-
-      return [{
-        channel: 'tasks/update',
-        outgoing: {
-          task: {
-            id: key,
-          }
+    TasksChannels.dispatch({
+      channel: 'tasks/close',
+      outgoing: {
+        task: {
+          id: key
         }
-      }, {
-        channel: 'tasks/close',
-        outgoing: {
-          task: {
-            id: key
-          }
-        }
-      }];
-
+      }
     });
 
   }
@@ -113,7 +96,7 @@ class FlowGraphWindow extends Component {
     this.setState({newTaskTypeDialogOpen: true});
   }
 
-  handleClose(type) {
+  handleNewTaskTypeClose(type) {
     if (type == "Functional" || type == "Parallel" || type == "Series") {
       TasksChannels.dispatch({
         channel: 'tasks/new',
@@ -157,19 +140,19 @@ class FlowGraphWindow extends Component {
     const newTaskTypeDialogActions = [
       <FlatButton
         label="Functional"
-        onTouchTap={this.handleClose.bind(this, 'Functional')}
+        onTouchTap={this.handleNewTaskTypeClose.bind(this, 'Functional')}
         />,
       <FlatButton
         label="Parallel"
-        onTouchTap={this.handleClose.bind(this, 'Parallel')}
+        onTouchTap={this.handleNewTaskTypeClose.bind(this, 'Parallel')}
         />,
       <FlatButton
         label="Series"
-        onTouchTap={this.handleClose.bind(this, 'Series')}
+        onTouchTap={this.handleNewTaskTypeClose.bind(this, 'Series')}
         />,
       <FlatButton
         label="Cancel"
-        onTouchTap={this.handleClose.bind(this)}
+        onTouchTap={this.handleNewTaskTypeClose.bind(this)}
       />,
     ];
 

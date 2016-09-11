@@ -20,6 +20,38 @@ class TasksChannels extends Channelizer {
       controller: ({ receiver }) => {
 
       receiver.tune({
+        channel: 'delete',
+        controller: ({ state, incoming }) => {
+          let newState = state;
+
+          // Close the deleted task
+          let idx = newState.get('openTasks').indexOf(incoming.task.id * 1);
+          let newOpenTasks = newState.get('openTasks').splice(idx, 1);
+          newState = newState.set('openTasks', newOpenTasks);
+
+          /**
+           * The react-draggable-tab calls "handleTabSelect" promptly after
+           * "handleTabClose" thereby updating the selected tab internally.
+           * Not exactly sure how it decides which tab to select next--also can't
+           * manually trigger.
+           *
+           * For now just fetch from the list of availables, left-first
+           */
+          if (newState.get('selectedTaskID') == incoming.task.id) {
+            let openTaskIdx = idx - 1;
+            if (openTaskIdx < 0) openTaskIdx = 0;
+            let newSelectedTask;
+            if (newOpenTasks.size > 0) {
+              newSelectedTask = newOpenTasks.get(openTaskIdx);
+            }
+            newState = newState.set('selectedTaskID', newSelectedTask);
+          }
+
+          return newState;
+        }
+      })
+
+      receiver.tune({
         channel: 'set',
         controller: ({ state, incoming }) => incoming.state
       });

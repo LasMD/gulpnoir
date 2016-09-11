@@ -79,8 +79,21 @@ class PropertiesTask extends Component {
         { this.state.editingTask ?
           <span><FlatButton onClick={this.updateName.bind(this)} label={`Update`} /><FlatButton onClick={this.setState.bind(this, {editingTask: false})} label={`Cancel`} /></span>
           : '' }
+        <br />
+        <FlatButton onClick={this.deleteTask.bind(this)} label={`Delete Task`} />
       </Paper>
     );
+  }
+
+  deleteTask() {
+    TasksChannels.dispatch({
+      channel: 'tasks/delete',
+      outgoing: {
+        task: {
+          id: this.props.task.get('id')
+        }
+      }
+    });
   }
 
   _saveChanges() {
