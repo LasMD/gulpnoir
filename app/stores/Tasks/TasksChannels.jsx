@@ -180,10 +180,8 @@ class TasksChannels extends Channelizer {
   ctrlNewTask({ state, incoming }) {
     if (!incoming.task) return state;
     let tasks = state.get('tasks');
-    let taskNo = 1;
-    if (tasks) {
-      taskNo = tasks.size + 1;
-    }
+    let taskNo = state.get('taskIndex') || 1;
+    state = state.set('taskIndex', taskNo+1);
     let name = incoming.task.name || 'NewTask' + taskNo;
     let type = incoming.task.type || "Functional";
     const newTask = new Task({ name, type });
