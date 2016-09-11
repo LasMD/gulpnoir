@@ -77,8 +77,34 @@ class GulpPluginsChannels extends Channelizer {
           )
         });
 
+        receiver.tune({
+          channel: 'uninstall',
+          controller: ({ state, incoming }) => state.set('installed',
+            state.get('installed').deleteIn([incoming.plugin.name])
+          )
+        });
+
       }
     });
+  }
+
+  validateUninstall({ name }) {
+    return true;
+  }
+
+  doUninstallPlugin({ name }) {
+    if (!this.validateUninstall({ name })) return false;
+
+    this.dispatch({
+      channel: "plugins/uninstall",
+      outgoing: {
+        plugin: {
+          name: name
+        }
+      }
+    });
+
+    return true;
   }
 
   ctrlNewPlugin({ state, incoming }) {

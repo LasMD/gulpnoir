@@ -80,7 +80,11 @@ class GulpPlugin extends Component {
     this.forceUpdate();
   }
   onPluginUninstall() {
-    this.props.onPluginSelect(this.props.index);
+    if (!GulpPluginsChannels.doUninstallPlugin({ name: this.props.name })) return false;
+
+    this.state.installed = false;
+    this.forceUpdate();
+    // this.props.onPluginSelect(this.props.index);
   }
 
   openHomePage() {
