@@ -11,6 +11,9 @@ export default {
           rect: { fill: 'orange' },
           '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
           '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+          '.tooling': {
+            display: 'none'
+          }
         },
         inPorts: ['In'],
         outPorts: ['Out']

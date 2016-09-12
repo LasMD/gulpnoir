@@ -69,6 +69,24 @@ class FlowGraph extends Component {
       'Task': 'rect',
       'PipeSource': 'rect'
     }
+
+    let toolingMarkup = `<g class="rotatable">
+      <g class="scalable"><rect class="body"/></g>
+      <text class="label"/><g class="inPorts"/><g class="outPorts"/>
+      <g class="tooling" fill="#000000" height="24" width="24" transform="translate(-24, -24)">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+      </g>
+    </g>`;
+
+    joint.shapes.devs.TooledItem = joint.shapes.devs.Model.extend({
+        markup: toolingMarkup,
+        defaults: joint.util.deepSupplement({
+            type: 'devs.TooledItem',
+        }, joint.shapes.devs.Model.prototype.defaults)
+    });
+    joint.shapes.devs.TooledItemView = joint.shapes.devs.ModelView;
+
   }
 
   collisionLookup(cell, pos, opt) {
@@ -88,7 +106,7 @@ class FlowGraph extends Component {
     props.attrs['.label'] = { text };
     props['itemType'] = "GulpPlugin";
 
-    let cell = new joint.shapes.devs.Model(props);
+    let cell = new joint.shapes.devs.TooledItem(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graphState.graphCellPluginIdMap.set(cell.id, id);
@@ -193,6 +211,9 @@ class FlowGraph extends Component {
           stroke: 'black',
           'stroke-width': '1',
           'stroke-dasharray': '0',
+        },
+        '.tooling': {
+          display: 'none'
         }
       });
       TasksChannels.dispatch({
@@ -227,6 +248,9 @@ class FlowGraph extends Component {
           stroke: 'lime',
           'stroke-width': '4',
           'stroke-dasharray': '5,5',
+        },
+        '.tooling': {
+          display: 'block'
         }
       });
       let outgoing = {
@@ -450,6 +474,11 @@ class FlowGraph extends Component {
         }
 
         this.graphState.connectionsMap.get(cell.model.get('source').id).append(this.graphState.connectionsMap.get(cell.model.get('target').id));
+
+        cell.model.attr({
+            '.connection': { stroke: 'blue', 'stroke-width': '1.5' },
+            '.marker-target': { fill: 'yellow', d: 'M 10 0 L 0 5 L 10 10 z' }
+        });
       }
     });
 
