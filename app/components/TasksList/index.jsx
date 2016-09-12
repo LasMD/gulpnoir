@@ -37,8 +37,10 @@ class TasksDetail extends Component {
 
     return (
       <div className={'tasks-list'}>
-        <Toolbar>
-          <ToolbarTitle text="Options" firstChild={true} />
+        <Toolbar className={'Toolbar'}>
+          <ToolbarGroup firstChild={true}>
+            <ToolbarTitle className={'ToolbarTitle'} text="Functional Tasks" />
+          </ToolbarGroup>
         </Toolbar>
         {tasksList}
       </div>
