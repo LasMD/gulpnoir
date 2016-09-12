@@ -79,12 +79,10 @@ class GulpPlugin extends Component {
     this.state.installed = true;
     this.forceUpdate();
   }
+
   onPluginUninstall() {
     if (!GulpPluginsChannels.doUninstallPlugin({ name: this.props.name })) return false;
-
-    this.state.installed = false;
-    this.forceUpdate();
-    // this.props.onPluginSelect(this.props.index);
+    this.setState({ installed: false });
   }
 
   openHomePage() {
@@ -103,15 +101,15 @@ class GulpPlugin extends Component {
     const { connectDragSource, isDragging } = this.props;
     return connectDragSource(
       <div className={`pluginWrapper`}>
-      <div style={(this.props.installed || this.state.installed) ? {backgroundColor: 'limegreen'} : {}}>
+      <div style={(this.props.installed && this.state.installed) ? {backgroundColor: 'limegreen'} : {}}>
         <Paper
           zDepth={2}
           className={`pluginPaper`}
-          style={(this.props.installed || this.state.installed) ? {opacity: '0.75'} : {}}>
+          style={(this.props.installed && this.state.installed) ? {opacity: '0.75'} : {}}>
           <div className={`header`}>
             <h2 className={`title`}>{this.props.name} <i>v{this.props.version}</i>&nbsp;<IconButton onClick={this.openHomePage.bind(this)}><IconContentLink /></IconButton></h2>
               {
-                (this.props.installed || this.state.installed) ?
+                (this.props.installed && this.state.installed) ?
                 <FlatButton label={'Uninstall'} onClick={this.onPluginUninstall.bind(this)}  />
                 :
                 <FlatButton label={'Install'} onClick={this.onPluginInstall.bind(this)} />

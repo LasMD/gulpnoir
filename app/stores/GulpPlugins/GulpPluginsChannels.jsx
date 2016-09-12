@@ -29,7 +29,6 @@ class GulpPluginsChannels extends Channelizer {
       });
     });
     return Immutable.Map()
-    .set('installed', Immutable.Map())
     .set('pluginObjects', Immutable.Map());
   }
 
@@ -73,16 +72,12 @@ class GulpPluginsChannels extends Channelizer {
 
         receiver.tune({
           channel: 'install',
-          controller: ({ state, incoming }) => state.set('installed',
-            state.get('installed').set(incoming.plugin.name, incoming.plugin)
-          )
+          controller: ({ state, incoming }) => state.setIn(['installed', incoming.plugin.name], incoming.plugin)
         });
 
         receiver.tune({
           channel: 'uninstall',
-          controller: ({ state, incoming }) => state.set('installed',
-            state.get('installed').deleteIn([incoming.plugin.name])
-          )
+          controller: ({ state, incoming }) => state.deleteIn(['installed', incoming.plugin.name])
         });
 
       }
@@ -100,7 +95,7 @@ class GulpPluginsChannels extends Channelizer {
 
         let pluginObj = this.getPluginObjectById(pluginId);
         if (!pluginObj) continue;
-        
+
         if (pluginObj.get('name') == name) return false;
       }
     }
@@ -128,7 +123,7 @@ class GulpPluginsChannels extends Channelizer {
   }
 
   getInstalledPlugins() {
-    return this.getState().get('installed');
+    return this.getState().get('installed') || new Immutable.Map();
   }
 
   getGulpPlugins() {

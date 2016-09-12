@@ -22,7 +22,8 @@ class PluginsList extends Component {
 
   static calculateState() {
     return {
-      gulpPlugins: GulpPluginsChannels.getGulpPlugins()
+      gulpPlugins: GulpPluginsChannels.getGulpPlugins(),
+      installedPlugins: GulpPluginsChannels.getInstalledPlugins()
     };
   }
 
@@ -90,7 +91,7 @@ class PluginsList extends Component {
     } else {
       plugin = this.state.gulpPlugins[index];
     }
-    if (GulpPluginsChannels.getInstalledPlugins().get(plugin.name[0])) {
+    if (this.state.installedPlugins.get(plugin.name[0])) {
       plugin.installed = true;
     }
     return (
@@ -191,7 +192,6 @@ class PluginsList extends Component {
   }
 
   render() {
-
     return (
       <div className={'plugins-list'}>
         <Toolbar className={'Toolbar'}>

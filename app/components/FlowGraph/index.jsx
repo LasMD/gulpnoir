@@ -85,7 +85,44 @@ class FlowGraph extends Component {
             type: 'devs.TooledItem',
         }, joint.shapes.devs.Model.prototype.defaults)
     });
-    joint.shapes.devs.TooledItemView = joint.shapes.devs.ModelView;
+
+    joint.shapes.devs.TooledItemView = joint.shapes.devs.ModelView.extend({
+      that: () => {
+        return this;
+      },
+
+      pointerclick: function (evt, x, y) {
+
+        this._dx = x;
+        this._dy = y;
+        this._action = '';
+
+        var className = evt.target.parentNode.getAttribute('class');
+
+        switch (className) {
+
+            case 'tooling':
+              let that = this.that();
+              let link = that.graphState.connectionsMap.get(this.model.id);
+              if (link) {
+                if (link.previous) {
+                  link.previous.sever();
+                }
+                link.sever();
+                that.graphState.connectionsMap.delete(this.model.id);
+              }
+              that.graphState.graphCellPluginIdMap.delete(this.model.id);
+              that.deselectCell();
+              this.model.remove();
+              return;
+              break;
+
+            default:
+        }
+
+        joint.dia.CellView.prototype.pointerclick.apply(this, arguments);
+      }
+    });
 
   }
 
