@@ -6,6 +6,9 @@ import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import { Container } from 'flux/utils';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
+import IconActionDeleteForever from 'material-ui/svg-icons/action/delete-forever'
+import IconButton from 'material-ui/IconButton';
+
 
 class PropertiesTask extends Component {
 
@@ -68,11 +71,11 @@ class PropertiesTask extends Component {
 
     return (
       <Paper className={`propertyPaper`} zDepth={1}>
-        <h2>Task Properties</h2>
+        <div className={`header`}><h2 className={`title`}>Task Properties</h2><IconButton tooltip="Delete Task" onClick={this.deleteTask.bind(this)}><IconActionDeleteForever /></IconButton></div>
         <h3>
           {
               this.state.editingTask ? <TextField onChange={this.onChangeNewName.bind(this)} errorText={this.state.newNameError} ref={'newName'} value={this.newName} placeholder={`Enter a task name...`} />
-              : <b onDoubleClick={this.editName.bind(this)}>{task.get('name')}</b>
+            : <b onDoubleClick={this.editName.bind(this)}>{task.get('name')}</b>
           }
           <i>({task.get('type')})</i>
         </h3>
@@ -80,7 +83,6 @@ class PropertiesTask extends Component {
           <span><FlatButton onClick={this.updateName.bind(this)} label={`Update`} /><FlatButton onClick={this.setState.bind(this, {editingTask: false})} label={`Cancel`} /></span>
           : '' }
         <br />
-        <FlatButton onClick={this.deleteTask.bind(this)} label={`Delete Task`} />
       </Paper>
     );
   }
