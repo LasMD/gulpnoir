@@ -276,6 +276,9 @@ class FlowGraph extends Component {
             stroke: 'black',
             'stroke-width': '1',
             'stroke-dasharray': '0',
+          },
+          '.tooling': {
+            display: 'none'
           }
         });
       }
