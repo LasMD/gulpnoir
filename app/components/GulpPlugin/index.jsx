@@ -67,6 +67,7 @@ class GulpPlugin extends Component {
         height: findDOMNode(this).offsetHeight
       });
     }
+    this.state.installed = this.props.installed;
   }
 
   onPluginInstall() {
@@ -82,7 +83,9 @@ class GulpPlugin extends Component {
 
   onPluginUninstall() {
     if (!GulpPluginsChannels.doUninstallPlugin({ name: this.props.name })) return false;
-    this.setState({ installed: false });
+    this.setState({ installed: false }, () => {
+      this.props.uninstall();
+    });
   }
 
   openHomePage() {

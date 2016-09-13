@@ -108,6 +108,9 @@ class PluginsList extends Component {
           onPluginSelect={this.onPluginSelect.bind(this)}
           installed={plugin.installed}
           homepage={plugin.homepage[0]}
+          uninstall={() => {
+            plugin.installed = false
+          }}
           search={(this.state.pluginSearch || '').split(',')}
           addKeyword={this.addKeyword.bind(this)}
           removeKeyword={this.removeKeyword.bind(this)}
