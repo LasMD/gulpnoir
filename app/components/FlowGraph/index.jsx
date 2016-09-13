@@ -169,7 +169,7 @@ class FlowGraph extends Component {
     props.attrs['.label'] = { text };
     props['itemType'] = "Task";
 
-    let cell = new joint.shapes.devs.Model(props);
+    let cell = new joint.shapes.devs.TooledItem(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graphState.graphCellPluginIdMap.set(cell.id, id);

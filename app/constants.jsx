@@ -26,6 +26,9 @@ export default {
         attrs: {
           rect: { fill: 'brown' },
           '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+          '.tooling': {
+            display: 'none'
+          }
         },
         outPorts: ['']
       },
