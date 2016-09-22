@@ -339,8 +339,12 @@ class FlowGraph extends Component {
       return this.graphState.connections;
     } else {
       if (this.props.task.get('type') == "Parallel") {
-        // Any existing connection should be counted
-        return JSON.stringify(Array.from(this.graphState.connectionsMap.entries()));
+        let arr = Array.from(this.graphState.connectionsMap.entries());
+        // Convert LinkChain in connnectionsMap to string
+        for (let a in arr) {
+          arr[a][1] = arr[a][1].toString();
+        }
+        return JSON.stringify(arr);
       }
       return this.graphState.connections.toString();
     }
@@ -439,7 +443,13 @@ class FlowGraph extends Component {
     // If we already have connections in our props, this means our Task was loaded.
     // Tasks can be loaded from opening a previously closed tab, or loading a file
     if (this.props.task.get('connections')) {
-      if (this.props.task.get('type') == "Parallel") this.graphState.connectionsMap = new Map(JSON.parse(this.props.task.get('connections')));
+      if (this.props.task.get('type') == "Parallel") {
+        let connections = JSON.parse(this.props.task.get('connections'));
+        for (let cons in connections) {
+          connections[cons][1] = LinkChain.parse(connections[cons][1]);
+        }
+        this.graphState.connectionsMap = new Map(connections);
+      }
       else {
         this.graphState.connections = LinkChain.parse(this.props.task.get('connections'));
         for (let connection of this.graphState.connections) {

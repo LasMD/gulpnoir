@@ -20,7 +20,7 @@ export default class StateSync {
       data.tasks = data.tasks.setIn(['tasks', (id * 1), 'connections'], connections);
       data.tasks = data.tasks.deleteIn(['tasks', (id * 1), 'selectedItem']);
     }
-
+    
     let JSONCollection = {};
     JSONCollection._saved = [];
     for (let datum in data) {
@@ -45,7 +45,7 @@ export default class StateSync {
     for (let datum of _saved) {
       JSONCollection[datum] = transit.fromJSON(decodeL1[datum]);
     }
-    
+
     return JSONCollection;
   }
 
