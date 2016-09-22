@@ -16,6 +16,16 @@ export default class LinkChain {
     return length;
   }
 
+  get height() {
+    let height = -1;
+    let getLink = this;
+    while (getLink) {
+      height += 1;
+      getLink = getLink.next;
+    }
+    return height;
+  }
+
   get next() {
     return this._next || null;
   }
@@ -90,6 +100,7 @@ export default class LinkChain {
     for (let link of first) {
       result.push(link.data);
     }
+    result.push(this.height);
     return JSON.stringify(result);
   }
 
@@ -102,6 +113,7 @@ export default class LinkChain {
   static parse(data) {
     let parsedChain;
     let objData = JSON.parse(data);
+    let idx = objData.pop();
     let i = 0;
     for (let datum of objData) {
       if (i == 0) {
@@ -111,7 +123,11 @@ export default class LinkChain {
       }
       i++;
     }
-    return parsedChain;
+    let link = parsedChain;
+    for (i = 0; i < idx; i++) {
+      link = link.next;
+    }
+    return link;
   }
 
 }
