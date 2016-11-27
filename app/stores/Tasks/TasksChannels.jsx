@@ -12,12 +12,50 @@ class TasksChannels extends Channelizer {
     .set('_stateID', Date.now());
 
   }
-  
+
   Channels({ receiver }) {
 
     receiver.world({
       prefix: 'tasks/',
       controller: ({ receiver }) => {
+
+      receiver.tune({
+        channel: 'delete',
+        controller: ({ state, incoming }) => {
+
+          let newState = state;
+
+          // Close the deleted task
+          let idx = newState.get('openTasks').indexOf(incoming.task.id * 1);
+          let newOpenTasks = newState.get('openTasks').splice(idx, 1);
+          newState = newState.set('openTasks', newOpenTasks);
+
+          /**
+           * The react-draggable-tab calls "handleTabSelect" promptly after
+           * "handleTabClose" thereby updating the selected tab internally.
+           * Not exactly sure how it decides which tab to select next--also can't
+           * manually trigger.
+           *
+           * For now just fetch from the list of availables, left-first
+           */
+          if (newState.get('selectedTaskID') == incoming.task.id) {
+            let openTaskIdx = idx - 1;
+            if (openTaskIdx < 0) openTaskIdx = 0;
+            let newSelectedTask;
+            if (newOpenTasks.size > 0) {
+              newSelectedTask = newOpenTasks.get(openTaskIdx);
+            }
+            newState = newState.set('selectedTaskID', newSelectedTask);
+          }
+
+          // Delete the task and its items
+          newState = newState.deleteIn(['tasks', incoming.task.id]);
+          newState = newState.deleteIn(['taskItems', incoming.task.id]);
+
+          return newState;
+
+        }
+      })
 
       receiver.tune({
         channel: 'set',
@@ -62,7 +100,8 @@ class TasksChannels extends Channelizer {
       receiver.tune({
         channel: 'close',
         controller: ({ state, incoming }) => {
-          let _newState = state.setIn(['tasks', (incoming.task.id * 1), 'graph'], state.get('tasks').get(incoming.task.id * 1).get('exportGraph')());
+          let { graph, connections } = state.get('tasks').get(incoming.task.id * 1).get('export')();
+          let _newState = state.setIn(['tasks', (incoming.task.id * 1), 'graph'], graph);
           let idx = _newState.get('openTasks').indexOf(incoming.task.id * 1);
           let newOpenTasks = _newState.get('openTasks').splice(idx, 1);
           return _newState.set('openTasks', newOpenTasks);
@@ -87,17 +126,65 @@ class TasksChannels extends Channelizer {
 
         receiver.tune({
           channel: 'new',
-          controller: ({ state, incoming }) => newState.setIn(['taskItems', incoming.task.id, prop], incoming.task[prop])
+          controller: ({ state, incoming }) => state.setIn(['taskItems', incoming.task.id, incoming.itemId], incoming.item)
+        });
+
+        receiver.tune({
+          channel: 'set',
+          controller: ({ state, incoming }) => state.set('taskItems', incoming.taskItems)
         });
 
         receiver.tune({
           channel: 'select',
-          controller: ({ state, incoming }) => state.set('selectedItem', incoming.item)
+          controller: ({ state, incoming }) => state.set('selectedItem', incoming)
         });
+
 
       }});
 
     }});
+  }
+
+
+  // Make sure the task isn't currently being used as a grid item
+  // Users must manually delete grid items before deleting the full task
+  // Similar to plugins which users must delete from grid(s) before uninstalling
+  validateDeletion({ id }) {
+    let seriesTasks = this.getTasks('Series');
+    let parallelTasks = this.getTasks('Parallel');
+
+    for (let task of seriesTasks) {
+      let { graphCellPluginIdMap } = task[1].get('export')('raw');
+      for (let mapped of graphCellPluginIdMap) {
+        let taskItemId = mapped[1];
+        if (taskItemId == id) return false;
+      }
+    }
+
+    for (let task of parallelTasks) {
+      let { graphCellPluginIdMap } = task[1].get('export')('raw');
+      for (let mapped of graphCellPluginIdMap) {
+        let taskItemId = mapped[1];
+        if (taskItemId == id) return false;
+      }
+    }
+
+    return true;
+  }
+
+  doDeleteTask({ id }) {
+    if (!this.validateDeletion({ id })) return false;
+    
+    this.dispatch({
+      channel: 'tasks/delete',
+      outgoing: {
+        task: {
+          id: id
+        }
+      }
+    });
+
+    return true;
   }
 
   getSelectedTask() {
@@ -117,12 +204,20 @@ class TasksChannels extends Channelizer {
     return tasksToReturn;
   }
 
+  getTaskById(taskId) {
+    return this.getState().get('tasks').get(taskId) || false;
+  }
+
   getOpenTasks() {
     return this.getState().get('openTasks') || [];
   }
 
   getTaskItems() {
     return this.getState().get('taskItems') || [];
+  }
+
+  getTaskItemById({taskId, itemId}) {
+    return this.getState().getIn(['taskItems', taskId, itemId]);
   }
 
   getSelectedItem() {
@@ -133,10 +228,8 @@ class TasksChannels extends Channelizer {
   ctrlNewTask({ state, incoming }) {
     if (!incoming.task) return state;
     let tasks = state.get('tasks');
-    let taskNo = 1;
-    if (tasks) {
-      taskNo = tasks.size + 1;
-    }
+    let taskNo = state.get('taskIndex') || 1;
+    state = state.set('taskIndex', taskNo+1);
     let name = incoming.task.name || 'NewTask' + taskNo;
     let type = incoming.task.type || "Functional";
     const newTask = new Task({ name, type });

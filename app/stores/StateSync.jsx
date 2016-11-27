@@ -4,7 +4,7 @@ import fs from 'fs';
 
 export default class StateSync {
 
-  static save(location, { tasks, installedPlugins }) {
+  static save(location, data) {
     if (!location) {
       if (!fs.statSync('/tmp/.gulpnoir')) {
         fs.mkdirSync('/tmp/.gulpnoir');
@@ -12,32 +12,39 @@ export default class StateSync {
       location = `/tmp/.gulpnoir/${_id}`;
     }
 
-    // We don't save the last item selected
-    if (tasks.get('selectedItem')) {
-      tasks = tasks.delete('selectedItem');
-    }
-
-    let _tasks = tasks.get('tasks');
+    let _tasks = data.tasks.get('tasks');
 
     for (let [id, task] of _tasks) {
-      tasks = tasks.setIn(['tasks', (id * 1), 'graph'],  tasks.get('tasks').get(id).get('exportGraph')());
+      let { graph, connections } = data.tasks.get('tasks').get(id).get('export')();
+      data.tasks = data.tasks.setIn(['tasks', (id * 1), 'graph'], graph);
+      data.tasks = data.tasks.setIn(['tasks', (id * 1), 'connections'], connections);
+      data.tasks = data.tasks.deleteIn(['tasks', (id * 1), 'selectedItem']);
+    }
+    
+    let JSONCollection = {};
+    JSONCollection._saved = [];
+    for (let datum in data) {
+      JSONCollection[datum] = transit.toJSON(data[datum]);
+      JSONCollection._saved.push(datum);
     }
 
-    let JSONCollection = {};
-    JSONCollection.tasks = transit.toJSON(tasks);
-    JSONCollection.installedPlugins = transit.toJSON(installedPlugins);
-
     const saveState = lz.compress(JSON.stringify(JSONCollection), {outputEncoding: 'BinaryString'});
+    //const saveState = JSON.stringify(JSONCollection);
     fs.writeFile(location, saveState);
   }
 
-  static load(location) {
+  static load(location, data) {
     let fileContents = fs.readFileSync(location).toString();
     let JSONCollection = {};
     const decodeL1 = JSON.parse(lz.decompress(fileContents, {inputEncoding: 'BinaryString'}));
+    //const decodeL1 = JSON.parse(fileContents);
 
-    JSONCollection.tasks = transit.fromJSON(decodeL1.tasks);
-    JSONCollection.installedPlugins = transit.fromJSON(decodeL1.installedPlugins);
+    let _saved = decodeL1._saved;
+    decodeL1._saved = null;
+
+    for (let datum of _saved) {
+      JSONCollection[datum] = transit.fromJSON(decodeL1[datum]);
+    }
 
     return JSONCollection;
   }

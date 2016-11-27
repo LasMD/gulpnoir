@@ -2,11 +2,18 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import joint from 'jointjs';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
+import GulpPluginsChannels from '../../stores/GulpPlugins/GulpPluginsChannels';
+import PipeSource from '../../stores/Tasks/PipeSource';
 import { Container } from 'flux/utils';
 import { DropTarget } from 'react-dnd';
 import { GRID_CONST } from '../../constants';
+import LinkChain from '../../LinkChain';
+import {
+  blueGrey100, blueGrey200, blueGrey300, blueGrey400, blueGrey500, blueGrey600, blueGrey700
+} from 'material-ui/styles/colors';
 
-import './_style.scss';
+import '!style!css!jointjs/dist/joint.core.css';
+import '!style!css!jointjs/dist/joint.min.css';
 
 const gridTarget = {
   drop(props, monitor, component) {
@@ -48,11 +55,84 @@ class FlowGraph extends Component {
     this.graphState = {
       graphCells: new Map(),
       graphCellsAttrs: new Map(),
-      connections: [],
+      connections: new LinkChain(),
+      connectionsMap: new Map(),
       selectedCell: null,
       graphCellPluginIdMap: new Map(),
       boundCellID: null
     };
+
+    this.itemTypeShapes = {
+      'Parallel': 'circle',
+      'GulpPlugin': 'rect',
+      'Series': 'rect',
+      'Task': 'rect',
+      'PipeSource': 'rect'
+    }
+
+    let toolingMarkup = `<g class="rotatable">
+      <g class="scalable"><rect class="body"/></g>
+      <text class="label"/><g class="inPorts"/><g class="outPorts"/>
+      <g class="tooling" fill="#000000" height="24" width="24" transform="translate(-24, -24)">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+      </g>
+    </g>`;
+
+    joint.shapes.devs.TooledItem = joint.shapes.devs.Model.extend({
+        markup: toolingMarkup,
+        defaults: joint.util.deepSupplement({
+            type: 'devs.TooledItem',
+        }, joint.shapes.devs.Model.prototype.defaults)
+    });
+
+    joint.shapes.devs.TooledItemView = joint.shapes.devs.ModelView.extend({
+      that: () => {
+        return this;
+      },
+
+      pointerclick: function (evt, x, y) {
+
+        this._dx = x;
+        this._dy = y;
+        this._action = '';
+
+        var className = evt.target.parentNode.getAttribute('class');
+
+        switch (className) {
+
+            case 'tooling':
+              let that = this.that();
+              let link = that.graphState.connectionsMap.get(this.model.id);
+              if (link) {
+                if (link.previous) {
+                  link.previous.sever();
+                }
+                link.sever();
+                that.graphState.connectionsMap.delete(this.model.id);
+              }
+              that.graphState.graphCellPluginIdMap.delete(this.model.id);
+              that.deselectCell();
+              this.model.remove();
+              return;
+              break;
+
+            default:
+        }
+
+        joint.dia.CellView.prototype.pointerclick.apply(this, arguments);
+      }
+    });
+
+  }
+
+  collisionLookup(cell, pos, opt) {
+    var rect = joint.g.rect(cell.getBBox());
+    var collisions = this.graph.findModelsInArea(rect);
+    if (collisions.length > 1) {
+      // let links = this.graph.getConnectedLinks(cell);
+      cell.translate(-opt.tx, -opt.ty);
+    }
   }
 
   createPlugin({ x, y, text, id }) {
@@ -61,12 +141,40 @@ class FlowGraph extends Component {
       ...GRID_CONST.ITEM.PLUGIN
     };
     props.attrs['.label'] = { text };
+    props['itemType'] = "GulpPlugin";
 
-    let cell = new joint.shapes.devs.Model(props);
+    let cell = new joint.shapes.devs.TooledItem(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graphState.graphCellPluginIdMap.set(cell.id, id);
     this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
+  }
+
+  createTask({ x, y, text, id }) {
+
+    let props;
+
+    if (this.props.task.get('type') == "Parallel") {
+      props = {
+        position: { x: x, y: y },
+        ...GRID_CONST.ITEM.TASK
+      };
+    } else {
+      props = {
+        position: { x: x, y: y },
+        ...GRID_CONST.ITEM.TASK_TWO_WAY
+      };
+    }
+    props.attrs['.label'] = { text };
+    props['itemType'] = "Task";
+
+    let cell = new joint.shapes.devs.TooledItem(props);
+    this.graphState.graphCells.set(cell.id, cell);
+    this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
+    this.graphState.graphCellPluginIdMap.set(cell.id, id);
+    this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
   }
 
   createParallel({x, y}) {
@@ -74,10 +182,12 @@ class FlowGraph extends Component {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.PARALLEL
     };
+    props['itemType'] = "Parallel";
     let cell = new joint.shapes.basic.Circle(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
   }
 
   createPipeSource({x, y}) {
@@ -85,99 +195,159 @@ class FlowGraph extends Component {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.PIPE_SOURCE
     };
-
+    props['itemType'] = "PipeSource";
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
-    this.graphState.connections.push({cellId: cell.id, itemId: "source"});
     this.graph.addCell(cell);
+    cell.on('change:position', this.collisionLookup);
+    this.graphState.connections = new LinkChain({
+      cellId: cell.id,
+      itemId: "source"
+    });
+    this.graphState.connectionsMap.set(cell.id, this.graphState.connections);
+
+    TasksChannels.dispatch({
+      channel: 'tasks/items/new',
+      outgoing: {
+        task: {
+          id: this.props.task.get('id'),
+        },
+        itemId: "PipeSource",
+        item: new PipeSource({
+          glob: null,
+          dest: null
+        })
+      }
+    });
   }
 
-  createSequence({x, y}) {
+  createSeries({x, y}) {
     const props = {
       position: { x: x, y: y },
       ...GRID_CONST.ITEM.SEQUENCE
     };
-
+    props['itemType'] = "Series";
     let cell = new joint.shapes.devs.Model(props);
     this.graphState.graphCells.set(cell.id, cell);
     this.graphState.graphCellsAttrs.set(cell.id, props.attrs);
     this.graph.addCell(cell);
-  }
-
-  removeBoundCell() {
-    let boundCell = this.graph.getCell(this.graphState.boundCellID);
-    let embeds = boundCell.get('embeds');
-    for (let index in embeds) {
-      boundCell.unembed(this.graph.getCell(embeds[index]));
-    }
-    boundCell.remove();
-    this.graphState.boundCellID = null;
-    this.graphState.selectedCell = null;
-    TasksChannels.dispatch({
-      channel: 'tasks/items/select',
-      outgoing: {
-        item: null
-      }
+    cell.on('change:position', this.collisionLookup);
+    this.graphState.connections = new LinkChain({
+      cellId: cell.id,
+      itemId: "series"
     });
+    this.graphState.connectionsMap.set(cell.id, this.graphState.connections);
   }
 
-  createSelectedBound(cell) {
-
-    if (this.graphState.boundCellID) {
-      this.removeBoundCell();
+  deselectCell() {
+    if (this.graphState.selectedCell) {
+      let selectedCell = this.graph.getCell(this.graphState.selectedCell);
+      selectedCell.attr({
+        [this.itemTypeShapes[selectedCell.attributes.itemType]]: {
+          stroke: 'black',
+          'stroke-width': '1',
+          'stroke-dasharray': '0',
+        },
+        '.tooling': {
+          display: 'none'
+        }
+      });
+      TasksChannels.dispatch({
+        channel: 'tasks/items/select',
+        outgoing: null
+      });
+      this.graphState.selectedCell = null;
     }
-
-    const width = cell.model.attributes.size.width;
-    const height = cell.model.attributes.size.height;
-    const x = cell.model.attributes.position.x;
-    const y = cell.model.attributes.position.y;
-    const props = {
-      position: { x: x, y: y },
-      size: { width: width, height: height },
-      attrs: {}
-    };
-
-    let shape = "";
-    if (cell.model.attributes.attrs.hasOwnProperty('rect')) {
-      shape = 'Rect';
-    } else {
-      shape = 'Circle';
-    }
-
-    const shapeLower = shape.toLowerCase();
-    let boundCell = new joint.shapes.basic[shape](props);
-    boundCell.attr(shapeLower + '/stroke', 'lime');
-    boundCell.attr(shapeLower + '/fill-opacity', '0');
-    boundCell.attr(shapeLower + '/stroke-width', '4');
-    boundCell.attr(shapeLower + '/stroke-dasharray', '5,5');
-    this.graphState.boundCellID = boundCell.id;
-    this.graph.addCell(boundCell);
-    boundCell.embed(cell.model);
-    TasksChannels.dispatch({
-      channel: 'tasks/items/select',
-      outgoing: {
-        item: cell.model
-      }
-    });
-    return boundCell;
   }
+
 
   setSelectedCell(cell) {
-    if (this.graphState.selectedCell && (cell.model.id == this.graphState.selectedCell || this.graphState.boundCellID == cell.model.id)) return;
+    if (this.graphState.selectedCell && (cell.model.id == this.graphState.selectedCell)) return;
     else {
+      if (this.graphState.selectedCell) {
+        let selectedCell = this.graph.getCell(this.graphState.selectedCell);
+        this.graphState.selectedCell = null;
+        if (selectedCell.attributes.item) {
+
+        }
+        selectedCell.attr({
+          [this.itemTypeShapes[selectedCell.attributes.itemType]]: {
+            stroke: 'black',
+            'stroke-width': '1',
+            'stroke-dasharray': '0',
+          },
+          '.tooling': {
+            display: 'none'
+          }
+        });
+      }
       this.graphState.selectedCell = cell.model.id;
-      this.createSelectedBound(cell);
+      cell.model.attr({
+        [this.itemTypeShapes[cell.model.attributes.itemType]]: {
+          stroke: 'lime',
+          'stroke-width': '4',
+          'stroke-dasharray': '5,5',
+        },
+        '.tooling': {
+          display: 'block'
+        }
+      });
+      let outgoing = {
+        item: cell.model
+      };
+      if (cell.model.attributes.itemType == "GulpPlugin") {
+        outgoing.GulpPlugin = GulpPluginsChannels.getPluginObjectById(this.graphState.graphCellPluginIdMap.get(cell.model.id));
+      } else if (cell.model.attributes.itemType == "PipeSource") {
+        outgoing.PipeSource = TasksChannels.getTaskItemById({taskId: this.props.task.get('id'), itemId: "PipeSource"});
+      }
+      TasksChannels.dispatch({
+        channel: 'tasks/items/select',
+        outgoing: outgoing
+      });
     }
   }
 
+  exportData(raw) {
+    let toExport = {};
+
+    toExport['graph'] = this.exportGraph(raw);
+    toExport['connections'] = this.exportConnections(raw);
+    toExport['graphCellPluginIdMap'] = this.exportGraphCellPluginIdMap(raw);
+
+    return toExport;
+  }
+
+  // Utilized by delete task / delete plugin validation in Channels
+  exportGraphCellPluginIdMap(raw) {
+    return this.graphState.graphCellPluginIdMap;
+  }
+
+  // Utilized by StateSync
   exportGraph(raw) {
     if (raw) return this.graph;
     return JSON.stringify(this.graph.toJSON());
   }
 
-  exportConnections() {
-    return this.graphState.connections;
+  // Utilized by GulpfileExporter
+  exportConnections(raw) {
+    if (raw) {
+      if (this.props.task.get('type') == "Parallel") {
+        // Any existing connection should be counted
+        return this.graphState.connectionsMap;
+      }
+      return this.graphState.connections;
+    } else {
+      if (this.props.task.get('type') == "Parallel") {
+        let arr = Array.from(this.graphState.connectionsMap.entries());
+        // Convert LinkChain in connnectionsMap to string
+        for (let a in arr) {
+          arr[a][1] = arr[a][1].toString();
+        }
+        return JSON.stringify(arr);
+      }
+      return this.graphState.connections.toString();
+    }
   }
 
   componentDidMount() {
@@ -188,6 +358,11 @@ class FlowGraph extends Component {
         model: this.graph,
         gridSize: GRID_CONST.SNAP_SIZE,
         validateConnection: (cellViewS, magnetS, cellViewT, magnetT, end, linkView) => {
+
+          if (cellViewT.model.attributes.itemType == "Parallel") {
+            // Instantly allow connection to parallels without restriction
+            return true;
+          }
 
           // Disallow multiple connections from a single Out port
           let connectedLinks = this.graph.getConnectedLinks(cellViewS.model);
@@ -200,6 +375,9 @@ class FlowGraph extends Component {
                   return false;
                 }
                 if (link.get('source').port != 'In' && cellViewS.model.id == link.get('source').id) {
+                  if (this.graphState.connectionsMap.has(link.get('source').id)) {
+                    this.graphState.connectionsMap.get(link.get('source').id).sever();
+                  }
                   link.remove();
                   return false;
                 }
@@ -228,27 +406,31 @@ class FlowGraph extends Component {
 
           // Prevent linking to input ports.
           return magnetT && magnetT.getAttribute('type') === 'input';
-        },
+        }
     });
 
+    // Move element inside the bounding box of the paper element only.
+    // Elements should not overflow
     this.paper.options.restrictTranslate = function(cellView) {
-      // move element inside the bounding box of the paper element only
       let boundArea = cellView.paper.getArea();
       boundArea.width = (Math.floor(cellView.paper.el.clientWidth / GRID_CONST.SNAP_SIZE) -1) * GRID_CONST.SNAP_SIZE;
       boundArea.height = (Math.floor(cellView.paper.el.clientHeight / GRID_CONST.SNAP_SIZE) -1) * GRID_CONST.SNAP_SIZE;
       return boundArea;
     }
 
+    // If we already have a graph in our props, this means our Task was loaded.
+    // Tasks can be loaded from opening a previously closed tab, or loading a file
     if (this.props.task.get('graph')) {
       this.graph = this.graph.fromJSON(JSON.parse(this.props.task.get('graph')));
     } else {
+      // Task was not loaded, so initialize
       switch (this.props.task.get('type')) {
         case 'Functional': {
           this.createPipeSource({x: 100, y: 100});
           break;
         }
-        case 'Sequence': {
-          this.createSequence({x: 100, y: 100});
+        case 'Series': {
+          this.createSeries({x: 100, y: 100});
           break;
         }
         case 'Parallel': {
@@ -258,36 +440,103 @@ class FlowGraph extends Component {
       }
     }
 
+    // If we already have connections in our props, this means our Task was loaded.
+    // Tasks can be loaded from opening a previously closed tab, or loading a file
+    if (this.props.task.get('connections')) {
+      if (this.props.task.get('type') == "Parallel") {
+        let connections = JSON.parse(this.props.task.get('connections'));
+        for (let cons in connections) {
+          connections[cons][1] = LinkChain.parse(connections[cons][1]);
+        }
+        this.graphState.connectionsMap = new Map(connections);
+      }
+      else {
+        this.graphState.connections = LinkChain.parse(this.props.task.get('connections'));
+        for (let connection of this.graphState.connections) {
+          this.graphState.graphCellPluginIdMap.set(connection.data.cellId, connection.data.itemId);
+        }
+      }
+    }
+
+    // Initialize the graph as a task
     TasksChannels.dispatch({
       channel: 'tasks/update',
       outgoing: {
         task: {
           id: this.props.task.get('id'),
-          exportGraph: this.exportGraph.bind(this),
-          exportConnections: this.exportConnections.bind(this)
+          export: this.exportData.bind(this)
         }
       }
     });
 
+    this.graph.on('remove', function(cell, collection, opt) {
+       if (cell.isLink()) {
+         cell.removed = true;
+       }
+    })
+
+    // Handle cell selection
     this.paper.on('cell:pointerclick', (cell, e, x, y) => {
-      this.setSelectedCell(cell);
+      if (!cell.model.isLink()) {
+        this.setSelectedCell(cell);
+      }
     });
 
+
+    // Handle linking
+    // Invalid links should disappear rather than float. Valid links should create a LinkChain for future exporting
     this.paper.on('cell:pointerup', (cell, e, x, y) => {
-      if (cell.model.attributes.type == 'link' && (!cell.model.attributes.target.id || !cell.model.attributes.source.id)) {
+      if (cell.model.isLink() && (!cell.model.get('target').id || !cell.model.get('source').id)) {
         cell.remove();
         return;
-      } else if (cell.model.attributes.type == 'link') {
-        console.log(cell.model);
-        if (cell.model.attributes.source.id == this.graphState.connections[this.graphState.connections.length-1].cellId) {
-          this.graphState.connections.push({cellId: cell.model.attributes.target.id, itemId: this.graphState.graphCellPluginIdMap.get(cell.model.attributes.target.id)});
+      } else if (cell.model.isLink()) {
+
+        // Invalidate broken links
+        if (cell.model.removed) {
+          if (this.graphState.connectionsMap.has(cell.model.get('source').id)) {
+            this.graphState.connectionsMap.get(cell.model.get('source').id).next = null;
+          }
+          if (this.graphState.connectionsMap.has(cell.model.get('target').id)) {
+            this.graphState.connectionsMap.get(cell.model.get('target').id).previous = null;
+          }
+          if (this.props.task.get('type') == "parallel") {
+            // Connections are always 1-1 in parallel
+            this.graphState.connectionsMap.delete(cell.model.get('source').id);
+            this.graphState.connectionsMap.delete(cell.model.get('target').id);
+            return this.graphState.connectionsMap;
+          }
+          cell.remove();
+          return;
         }
+
+        let target = this.graph.getCell(cell.model.get('target').id);
+        if (!this.graphState.connectionsMap.has(cell.model.get('source').id)) {
+          this.graphState.connectionsMap.set(cell.model.get('source').id, new LinkChain({
+            cellId: cell.model.get('source').id,
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('source').id)
+          }));
+        }
+        if (!this.graphState.connectionsMap.has(cell.model.get('target').id)) {
+          this.graphState.connectionsMap.set(cell.model.get('target').id, new LinkChain({
+            cellId: cell.model.get('target').id,
+            itemId: this.graphState.graphCellPluginIdMap.get(cell.model.get('target').id)
+          }))
+        }
+
+        this.graphState.connectionsMap.get(cell.model.get('source').id).append(this.graphState.connectionsMap.get(cell.model.get('target').id));
+
+        cell.model.attr({
+            '.connection': { stroke: 'blue', 'stroke-width': '1.5' },
+            '.marker-target': { fill: 'yellow', d: 'M 10 0 L 0 5 L 10 10 z' }
+        });
       }
     });
 
+
+    // Blank click should deselect a cell
     this.paper.on('blank:pointerclick', (e, x, y) => {
-      if (this.graphState.boundCellID) {
-        this.removeBoundCell();
+      if (this.graphState.selectedCell) {
+        this.deselectCell();
       }
     });
   }
@@ -295,11 +544,16 @@ class FlowGraph extends Component {
   render() {
     const { x, y, connectDropTarget, isOver } = this.props;
     return connectDropTarget(
-      <div className={'paper'}>
+      <div className={'paper'}
+        style={{
+          backgroundColor: `${blueGrey500}`
+        }}
+        >
         <div ref="placeholder" ></div>
       </div>
     );
   }
 }
 
+// DropTarget is used for Drag and Drop functionality
 export default DropTarget("GraphItems", gridTarget, collect)(Container.create(FlowGraph));

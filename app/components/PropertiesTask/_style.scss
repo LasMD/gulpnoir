@@ -1,0 +1,19 @@
+.propertyWrapper {
+	margin: 1em;
+}
+
+.propertyPaper {
+	padding: 10px;
+
+	.header {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.title {
+		flex: 1;
+		margin: 0;
+	}
+
+}

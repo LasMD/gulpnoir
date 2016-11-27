@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import TaskComponent from './TaskComponent';
 import InstalledPluginsComponent from '../InstalledPlugins';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
 import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
+
 import {Container} from 'flux/utils';
 import {List, ListItem} from 'material-ui/List';
 import EditorFormatListBulleted from 'material-ui/svg-icons/editor/format-list-bulleted'
 import ActionDonutSmall from 'material-ui/svg-icons/action/donut-small'
 
-import './_style.scss';
-
-class TasksProperties extends Component {
+class TasksDetail extends Component {
 
 
   static getStores() {
@@ -23,7 +22,7 @@ class TasksProperties extends Component {
       openTasks: TasksChannels.getOpenTasks(),
       functionalTasks: TasksChannels.getTasks('Functional'),
       parallelTasks: TasksChannels.getTasks('Parallel'),
-      sequenceTasks: TasksChannels.getTasks('Sequence'),
+      seriesTasks: TasksChannels.getTasks('Series'),
       selectedTask: TasksChannels.getSelectedTask(),
     };
   }
@@ -34,17 +33,12 @@ class TasksProperties extends Component {
       openTasks: TasksChannels.getOpenTasks(),
       functionalTasks: TasksChannels.getTasks('Functional'),
       parallelTasks: TasksChannels.getTasks('Parallel'),
-      sequenceTasks: TasksChannels.getTasks('Sequence'),
+      seriesTasks: TasksChannels.getTasks('Series'),
       selectedTask: TasksChannels.getSelectedTask()
     };
   }
 
   render() {
-
-    let taskItem;
-    if (this.state.selectedTask) {
-      taskItem = (<TaskComponent task={this.state.selectedTask}></TaskComponent>);
-    }
 
     let anyTasksOpen = this.state.openTasks.size > 0;
 
@@ -70,12 +64,12 @@ class TasksProperties extends Component {
     });
 
 
-    let availableSequenceTasks = 0;
-    if (this.state.sequenceTasks.size > 0) {
-      availableSequenceTasks = [];
+    let availableSeriesTasks = 0;
+    if (this.state.seriesTasks.size > 0) {
+      availableSeriesTasks = [];
     }
-    this.state.sequenceTasks.map((task, id) => {
-      availableSequenceTasks.push((
+    this.state.seriesTasks.map((task, id) => {
+      availableSeriesTasks.push((
         <ListItem key={task.get('id')} primaryText={task.get('name')} onDoubleClick={this.openTask.bind(this, task.get('id'))} />
       ));
     });
@@ -86,47 +80,37 @@ class TasksProperties extends Component {
     // ];
 
     return (
-      <div className={'task-list'}>
-        <Tabs ref='tabs'>
-          <Tab label='Available Items'>
-            <List>
+      <Paper className={`propertyPaper`} zDepth={1}>
+        <List>
+          <ListItem
+            key={1}
+            primaryText="Tasks"
+            primaryTogglesNestedList={true}
+            nestedItems={[
               <ListItem
-                key={1}
-                primaryText="Tasks"
+                key={"TasksFunctional"}
+                primaryText="Functional"
                 primaryTogglesNestedList={true}
-                nestedItems={[
-                  <ListItem
-                    key={"TasksFunctional"}
-                    primaryText="Functional"
-                    primaryTogglesNestedList={true}
-                    nestedItems={availableFunctionalTasks ? availableFunctionalTasks : []}
-                  />,
-                  <ListItem
-                    key={"TasksParallel"}
-                    primaryText="Parallel"
-                    primaryTogglesNestedList={true}
-                    nestedItems={availableParallelTasks ? availableParallelTasks : []}
-                  />,
-                  <ListItem
-                    key={"TasksSequence"}
-                    primaryText="Sequence"
-                    primaryTogglesNestedList={true}
-                    nestedItems={availableSequenceTasks ? availableSequenceTasks : []}
-                  />
-                ]}
-                leftIcon={<EditorFormatListBulleted />}
-                />
-              <InstalledPluginsComponent />
-            </List>
-          </Tab>
-          {anyTasksOpen ? (
-            <Tab label="Task Details">
-              {(taskItem || 'Loading...')}
-            </Tab>)
-            : null
-          }
-        </Tabs>
-      </div>
+                nestedItems={availableFunctionalTasks ? availableFunctionalTasks : []}
+              />,
+              <ListItem
+                key={"TasksParallel"}
+                primaryText="Parallel"
+                primaryTogglesNestedList={true}
+                nestedItems={availableParallelTasks ? availableParallelTasks : []}
+              />,
+              <ListItem
+                key={"TasksSeries"}
+                primaryText="Series"
+                primaryTogglesNestedList={true}
+                nestedItems={availableSeriesTasks ? availableSeriesTasks : []}
+              />
+            ]}
+            leftIcon={<EditorFormatListBulleted />}
+            />
+          <InstalledPluginsComponent />
+        </List>
+      </Paper>
     );
   }
 
@@ -143,4 +127,4 @@ class TasksProperties extends Component {
 
 }
 
-export default Container.create(TasksProperties);
+export default Container.create(TasksDetail);

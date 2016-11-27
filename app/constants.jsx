@@ -11,6 +11,36 @@ export default {
           rect: { fill: 'orange' },
           '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
           '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+          '.tooling': {
+            display: 'none'
+          }
+        },
+        inPorts: ['In'],
+        outPorts: ['Out']
+      },
+      TASK: {
+        size: {
+          width: 80,
+          height: 80
+        },
+        attrs: {
+          rect: { fill: 'brown' },
+          '.outPorts circle': { fill: '#E74C3C', type: 'output' },
+          '.tooling': {
+            display: 'none'
+          }
+        },
+        outPorts: ['']
+      },
+      TASK_TWO_WAY: {
+        size: {
+          width: 80,
+          height: 80
+        },
+        attrs: {
+          rect: { fill: 'brown' },
+          '.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
+          '.outPorts circle': { fill: '#E74C3C', type: 'output' },
         },
         inPorts: ['In'],
         outPorts: ['Out']
@@ -45,7 +75,7 @@ export default {
         attrs: {
           rect: { fill: 'blue' },
           '.outPorts circle': { fill: '#E74C3C', type: 'output', r: 8 },
-          '.label': { text: 'Sequence', fill: 'white' }
+          '.label': { text: 'Series', fill: 'white' }
         },
         outPorts: ['']
       }

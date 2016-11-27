@@ -1,0 +1,13 @@
+.Toolbar {
+	background-color: $blueGrey600 !important;
+	align-items: center;
+
+	.ToolbarTitle {
+		color: $blueGrey100 !important;
+	}
+
+	svg {
+		fill: $blueGrey100 !important;
+	}
+
+}

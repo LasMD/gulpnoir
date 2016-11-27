@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
+
 import NavButton from '../../components/NavButton';
 import PluginsList from '../../components/PluginsList';
-import TasksProperties from '../../components/TasksProperties';
+import TasksList from '../../components/TasksList';
+import TasksDetail from '../../components/TasksDetail';
 import TasksChannels from '../../stores/Tasks/TasksChannels';
-import ItemProperties from '../../components/ItemProperties';
+import PropertiesGulpPlugin from '../../components/PropertiesGulpPlugin';
+import PropertiesPipeSource from '../../components/PropertiesPipeSource';
+import PropertiesTask from '../../components/PropertiesTask';
 import FlowGraph from '../../components/FlowGraph';
 import FlowGraphWindow from '../../components/FlowGraphWindow';
 import FlexColumn from '../../components/FlexColumn';
@@ -30,42 +35,76 @@ class HomePage extends Component {
   static calculateState(prevState) {
     return {
       selectedItem: TasksChannels.getSelectedItem(),
+      selectedTask: TasksChannels.getSelectedTask()
     };
   }
 
   render() {
 
     let propertiesDisabled = true;
-
-    if (this.state.selectedItem) {
+    let propertyItem = null;
+    if (this.state.selectedItem && this.state.selectedItem.item) {
       propertiesDisabled = false;
+      if (this.state.selectedItem.GulpPlugin) {
+        propertyItem = (
+          <PropertiesGulpPlugin GulpPlugin={this.state.selectedItem.GulpPlugin} item={this.state.selectedItem.item} task={this.state.selectedTask} />
+        );
+      } else if (this.state.selectedItem.PipeSource) {
+        propertyItem = (
+          <PropertiesPipeSource PipeSource={this.state.selectedItem.PipeSource} item={this.state.selectedItem.item} task={this.state.selectedTask} />
+        );
+      }
     }
+
+    let taskItem;
+    let showList = (<PluginsList
+        onPluginSelect={(plugin) => { console.log(plugin) }}
+        ref='plugin-list'
+        height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+      />);
+    if (this.state.selectedTask) {
+      taskItem = (<PropertiesTask task={this.state.selectedTask}></PropertiesTask>);
+
+      if (this.state.selectedTask.get('type') == "Functional") {
+        showList = (<PluginsList
+          onPluginSelect={(plugin) => { console.log(plugin) }}
+          ref='plugin-list'
+          height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+        />);
+      } else {
+        showList = (<TasksList
+          onPluginSelect={(plugin) => { console.log(plugin) }}
+          ref='tasks-list'
+          height={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+        />);
+      }
+    }
+
+
 
     return (
       <main className={'page-home'}>
         <FlexRow>
-          <SplitPane split="vertical" minSize={50} defaultSize={300}>
+          <SplitPane split="vertical" minSize={50}
+            defaultSize={ parseInt(localStorage.getItem('splitPanelv1'), 10) || 300 }
+            onChange={ size => localStorage.setItem('splitPanelv1', size) }>
             <FlexColumn>
-              <SplitPane split="horizontal" minSize={50} defaultSize={300}
-                onChange={ size => this.refs['plugin-list'].updateHeight(size) }
-                >
-                <PluginsList
-                onPluginSelect={(plugin) => { console.log(plugin) }}
-                ref='plugin-list'
-                />
-                {
-                  propertiesDisabled ? (
-                    <TasksProperties />
-                  ) : (
-                    <SplitPane split="horizontal" minSize={50} defaultSize={300}>
-                      <TasksProperties />
-                      <Tabs>
-                        <Tab label="Item Properties">
-                          <ItemProperties item={this.state.selectedItem} />
-                        </Tab>
-                      </Tabs>
-                    </SplitPane>)
-                }
+              <SplitPane split="horizontal" minSize={50} defaultSize={ parseInt(localStorage.getItem('splitPanelh1'), 10) || 300 }
+                onChange={ size => {
+                  localStorage.setItem('splitPanelh1', size);
+                  this.refs['plugin-list'].updateHeight(size);
+                }}>
+                {showList}
+                <div>
+                  <Toolbar className={'Toolbar'}>
+                    <ToolbarGroup firstChild={true}>
+                      <ToolbarTitle className={'ToolbarTitle'} text="Project Properties" />
+                    </ToolbarGroup>
+                  </Toolbar>
+                  <TasksDetail />
+                  {taskItem}
+                  {propertyItem}
+                </div>
               </SplitPane>
             </FlexColumn>
             <FlowGraphWindow />

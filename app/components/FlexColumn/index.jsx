@@ -1,5 +1,5 @@
+// @flow
 import React, { Component } from 'react';
-import './_style.scss';
 
 export default class FlexColumn extends Component {
 

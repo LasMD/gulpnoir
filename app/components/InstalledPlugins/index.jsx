@@ -4,7 +4,6 @@ import { ListItem } from 'material-ui/List';
 import { Container } from 'flux/utils';
 import DraggablePlugin from './DraggablePlugin';
 import EditorLinearScale from 'material-ui/svg-icons/editor/linear-scale';
-import './_style.scss';
 
 class InstalledPluginsComponent extends Component {
 

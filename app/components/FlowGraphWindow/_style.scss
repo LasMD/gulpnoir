@@ -1,0 +1,12 @@
+.window-wrapper {
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	display: flex;
+
+	.welcome-wrapper {
+		text-align: center;
+		text-shadow: 0 1px rgba(255, 255, 255, 0.07);
+	}
+}

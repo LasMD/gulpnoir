@@ -1,1 +1,19 @@
-@import './_app';
+@import 'app';
+@import 'color';
+
+@import 'md_override';
+
+@import 'app/containers/Home/style';
+
+@import 'app/components/FlexColumn/style';
+@import 'app/components/FlexRow/style';
+@import 'app/components/FlowGraph/style';
+@import 'app/components/FlowGraphWindow/style';
+@import 'app/components/GulpPlugin/style';
+@import 'app/components/InstalledPlugins/style';
+@import 'app/components/PluginsList/style';
+@import 'app/components/PropertiesGulpPlugin/style';
+@import 'app/components/PropertiesPipeSource/style';
+@import 'app/components/PropertiesTask/style';
+@import 'app/components/TaskDetailFull/style';
+@import 'app/components/TasksList/style';

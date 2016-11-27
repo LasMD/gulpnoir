@@ -18,7 +18,9 @@ class ipcEvents {
   eSaveState(e, filename) {
     StateSync.save(filename, {
       tasks: TasksChannels.getState(),
-      installedPlugins: GulpPluginsChannels.getInstalledPlugins()
+      taskItems: TasksChannels.getTaskItems(),
+      installedPlugins: GulpPluginsChannels.getInstalledPlugins(),
+      pluginObjects: GulpPluginsChannels.getGulpPluginObjects()
     });
   }
 
@@ -30,10 +32,22 @@ class ipcEvents {
         state: newstate.tasks
       }
     });
+    TasksChannels.dispatch({
+      channel: 'tasks/items/set',
+      outgoing: {
+        taskItems: newstate.taskItems
+      }
+    });
     GulpPluginsChannels.dispatch({
       channel: 'plugins/installed/set',
       outgoing: {
         installed: newstate.installedPlugins
+      }
+    });
+    GulpPluginsChannels.dispatch({
+      channel: 'plugins/object/setAll',
+      outgoing: {
+        pluginObjects: newstate.pluginObjects
       }
     });
 
@@ -46,11 +60,6 @@ class ipcEvents {
     } else {
       let taskGraphs = {};
       let exporter = new GulpfileExporter({filename});
-      // for (let [id, task] of _tasks) {
-      //   let getTask = _tasks.get(id);
-      //   taskGraphs[getTask.get('name')] = getTask.get('exportGraph')(true);
-      // }
-      // console.log(taskGraphs);
       exporter.write();
     }
   }
